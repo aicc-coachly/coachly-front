@@ -35,7 +35,7 @@ const Modal = ({ isOpen, modalContent, closeModal }) => {
     <div className="modal-overlay" onClick={closeModal}>
       <div className="modal-content" onClick={(e) => e.stopPropagation()}>
         {modalContent}
-        <button onClick={closeModal}>Close</button>
+        <button onClick={closeModal}>나가기</button>
       </div>
     </div>
   );

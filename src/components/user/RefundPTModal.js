@@ -1,6 +1,6 @@
 import React from 'react'
 
-export const PaymentListModal = () => {
+export const RefundPTModal = () => {
   return (
     <div>
       <h2>일정 확인</h2>
@@ -8,5 +8,4 @@ export const PaymentListModal = () => {
     </div>
   );
 }
-
 

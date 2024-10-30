@@ -1,19 +1,13 @@
-import React from 'react';
-import { useModal } from '../common/ModalProvider';
+import React from 'react'
 
-export const InfoModal = () => (
-  <div>
-    <h2>Info Modal</h2>
-    <p>This is some information in the modal.</p>
-  </div>
-);
-
-export const OpenModalButtons = () => {
-  const { openModal } = useModal();
-
+export const EditScheduleModal = () => {
   return (
     <div>
-      <button onClick={() => openModal(<InfoModal />)}>Open Info Modal</button>
+      <h2>일정 확인</h2>
+      <p>여기에 일정 관련 내용을 표시합니다.</p>
     </div>
   );
-};
+}
+
+
+

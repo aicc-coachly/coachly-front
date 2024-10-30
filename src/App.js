@@ -1,8 +1,9 @@
 import './App.css';
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import SortSignup from './pages/auth/SortSignup'
-import Schedule from './pages/trainer/Schedule';
 import ModalProvider from './components/common/ModalProvider';
+import TrainerProfile from './pages/trainer/TrainerProfile';
+import TrainerMypage from './pages/trainer/TrainerMypage';
 
 function App() {
   return (
@@ -11,7 +12,8 @@ function App() {
       <div className="App">
         <Routes>
           <Route path="/sortsignup" element={<SortSignup/>}></Route>
-          <Route path="/schedule" element={<Schedule/>}></Route>
+          <Route path="/trainerProfile" element={<TrainerProfile/>}></Route>
+          <Route path="/trainerMypage" element={<TrainerMypage/>}></Route>
         </Routes>
       </div>
     </BrowserRouter>
