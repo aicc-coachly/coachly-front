@@ -1,4 +1,3 @@
-// /components/Modal.js
 import React, { createContext, useContext, useState } from 'react';
 
 // ModalContext 및 커스텀 훅 생성
