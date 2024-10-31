@@ -69,7 +69,7 @@ function Login() {
 
         {/* 회원가입 안내 */}
         <p className="text-center text-[#081f5c] my-7">아직 계정이 없으신가요?</p>
-        <Link to="/sort-signup">
+        <Link to="/sortsignup">
           <Buttons size="middle">
             회원가입
           </Buttons>
