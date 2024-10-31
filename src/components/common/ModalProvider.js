@@ -32,10 +32,15 @@ const Modal = ({ isOpen, modalContent, closeModal }) => {
   if (!isOpen) return null;
 
   return (
-    <div className="modal-overlay" onClick={closeModal}>
-      <div className="modal-content" onClick={(e) => e.stopPropagation()}>
+    <div className="modal-overlay fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
+      <div className="modal-content relative w-4/5 h-3/4 bg-white rounded-lg p-6 overflow-auto">
+        <button 
+          onClick={closeModal} 
+          className="absolute top-4 right-4 p-2 rounded-full"
+        >
+          나가기
+        </button>
         {modalContent}
-        <button onClick={closeModal}>나가기</button>
       </div>
     </div>
   );
