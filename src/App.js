@@ -24,9 +24,8 @@ import AIChat from './pages/chat/AIChat';
 function App() {
   return (
     <ModalProvider>
-    <BrowserRouter>
+    <Router>
         <div className="App">
-        <Router>
           <Header />
           <Routes>
             {/* 로그인 페이지 */}
@@ -52,9 +51,8 @@ function App() {
             <Route path="/trainerSearch" element={<TrainerSearch/>} />
 
           </Routes>
-        </Router>
         </div>
-    </BrowserRouter>
+        </Router>
     </ModalProvider>
 
     
