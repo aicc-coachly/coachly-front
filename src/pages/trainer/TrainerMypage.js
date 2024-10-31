@@ -2,7 +2,7 @@ import React from 'react'
 import { useModal } from '../../components/common/ModalProvider';
 import { EditScheduleModal } from '../../components/trainer/EditScheduleModal';
 import { CreateScheduleModal } from '../../components/trainer/CreateScheduleModal';
-import { UserModal } from '../../components/trainer/UserModal';
+import { UserModal } from '../../components/user/UserModal';
 
 
 
