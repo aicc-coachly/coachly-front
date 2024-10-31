@@ -16,6 +16,9 @@ import UserMypage from './pages/user/UserMypage';
 import TrainerSearch from './pages/user/TrainerSearch';
 // chat
 import UserChat from './pages/chat/UserChat';
+import ChatList from './pages/chat/ChatList';
+import TrainerChat from './pages/chat/TrainerChat';
+import AIChat from './pages/chat/AIChat';
 
 
 function App() {
@@ -34,8 +37,11 @@ function App() {
             <Route path="/userSignup" element={<UserSignup />} />
             <Route path="/trainerSignup" element={<TrainerSignup />} />
             {/* chat */}
+            <Route path="/chatList" element={<ChatList />} />
             <Route path="/userChat" element={<UserChat />} />
             <Route path="/trainerChat" element={<TrainerChat />} />
+            <Route path="/AIChat" element={<AIChat />} />
+
             {/* 트레이너 메인 페이지 */}
             <Route path="/trainerProfile" element={<TrainerProfile />} />
             <Route path="/trainerMypage" element={<TrainerMypage />} /> ?
