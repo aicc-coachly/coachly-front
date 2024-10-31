@@ -19,14 +19,14 @@ function SortSignup() {
 
         {/* 회원으로 시작하기 버튼 */}
         <div className="w-full flex justify-center mb-4">
-          <Buttons size="middle" onClick={() => navigate('/user-signup')}>
+          <Buttons size="middle" onClick={() => navigate('/usersignup')}>
             회원으로 시작하기
           </Buttons>
         </div>
 
         {/* 트레이너로 시작하기 버튼 */}
         <div className="w-full flex justify-center mb-4">
-          <Buttons size="middle" onClick={() => navigate('/trainer-signup')}>
+          <Buttons size="middle" onClick={() => navigate('/trainersignup')}>
             트레이너로 시작하기
           </Buttons>
         </div>
