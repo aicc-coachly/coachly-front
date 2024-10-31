@@ -30,16 +30,28 @@ function Buttons({ size, color = '#081f5c', children, onClick }) {
       {children}
     </button>
   );
-  
 }
 
-//  Header MenuBar에서 나오는 메뉴버튼들
+// MenuButton 컴포넌트 정의
+export function MenuButton({ label, to, onClick }) {
+  return (
+    <Link
+      to={to}
+      onClick={onClick}
+      className="text-sm p-2 rounded bg-[#081f5c] text-white hover:bg-[#041c3d] flex justify-center items-center"
+    >
+      {label}
+    </Link>
+  );
+}
+
+// Header MenuBar에서 나오는 메뉴 버튼들
 export function UserMenuButtons({ onClick }) {
   return (
     <>
-      <MenuButton label="마이페이지" to="/user/mypage" onClick={onClick} />
-      <MenuButton label="트레이너 찾기" to="/user/search" onClick={onClick} />
-      <MenuButton label="내 채팅방" to="/user/chat" onClick={onClick} />
+      <MenuButton label="마이페이지" to="/usermypage" onClick={onClick} />
+      <MenuButton label="트레이너 찾기" to="/trainersearch" onClick={onClick} />
+      <MenuButton label="내 채팅방" to="/chatlist" onClick={onClick} />
     </>
   );
 }
@@ -47,20 +59,11 @@ export function UserMenuButtons({ onClick }) {
 export function TrainerMenuButtons({ onClick }) {
   return (
     <>
-      <MenuButton label="마이페이지" to="/trainer/profile" onClick={onClick} />
-      <MenuButton label="내 수업 가격" to="/trainer/pricing" onClick={onClick} />
-      <MenuButton label="내 채팅방" to="/trainer/chat" onClick={onClick} />
+      <MenuButton label="마이페이지" to="/trainermypage" onClick={onClick} />
+      <MenuButton label="내 수업 가격" to="/pricelist" onClick={onClick} />
+      <MenuButton label="내 채팅방" to="/chatlist" onClick={onClick} />
     </>
   );
 }
-
-export function MenuButton({ label, to, onClick }) {
-  return (
-    <button className="text-sm p-2 rounded bg-[#081f5c] text-white hover:bg-[#041c3d]" onClick={onClick}>
-      <Link to={to}>{label}</Link>
-    </button>
-  );
-}
-
 
 export default Buttons;

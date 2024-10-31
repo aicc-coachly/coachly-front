@@ -15,9 +15,9 @@ function Header() {
   // 특정 페이지에서 메뉴바 숨김
   const hideMenuBar = [
     '/',
-    '/sort-signup',
-    '/trainer-signup',
-    '/user-signup'
+    '/sortsignup',
+    '/trainersignup',
+    '/usersignup'
   ].includes(location.pathname);
 
   // 트레이너 페이지와 회원 페이지 확인

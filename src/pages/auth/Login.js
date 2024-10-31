@@ -12,9 +12,9 @@ function Login() {
 
   const handleLogin = () => {
     if (userType === 'trainer') {
-      navigate('/trainer-main'); // 트레이너 메인 페이지로 이동
+      navigate('/trainermypage'); // 트레이너 메인 페이지로 이동
     } else {
-      navigate('/user-main'); // 유저 메인 페이지로 이동
+      navigate('/usermypage'); // 유저 메인 페이지로 이동
     }
   };
   // relative flex justify-between items-center p-4 bg-[#edf1f6]

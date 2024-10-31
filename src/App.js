@@ -32,23 +32,23 @@ function App() {
             <Route path="/" element={<Login />} />
             <Route path="/buttons" element={<Buttons/>} />
             {/* 회원가입 선택 페이지 */}
-            <Route path="/sortSignup" element={<SortSignup />} />
-            <Route path="/userSignup" element={<UserSignup />} />
-            <Route path="/trainerSignup" element={<TrainerSignup />} />
+            <Route path="/sortsignup" element={<SortSignup />} />
+            <Route path="/usersignup" element={<UserSignup />} />
+            <Route path="/trainersignup" element={<TrainerSignup />} />
             {/* chat */}
-            <Route path="/chatList" element={<ChatList />} />
-            <Route path="/userChat" element={<UserChat />} />
-            <Route path="/trainerChat" element={<TrainerChat />} />
-            <Route path="/AIChat" element={<AIChat />} />
+            <Route path="/chatlist" element={<ChatList />} />
+            <Route path="/userchat" element={<UserChat />} />
+            <Route path="/trainerchat" element={<TrainerChat />} />
+            <Route path="/aichat" element={<AIChat />} />
 
             {/* 트레이너 메인 페이지 */}
-            <Route path="/trainerProfile" element={<TrainerProfile />} />
-            <Route path="/trainerMypage" element={<TrainerMypage />} /> ?
+            <Route path="/trainerprofile" element={<TrainerProfile />} />
+            <Route path="/trainermypage" element={<TrainerMypage />} /> ?
             {/* 트레이너의 회원 채팅리스트페이지로 넘어감 */}
-            <Route path="/priceList" element={<PriceList />} />
+            <Route path="/pricelist" element={<PriceList />} />
             {/* 회원 메인 페이지 */}
-            <Route path="/userMypage" element={<UserMypage/>} />
-            <Route path="/trainerSearch" element={<TrainerSearch/>} />
+            <Route path="/usermypage" element={<UserMypage/>} />
+            <Route path="/trainersearch" element={<TrainerSearch/>} />
 
           </Routes>
         </div>
