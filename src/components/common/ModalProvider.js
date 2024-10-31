@@ -33,7 +33,10 @@ const Modal = ({ isOpen, modalContent, closeModal }) => {
 
   return (
     <div className="modal-overlay fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
-      <div className="modal-content relative w-4/5 h-3/4 bg-white rounded-lg p-6 overflow-auto">
+      <div 
+        className="modal-content relative w-4/5 h-3/4 bg-white rounded-lg p-6 overflow-auto" 
+        style={{ maxHeight: "80vh" }} // 모달창의 최대 높이 설정
+      >
         <button 
           onClick={closeModal} 
           className="absolute top-4 right-4 p-2 rounded-full"
