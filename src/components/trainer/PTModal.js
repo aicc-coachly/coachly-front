@@ -7,7 +7,7 @@ export const PTModal = () => {
       {/* 트레이너 정보 섹션 */}
       <div className="flex gap-4 mb-6">
         <picture className="w-32 h-32 bg-gray-200 rounded-lg">
-          {/* <img src="/path-to-image.jpg" alt="트레이너 프로필" className="w-full h-full object-cover rounded-lg"/> */}
+          <img src="/path-to-image.jpg" alt="트레이너 프로필" className="w-full h-full object-cover rounded-lg"/>
         </picture>
         
         <div className="flex flex-col gap-2">
@@ -38,12 +38,13 @@ export const PTModal = () => {
           <p className="text-gray-600">20회 시간당 4만원</p>
         </div>
 
+        <p className="text-red-400 text-sm">회원님은 선택하신 회차/시간대 선택을 하셔야 합니다</p>
       </div>
 
       {/* 버튼 섹션 */}
       <div className="flex flex-col gap-3 mt-auto">
-        <Buttons size="big" color="#081f5c">
-          원하시는 선택지가 없으시면 1:1 상담을 해보세요
+        <Buttons size="middle" color="#081f5c">
+          1:1 채팅하기
         </Buttons>
         <Buttons size="middle" color="#ff4b4b">
           결제 요청하기
