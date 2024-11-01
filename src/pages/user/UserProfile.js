@@ -34,10 +34,19 @@ const UserProfile = () => {
       </div>
 
       {/* 사용자 정보 */}
-      <div className="text-center mb-4">
+      <div className="text-start px-[2rem] mb-4">
         <p className="text-base font-medium">헬린이</p>
-        <p className="text-sm text-gray-500">010-1234-5678</p>
-        <p className="text-sm text-gray-500">healthbaby@gmail.com</p>
+        <input 
+          type="text" 
+          defaultValue="010-1234-5678" 
+          className="text-sm text-gray-500" 
+        />
+        <input 
+          type="email" 
+          defaultValue="healthbaby@gmail.com" 
+          className="text-sm text-gray-500" 
+        />
+
       </div>
 
       {/* 주소 관리 섹션 */}
@@ -60,6 +69,7 @@ const UserProfile = () => {
               <p className="px-3 py-1 bg-gray-300 text-sm rounded-md">구</p>
               <p className="px-3 py-1 bg-gray-300 text-sm rounded-md">동</p>
               <p className="px-3 py-1 bg-gray-300 text-sm rounded-md">상세주소</p>
+              <p className="px-3 py-1 bg-gray-300 text-sm rounded-md">(우편번호)</p>
             </div>
             {/* 삭제 버튼 (오른쪽 상단) */}
             <button 
