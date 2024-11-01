@@ -58,7 +58,7 @@ export function TrainerMenuButtons({ onClick }) {
 
 export function MenuButton({ label, to, onClick }) {
   return (
-    <button className="text-sm p-2 rounded bg-[#081f5c] text-white hover:bg-[#041c3d]" onClick={onClick}>
+    <button className="text-sm z-50 p-2 rounded bg-[#081f5c] text-white hover:bg-[#041c3d]" onClick={onClick}>
       <Link to={to}>{label}</Link>
     </button>
   );
