@@ -2,6 +2,7 @@ import React from 'react'
 import { useModal } from '../../components/common/ModalProvider';
 import { useNavigate } from 'react-router-dom'; // useNavigate 추가
 import { CheckScheduleModal } from '../../components/trainer/CheckScheduleModal';
+import { BodyCompositionModal } from '../../components/user/BodyCompositionModal';
 
 
 function UserMypage() {
@@ -20,25 +21,30 @@ function UserMypage() {
                 >
                     수정하기
                 </button>
-                <div className="flex items-center mt-4">
-                    <div className="w-[8rem] h-[8rem] bg-gray-200 overflow-hidden">
-                        <img 
-                            // src="https://via.placeholder.com/64" // 프로필 사진 URL 또는 경로로 대체
-                            alt="프로필 사진" 
-                            className="object-cover w-full h-full"
-                        />
-                    </div>
-                    <div className="ml-4">
-                      <div className='flex justify-between'>
-                      <p className="text-base font-medium">헬린이</p>
-                      <p className="px-3 py-1 bg-gray-300 text-sm rounded-md">종로구</p>
-                      </div>
-                        <p className="text-sm text-gray-500">010-1234-5678</p>
-                        <p className="text-sm text-gray-500">healthbaby@gmail.com</p>
-                    </div>
+                <div className="flex items-start mt-4 space-x-4">
+                {/* 프로필 사진 */}
+                <div className="w-[8rem] h-[8rem] bg-gray-200 overflow-hidden">
+                  {/* <img 
+                    // src="https://via.placeholder.com/64" // 프로필 사진 URL 또는 경로로 대체
+                    alt="프로필 사진" 
+                    className="object-cover w-full h-full"
+                  /> */}
                 </div>
-                <div className="flex mt-2 space-x-2">
+                  
+                {/* 텍스트 정보와 체크박스 */}
+                <div className="flex-1">
+                  {/* 체크박스 */}
+                  <div className="flex justify-end">
+                    <p className="px-3 py-1 bg-gray-300 text-sm rounded-md">종로구</p>
+                  </div>
+                  
+                  {/* 텍스트 정보 */}
+                  <p className="mt-2 text-base font-medium">헬린이</p>
+                  <p className="text-sm text-gray-500">010-1234-5678</p>
+                  <p className="text-sm text-gray-500">healthbaby@gmail.com</p>
+                  
                 </div>
+              </div>
             </div>
 
             {/* 담당 트레이너 */}
@@ -74,7 +80,7 @@ function UserMypage() {
               <div className='flex justify-between p-2'>
               <h2 className="text-lg font-semibold">나의 체성분 기록</h2>
                 <button 
-                    onClick={() => openModal(<CheckScheduleModal />)} 
+                    onClick={() => openModal(<BodyCompositionModal />)} 
                     className="text-center px-3 py-1 bg-pink-300 text-sm rounded-md"
                 >
                     추가하기
@@ -85,7 +91,7 @@ function UserMypage() {
                     <p className="text-base text-sm">첫번째 인바디</p>
                     <span className="text-sm text-gray-500">24-11-01</span>
                     <button 
-                    onClick={() => openModal(<CheckScheduleModal />)} 
+                    onClick={() => openModal(<BodyCompositionModal />)} 
                     className="text-center px-3 py-1 bg-pink-300 text-sm rounded-md"
                 >
                     더보기
