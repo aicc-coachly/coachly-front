@@ -3,7 +3,7 @@ import Buttons from '../common/Buttons'
 
 export const PTModal = () => {
   return (
-    <div className="w-full h-full flex flex-col p-6">
+    <div className="max-w-sm p-6 rounded-lg relative">
       {/* 트레이너 정보 섹션 */}
       <div className="flex gap-4 mb-6">
         <picture className="w-32 h-32 bg-gray-200 rounded-lg">
