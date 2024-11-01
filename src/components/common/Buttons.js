@@ -39,9 +39,9 @@ function Buttons({ size, color = '#ACD0F2', children, onClick }) {
 export function UserMenuButtons({ onClick }) {
   return (
     <>
-      <MenuButton label="마이페이지" to="/userMypage" onClick={onClick} />
-      <MenuButton label="트레이너 찾기" to="/trainerSearch" onClick={onClick} />
-      <MenuButton label="내 채팅방" to="/userChat" onClick={onClick} />
+      <MenuButton label="마이페이지" to="/usermypage" onClick={onClick} />
+      <MenuButton label="트레이너 찾기" to="/trainersearch" onClick={onClick} />
+      <MenuButton label="내 채팅방" to="/userchat" onClick={onClick} />
     </>
   );
 }
@@ -49,9 +49,9 @@ export function UserMenuButtons({ onClick }) {
 export function TrainerMenuButtons({ onClick }) {
   return (
     <>
-      <MenuButton label="마이페이지" to="/trainerMypage" onClick={onClick} />
-      <MenuButton label="내 수업 가격" to="/trainerPricing" onClick={onClick} />
-      <MenuButton label="내 채팅방" to="/userList" onClick={onClick} />
+      <MenuButton label="마이페이지" to="/trainermypage" onClick={onClick} />
+      <MenuButton label="내 수업 가격" to="/trainerpricing" onClick={onClick} />
+      <MenuButton label="내 채팅방" to="/trainerchat" onClick={onClick} />
     </>
   );
 }
