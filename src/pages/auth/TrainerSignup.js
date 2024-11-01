@@ -14,7 +14,7 @@ function TrainerSignup() {
     phone: '',
     email: '',
     gender: '',
-    specialization: '',
+    specialization: [], // 초기값을 배열로 변경
     introduction: '',
     classLocation1: '',
     classLocation2: '',
@@ -38,7 +38,7 @@ function TrainerSignup() {
 
     try {
       // API 호출 - 백엔드 엔드포인트가 준비되면 URL을 업데이트하세요.
-      const response = await api.post('/trainers/signup', formData);
+      const response = await api.post('/trainerSignup', formData);
 
       // 서버 응답에 따라 처리
       if (response.status === 201) {
@@ -172,101 +172,183 @@ function TrainerSignup() {
             </div>
           </div>
 
-          {/* 특기 선택 */}
-          <div className="mb-4">
-            <label htmlFor="specialization" className="block mb-2">특기 선택</label>
-            <input
-              type="text"
-              id="specialization"
-              name="specialization"
-              value={formData.specialization}
-              onChange={handleChange}
-              className="w-full px-3 py-2 border rounded"
-              placeholder="예: 요가, 필라테스 등"
-            />
-          </div>
-
-          {/* 자기소개서 */}
-          <div className="mb-4">
-            <label htmlFor="introduction" className="block mb-2">자기소개서</label>
-            <textarea
-              id="introduction"
-              name="introduction"
-              value={formData.introduction}
-              onChange={handleChange}
-              className="w-full px-3 py-2 border rounded"
-              placeholder="자기소개를 입력하세요."
-            ></textarea>
-          </div>
-
-          {/* 수업 장소 */}
-          <div className="mb-4">
-            <label className="block mb-2">수업 장소</label>
-            <input
-              type="text"
-              name="classLocation1"
-              value={formData.classLocation1}
-              onChange={handleChange}
-              className="w-full px-3 py-2 border rounded mb-2"
-              placeholder="주소 1"
-            />
-            <input
-              type="text"
-              name="classLocation2"
-              value={formData.classLocation2}
-              onChange={handleChange}
-              className="w-full px-3 py-2 border rounded"
-              placeholder="주소 2"
-            />
-          </div>
-
-          {/* 계좌 정보 */}
-          <div className="mb-4">
-            <label htmlFor="accountInfo" className="block mb-2">계좌 정보</label>
-            <input
-              type="text"
-              id="accountInfo"
-              name="accountInfo"
-              value={formData.accountInfo}
-              onChange={handleChange}
-              className="w-full px-3 py-2 border rounded"
-              placeholder="계좌 정보를 입력하세요"
-            />
-            <div className="mt-2">
-              <label>
-                <input
-                  type="checkbox"
-                  name="mainAccount"
-                  checked={formData.mainAccount}
-                  onChange={handleChange}
-                  className="mr-2"
-                />
-                대표 계좌로 설정
-              </label>
+       {/* 특기 선택 */}
+       <div className="mb-4">
+            <label className="block mb-2">특기 선택</label>
+            <div className="grid grid-cols-2 gap-2">
+              {['여성전문', '선수/대회 전문', '남성전문', '실버 전문'].map((specialization) => (
+                <div key={specialization} className="flex flex-col items-center">
+                  <label
+                    className={`border rounded-lg w-full h-12 flex items-center justify-center cursor-pointer ${
+                      formData.specialization.includes(specialization) ? 'bg-[#d0e3ff] text-white' : 'border-gray-300'
+                    }`}
+                  >
+                    <input
+                      type="checkbox"
+                      name="specialization"
+                      value={specialization}
+                      checked={formData.specialization.includes(specialization)}
+                      onChange={(e) => {
+                        const { value, checked } = e.target;
+                        if (checked) {
+                          // 최대 2개까지 선택 가능
+                          if (formData.specialization.length < 2) {
+                            setFormData({
+                              ...formData,
+                              specialization: [...formData.specialization, value],
+                            });
+                          }
+                        } else {
+                          setFormData({
+                            ...formData,
+                            specialization: formData.specialization.filter((item) => item !== value),
+                          });
+                        }
+                      }}
+                      className="hidden" // 체크박스 숨김
+                    />
+                    {specialization}
+                  </label>
+                </div>
+              ))}
             </div>
           </div>
-                    {/* 가격 정보 */}
-                    <div className="mb-4">
-            <label className="block mb-2">가격</label>
-            <input
-              type="text"
-              name="classFee"
-              value={formData.classFee}
-              onChange={handleChange}
-              className="w-full px-3 py-2 border rounded mb-2"
-              placeholder="원데이 클래스 비용"
-            />
-            <input
-              type="text"
-              name="consultationFee"
-              value={formData.consultationFee}
-              onChange={handleChange}
-              className="w-full px-3 py-2 border rounded"
-              placeholder="회당 비용"
-            />
+
+        {/* 수업 장소 */}
+        <div className="mb-4">
+          <label className="block mb-2">수업 장소</label>
+                    
+          {/* 우편번호 입력 */}
+          <input
+            type="text"
+            name="postalCode"
+            value={formData.postalCode}
+            onChange={handleChange}
+            className="w-full px-3 py-2 border rounded mb-2"
+            placeholder="우편번호"
+          />
+          
+          {/* 주소 입력 */}
+          <input
+            type="text"
+            name="classLocation"
+            value={formData.classLocation1}
+            onChange={handleChange}
+            className="w-full px-3 py-2 border rounded mb-2"
+            placeholder="주소"
+          />
+          
+          {/* 상세주소 입력 */}
+          <input
+            type="text"
+            name="classLocation2"
+            value={formData.classLocation2}
+            onChange={handleChange}
+            className="w-full px-3 py-2 border rounded"
+            placeholder="상세주소"
+          />
+        </div>
+                    
+                 {/* 계좌 정보 */}
+        <div className="mb-4">
+            <label htmlFor="bankName" className="block mb-2">은행 이름</label>
+              <input
+                type="text"
+                id="bankName"
+                name="bankName"
+                value={formData.bankName}
+                onChange={handleChange}
+                className="w-full px-3 py-2 border rounded mb-2"
+                placeholder="은행 이름을 입력하세요"
+              />
+          
+            <label htmlFor="accountInfo" className="block mb-2">계좌 정보</label>
+              <input
+                type="text"
+                id="accountInfo"
+                name="accountInfo"
+                value={formData.accountInfo}
+                onChange={handleChange}
+                className="w-full px-3 py-2 border rounded"
+                placeholder="계좌 정보를 입력하세요"
+              />
+          <div className="mt-2">
+            <label>
+              <input
+                type="checkbox"
+                name="mainAccount"
+                checked={formData.mainAccount}
+                onChange={handleChange}
+                className="mr-2"
+              />
+              대표 계좌로 설정
+            </label>
           </div>
-                    {/* 개인정보 수집 동의 */}
-                    <div className="mb-6 flex items-center">
+        </div>
+
+
+{/* 가격 정보 */}
+<div className="mb-4">
+    <label className="block bold-2 mb-2">가격</label>
+    <div className="flex items-center mb-2">
+        <label className="block mr-2 w-1/2" htmlFor="oneDayClassFee">원데이클래스</label>
+        <input
+            type="text"
+            id="oneDayClassFee"
+            name="oneDayClassFee"
+            value={formData.classFee.replace(/\B(?=(\d{3})+(?!\d))/g, ",")} // 콤마 추가
+            onChange={(e) => {
+                const value = e.target.value.replace(/,/g, '');
+                setFormData({ ...formData, classFee: value });
+            }}
+            className="w-5/6 px-3 py-2 border rounded"
+            placeholder="원데이 클래스 비용 입력"
+        />
+    </div>
+
+
+</div>
+
+{/* 회당 가격 정보 */}
+<div className="mb-4">
+<div className="flex items-center mb-2 justify-end">
+    <label className="block w-1/3 mb-2">회당 가격</label>
+    <div className="flex items-center mb-2">
+        {/* 회수 선택 */}
+        <input
+            type="number"
+            name="consultationCount"
+            value={formData.consultationCount || 0} // 초기값 0으로 설정
+            onChange={(e) => {
+                const value = Math.max(0, Math.min(30, e.target.value)); // 0에서 30 사이로 제한
+                setFormData({ ...formData, consultationCount: value });
+            }}
+            className="w-13 px-3 py-2 border rounded mx-2"
+            min="0"
+            max="30"
+            style={{ appearance: 'auto' }}
+        />
+        
+        {/* 가격 입력 */}
+        <input
+            type="text"
+            name="consultationFee"
+            value={formData.consultationFee.replace(/\B(?=(\d{3})+(?!\d))/g, ",")} // 콤마 추가
+            onChange={(e) => {
+                const value = e.target.value.replace(/,/g, ''); // 콤마 제거
+                setFormData({ ...formData, consultationFee: value });
+            }}
+            className="w-5/6 px-3 py-2 border rounded"
+            placeholder="가격 입력"
+        />
+    </div>
+</div>
+</div>
+          
+
+
+          {/* 개인정보 수집 동의 */}
+          <div className="mb-6 flex items-center">
             <input
               type="checkbox"
               id="agreeTerms"

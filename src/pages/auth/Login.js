@@ -12,9 +12,9 @@ function Login() {
 
   const handleLogin = () => {
     if (userType === 'trainer') {
-      navigate('/trainer-main'); // 트레이너 메인 페이지로 이동
+      navigate('/trainermypage'); // 트레이너 메인 페이지로 이동
     } else {
-      navigate('/user-main'); // 유저 메인 페이지로 이동
+      navigate('/usermypage'); // 유저 메인 페이지로 이동
     }
   };
   // relative flex justify-between items-center p-4 bg-[#edf1f6]
@@ -69,7 +69,7 @@ function Login() {
 
         {/* 회원가입 안내 */}
         <p className="text-center text-[#081f5c] my-7">아직 계정이 없으신가요?</p>
-        <Link to="/sort-signup">
+        <Link to="/sortsignup">
           <Buttons size="middle">
             회원가입
           </Buttons>

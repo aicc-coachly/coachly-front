@@ -11,11 +11,11 @@ RUN npm install
 # 소스 파일 복사
 COPY . .
 
-# 환경 변수로 포트 설정 (기본값 3000)
-ENV PORT=3000
+# 환경 변수로 포트 설정 (기본값 3000, 개인서버이용이라 4000)
+ENV PORT=4000
 
 # 포트 노출
-EXPOSE 3000
+EXPOSE 4000
 
 # 애플리케이션 실행
 CMD ["npm", "start"]
