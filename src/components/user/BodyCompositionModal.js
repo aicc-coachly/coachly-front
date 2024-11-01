@@ -18,62 +18,56 @@ export const BodyCompositionModal = () => {
       <div className="grid grid-cols-2 gap-4 mb-4">
         {/* 키 */}
         <div>
-          <label className="block text-sm font-semibold">키</label>
+          <label className="block text-sm font-semibold">키(cm)</label>
           <input
             type="text"
             className="w-full bg-gray-200 p-2 rounded text-center"
           />
-          <span className="text-xs inline-block mt-1">cm</span>
         </div>
 
         {/* 체중 */}
         <div>
-          <label className="block text-sm font-semibold">체중</label>
+          <label className="block text-sm font-semibold">체중(kg)</label>
           <input
             type="text"
             className="w-full bg-gray-200 p-2 rounded text-center"
           />
-          <span className="text-xs inline-block mt-1">kg</span>
         </div>
 
         {/* 체지방량 */}
         <div>
-          <label className="block text-sm font-semibold">체지방량</label>
+          <label className="block text-sm font-semibold">체지방량(kg)</label>
           <input
             type="text"
             className="w-full bg-gray-200 p-2 rounded text-center"
           />
-          <span className="text-xs inline-block mt-1">kg</span>
         </div>
 
         {/* 골격근량 */}
         <div>
-          <label className="block text-sm font-semibold">골격근량</label>
+          <label className="block text-sm font-semibold">골격근량(kg)</label>
           <input
             type="text"
             className="w-full bg-gray-200 p-2 rounded text-center"
           />
-          <span className="text-xs inline-block mt-1">kg</span>
         </div>
 
         {/* 체수분 */}
         <div>
-          <label className="block text-sm font-semibold">체수분</label>
+          <label className="block text-sm font-semibold">체수분(L)</label>
           <input
             type="text"
             className="w-full bg-gray-200 p-2 rounded text-center"
           />
-          <span className="text-xs inline-block mt-1">L</span>
         </div>
 
         {/* 단백질 */}
         <div>
-          <label className="block text-sm font-semibold">단백질</label>
+          <label className="block text-sm font-semibold">단백질(kg)</label>
           <input
             type="text"
             className="w-full bg-gray-200 p-2 rounded text-center"
           />
-          <span className="text-xs inline-block mt-1">kg</span>
         </div>
 
         {/* 복부지방률 */}
@@ -87,12 +81,11 @@ export const BodyCompositionModal = () => {
 
         {/* 내장지방레벨 */}
         <div>
-          <label className="block text-sm font-semibold">내장지방레벨</label>
+          <label className="block text-sm font-semibold">내장지방레벨(Lv)</label>
           <input
             type="text"
             className="w-full bg-gray-200 p-2 rounded text-center"
           />
-          <span className="text-xs inline-block mt-1">Lv</span>
         </div>
       </div>
 
