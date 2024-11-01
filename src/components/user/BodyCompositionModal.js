@@ -2,9 +2,8 @@ import React from 'react';
 
 export const BodyCompositionModal = () => {
   return (
-    <div className="w-[90%] max-w-sm bg-gray-300 p-6 rounded-lg relative">
+    <div className="max-w-sm p-6 rounded-lg relative">
       <h2 className="text-lg font-bold text-center mb-6">첫번째 기록</h2>
-      <button className="absolute top-4 right-4 text-lg font-bold">X</button>
 
       {/* 측정날짜 */}
       <div className="mb-4">

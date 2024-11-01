@@ -6,8 +6,7 @@ export const TrainerInfoModal = () => {
   const { openModal } = useModal();
 
 return (
-  <div className="relative w-[90%] max-w-lg max-h-[80vh] bg-gray-200 rounded-lg p-6">
-    <button className="absolute top-4 right-4 text-lg font-bold">X</button>
+  <div className="max-w-sm p-6 rounded-lg relative">
     
     <div className="flex flex-col items-center">
       {/* 상단 이미지 영역 */}

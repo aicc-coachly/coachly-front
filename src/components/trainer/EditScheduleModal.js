@@ -2,7 +2,7 @@ import React from 'react';
 
 export const EditScheduleModal = () => {
   return (
-    <div className="w-[90%] max-w-sm bg-gray-300 p-6 rounded-lg relative">
+    <div className="max-w-sm p-6 rounded-lg relative">
       <h2 className="text-lg font-bold text-center mb-6">수업 변경하기</h2>
       
 
