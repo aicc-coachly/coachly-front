@@ -14,6 +14,8 @@ import TrainerMypage from './pages/trainer/TrainerMypage';
 // user
 import UserMypage from './pages/user/UserMypage';
 import TrainerSearch from './pages/user/TrainerSearch';
+import UserProfile from './pages/user/UserProfile'
+
 // chat
 import UserChat from './pages/chat/UserChat';
 import ChatList from './pages/chat/ChatList';
@@ -49,7 +51,7 @@ function App() {
             {/* 회원 메인 페이지 */}
             <Route path="/usermypage" element={<UserMypage/>} />
             <Route path="/trainersearch" element={<TrainerSearch/>} />
-
+            <Route path="/userprofile" element={<UserProfile/>} />
           </Routes>
         </div>
         </Router>
