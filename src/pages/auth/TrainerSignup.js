@@ -176,7 +176,7 @@ function TrainerSignup() {
        <div className="mb-4">
             <label className="block mb-2">특기 선택</label>
             <div className="grid grid-cols-2 gap-2">
-              {['여성전문', '선수/대회 전문', '남성전문', '실버 전문'].map((specialization) => (
+              {['여성전문', '선수/대회 전문', '재활전문', '실버전문'].map((specialization) => (
                 <div key={specialization} className="flex flex-col items-center">
                   <label
                     className={`border rounded-lg w-full h-12 flex items-center justify-center cursor-pointer ${
