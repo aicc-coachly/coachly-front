@@ -4,7 +4,7 @@ export const EditScheduleModal = () => {
   return (
     <div className="w-[90%] max-w-sm bg-gray-300 p-6 rounded-lg relative">
       <h2 className="text-lg font-bold text-center mb-6">수업 변경하기</h2>
-      <button className="absolute top-4 right-4 text-lg font-bold">X</button>
+      
 
       {/* 회원명 */}
       <div className="flex items-center justify-between mb-4">
