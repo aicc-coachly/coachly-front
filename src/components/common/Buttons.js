@@ -1,6 +1,8 @@
+// src/components/common/Buttons.js
+import React from 'react';
 import { Link } from 'react-router-dom';
 
-function Buttons({ size, color = '#081f5c', children, onClick }) {
+function Buttons({ size, color = '#ACD0F2', children, onClick }) {
   // 버튼 크기에 따라 클래스 지정
   let buttonClasses = 'rounded font-semibold flex items-center justify-center';
 
@@ -24,34 +26,22 @@ function Buttons({ size, color = '#081f5c', children, onClick }) {
       className={`${buttonClasses}`}
       style={{
         backgroundColor: color,
-        color: color === '#081f5c' ? 'white' : '#081f5c',
+        color: color === '#F3F2EE' ? 'white' : '#F3F2EE',
       }}
     >
       {children}
     </button>
   );
+  
 }
+// src/components/common/Buttons.js
 
-// MenuButton 컴포넌트 정의
-export function MenuButton({ label, to, onClick }) {
-  return (
-    <Link
-      to={to}
-      onClick={onClick}
-      className="text-sm p-2 rounded bg-[#081f5c] text-white hover:bg-[#041c3d] flex justify-center items-center"
-    >
-      {label}
-    </Link>
-  );
-}
-
-// Header MenuBar에서 나오는 메뉴 버튼들
 export function UserMenuButtons({ onClick }) {
   return (
     <>
-      <MenuButton label="마이페이지" to="/usermypage" onClick={onClick} />
-      <MenuButton label="트레이너 찾기" to="/trainersearch" onClick={onClick} />
-      <MenuButton label="내 채팅방" to="/chatlist" onClick={onClick} />
+      <MenuButton label="마이페이지" to="/userMypage" onClick={onClick} />
+      <MenuButton label="트레이너 찾기" to="/trainerSearch" onClick={onClick} />
+      <MenuButton label="내 채팅방" to="/userChat" onClick={onClick} />
     </>
   );
 }
@@ -59,11 +49,20 @@ export function UserMenuButtons({ onClick }) {
 export function TrainerMenuButtons({ onClick }) {
   return (
     <>
-      <MenuButton label="마이페이지" to="/trainermypage" onClick={onClick} />
-      <MenuButton label="내 수업 가격" to="/pricelist" onClick={onClick} />
-      <MenuButton label="내 채팅방" to="/chatlist" onClick={onClick} />
+      <MenuButton label="마이페이지" to="/trainerMypage" onClick={onClick} />
+      <MenuButton label="내 수업 가격" to="/trainerPricing" onClick={onClick} />
+      <MenuButton label="내 채팅방" to="/userList" onClick={onClick} />
     </>
   );
 }
+
+export function MenuButton({ label, to, onClick }) {
+  return (
+    <button className="text-sm p-2 rounded bg-[#081f5c] text-white hover:bg-[#041c3d]" onClick={onClick}>
+      <Link to={to}>{label}</Link>
+    </button>
+  );
+}
+
 
 export default Buttons;
