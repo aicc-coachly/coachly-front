@@ -309,26 +309,19 @@ const handleSubmit = async (e) => {
                 </div>
               ))}
             </div>
-
-
           </div>
            {/* 자기소개서 */}
-           <div className="mb-4">
-            <label htmlFor="resume" className="block mb-2">자기소개서</label>
-            <textarea
-              id="resume"
-              name="resume"
-              value={formData.resume}
-              onChange={handleChange}
-              className="w-full px-3 py-2 border rounded"
-              placeholder="자기소개를 입력하세요."
-            ></textarea>
-
-          </div>
-        </div>
-
-
-
+            <div className="mb-4">
+              <label htmlFor="resume" className="block mb-2">자기소개서</label>
+              <textarea
+                id="resume"
+                name="resume"
+                value={formData.resume}
+                onChange={handleChange}
+                className="w-full px-3 py-2 border rounded"
+                placeholder="자기소개를 입력하세요."
+              ></textarea>
+            </div>
 
           {/* 수업 장소 */}
           <div className="mb-4">
@@ -362,8 +355,8 @@ const handleSubmit = async (e) => {
           {/* 가격 옵션 입력 */}
           <div className="mb-4">
             <label className="block mb-2">가격 옵션</label>
-{/* 원데이 클래스 */}
-<div className="flex items-center mb-4">
+            {/* 원데이 클래스 */}
+            <div className="flex items-center mb-4">
               <input
                 type="checkbox"
                 checked={formData.price_options.one_day.isChecked}
@@ -429,51 +422,51 @@ const handleSubmit = async (e) => {
           </div>
 
           <div className="mb-4">
-  <label htmlFor="bank_name" className="block mb-2">은행 이름</label>
-  <input
-    type="text"
-    id="bank_name"
-    name="bank_name"
-    value={formData.bank_name}
-    onChange={handleChange}
-    className="w-full px-3 py-2 border rounded mb-2"
-    placeholder="은행 이름"
-  />
-  <label htmlFor="account" className="block mb-2">계좌 번호</label>
-  <input
-    type="text"
-    id="account"
-    name="account"
-    value={formData.account}
-    onChange={handleChange}
-    className="w-full px-3 py-2 border rounded"
-    placeholder="계좌 번호"
-  />
-  <label htmlFor="account_name" className="block mb-2">예금주</label>
-  <input
-    type="text"
-    id="account_name"
-    name="account_name"
-    value={formData.account_name}
-    onChange={handleChange}
-    className="w-full px-3 py-2 border rounded"
-    placeholder="예금주"
-  />
-  {/* 대표 계좌 선택 체크박스 추가 */}
-  <div className="flex items-center mt-2">
-    <input
-      type="checkbox"
-      id="main_account"
-      name="main_account"
-      checked={formData.main_account}
-      onChange={handleChange}
-      className="mr-2"
-    />
-    <label htmlFor="main_account" className="text-sm">
-      이 계좌를 대표 계좌로 설정
-    </label>
-  </div>
-</div>
+            <label htmlFor="bank_name" className="block mb-2">은행 이름</label>
+            <input
+              type="text"
+              id="bank_name"
+              name="bank_name"
+              value={formData.bank_name}
+              onChange={handleChange}
+              className="w-full px-3 py-2 border rounded mb-2"
+              placeholder="은행 이름"
+            />
+            <label htmlFor="account" className="block mb-2">계좌 번호</label>
+            <input
+              type="text"
+              id="account"
+              name="account"
+              value={formData.account}
+              onChange={handleChange}
+              className="w-full px-3 py-2 border rounded"
+              placeholder="계좌 번호"
+            />
+            <label htmlFor="account_name" className="block mb-2">예금주</label>
+            <input
+              type="text"
+              id="account_name"
+              name="account_name"
+              value={formData.account_name}
+              onChange={handleChange}
+              className="w-full px-3 py-2 border rounded"
+              placeholder="예금주"
+            />
+          {/* 대표 계좌 선택 체크박스 추가 */}
+            <div className="flex items-center mt-2">
+              <input
+                type="checkbox"
+                id="main_account"
+                name="main_account"
+                checked={formData.main_account}
+                onChange={handleChange}
+                className="mr-2"
+              />
+              <label htmlFor="main_account" className="text-sm">
+                이 계좌를 대표 계좌로 설정
+              </label>
+            </div>
+          </div>
 
           {/* 프로필 이미지 업로드 */}
           <div className="mb-4">
@@ -500,7 +493,6 @@ const handleSubmit = async (e) => {
               개인정보 수집 및 활용 동의(필수)
             </label>
           </div>
-
           {/* 제출 버튼 */}
           <div className="mt-6">
             <button type="submit" className="w-full bg-[#081f5c] text-white py-2 rounded hover:bg-[#041c3d]">
@@ -510,7 +502,7 @@ const handleSubmit = async (e) => {
         </form>
       </div>
     </div>
-  );
+  )   
 }
 
 export default TrainerSignup;
