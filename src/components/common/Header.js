@@ -41,7 +41,7 @@ function Header() {
             {menuOpen ? '✕' : '≡'}
           </button>
           {menuOpen && (
-            <div className="absolute right-4 top-16 bg-white shadow-md rounded-lg p-4 flex flex-col space-y-2">
+            <div className="absolute right-4 z-50 top-16 bg-white shadow-md rounded-lg p-4 flex flex-col space-y-2">
               {isTrainerPage && <TrainerMenuButtons onClick={() => setMenuOpen(false)} />}
               {isUserPage && <UserMenuButtons onClick={() => setMenuOpen(false)} />}
             </div>

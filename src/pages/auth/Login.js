@@ -26,7 +26,6 @@ function Login() {
         <h2 className="text-2xl font-semibold text-[#081f5c] mb-6 text-center">
           AI 챗봇과 전문 트레이너가 함께하는<br /> 나만의 피트니스 여정을 시작해보세요
         </h2>
-
         {/* 회원 구분 선택 */}
         <div className="flex w-full max-w-xs mb-4">
           <button

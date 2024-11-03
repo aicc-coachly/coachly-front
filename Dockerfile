@@ -1,5 +1,5 @@
 # Node.js 베이스 이미지 사용
-FROM node:18
+FROM node:20.15.1
 
 # 작업 디렉토리 설정
 WORKDIR /opt/app
@@ -11,7 +11,7 @@ RUN npm install
 # 소스 파일 복사
 COPY . .
 
-# 환경 변수로 포트 설정 (기본값 3000, 개인서버이용이라 4000)
+# 환경 변수로 포트 설정 (기본값 4000)
 ENV PORT=4000
 
 # 포트 노출

@@ -2,7 +2,7 @@ import React from 'react';
 
 export const PaymentListModal = () => {
   return (
-    <div className="w-[90%] max-w-md bg-gray-300 p-6 rounded-lg text-center">
+    <div className="max-w-sm p-6 rounded-lg relative">
       <h2 className="text-lg font-bold mb-4">결제요청하기</h2>
 
       <div className="flex items-center justify-between mb-4">

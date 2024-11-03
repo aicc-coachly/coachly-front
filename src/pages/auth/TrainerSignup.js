@@ -26,6 +26,7 @@ function TrainerSignup() {
     main_account: false, // 대표계좌 설정
     service_options: [], // 특기 옵션
     agreeTerms: false, // 개인정보 수집 동의
+
   });
   
   const [selectedImage, setSelectedImage] = useState(null); // 이미지 선택 상태
@@ -48,8 +49,10 @@ function TrainerSignup() {
    const handleServiceOptionsChange = (option) => {
     const optionValue = optionMap[option];
 
+
     setFormData((prevFormData) => {
       const currentOptions = prevFormData.service_options;
+
 
       // 이미 선택된 옵션이 있는 경우, 선택 해제 처리
       if (currentOptions.includes(optionValue)) {
@@ -301,10 +304,12 @@ const handleSubmit = async (e) => {
                       className="hidden"
                     />
                     {option}
+
                   </label>
                 </div>
               ))}
             </div>
+
 
           </div>
            {/* 자기소개서 */}
@@ -318,7 +323,10 @@ const handleSubmit = async (e) => {
               className="w-full px-3 py-2 border rounded"
               placeholder="자기소개를 입력하세요."
             ></textarea>
+
           </div>
+        </div>
+
 
 
 
@@ -479,6 +487,7 @@ const handleSubmit = async (e) => {
           </div>
            {/* 개인정보 수집 동의 */}
            <div className="mb-6 flex items-center">
+
             <input
               type="checkbox"
               id="agreeTerms"
