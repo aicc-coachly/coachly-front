@@ -1,12 +1,12 @@
-import { createSlice } from "@reduxjs/toolkit";
+import { createSlice } from '@reduxjs/toolkit';
 import {
   fetchPaymentHistory,
   initiatePayment,
-  cancelPayment,
-} from "../thunks/paymentThunks";
+  completePayment,
+} from '../thunks/paymentThunks';
 
 const paymentSlice = createSlice({
-  name: "payment",
+  name: 'payment',
   initialState: {
     history: [],
     loading: false,
@@ -15,6 +15,7 @@ const paymentSlice = createSlice({
   reducers: {},
   extraReducers: (builder) => {
     builder
+      // 결제 내역 조회
       .addCase(fetchPaymentHistory.pending, (state) => {
         state.loading = true;
         state.error = null;
@@ -27,13 +28,21 @@ const paymentSlice = createSlice({
         state.loading = false;
         state.error = action.error.message;
       })
+
+      // 결제 생성
       .addCase(initiatePayment.fulfilled, (state, action) => {
         state.history.push(action.payload);
       })
-      .addCase(cancelPayment.fulfilled, (state, action) => {
-        state.history = state.history.filter(
-          (payment) => payment.id !== action.payload
+
+      // 결제 완료 처리
+      .addCase(completePayment.fulfilled, (state, action) => {
+        const updatedPayment = action.payload;
+        const index = state.history.findIndex(
+          (payment) => payment.id === updatedPayment.id
         );
+        if (index !== -1) {
+          state.history[index] = updatedPayment;
+        }
       });
   },
 });

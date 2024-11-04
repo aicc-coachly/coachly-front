@@ -1,5 +1,5 @@
-import { configureStore } from "@reduxjs/toolkit";
-import rootReducer from "./RootReducer";
+import { configureStore } from '@reduxjs/toolkit';
+import rootReducer from './rootReducer';
 
 const store = configureStore({
   reducer: rootReducer,
@@ -7,6 +7,7 @@ const store = configureStore({
     getDefaultMiddleware({
       serializableCheck: false,
     }),
+  devTools: process.env.NODE_ENV !== 'production', // 개발 환경에서 Redux DevTools 활성화
 });
 
 export default store;

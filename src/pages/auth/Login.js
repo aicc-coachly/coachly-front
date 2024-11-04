@@ -1,66 +1,42 @@
 // src/pages/auth/Login.js
-import React, { useState } from "react";
-import { useNavigate, Link } from "react-router-dom";
-import axios from "axios";
-import Buttons from "../../components/common/Buttons";
+import React, { useState } from 'react';
+import { useNavigate, Link } from 'react-router-dom';
+
+import Buttons from '../../components/common/Buttons';
 
 function Login() {
   const navigate = useNavigate();
-  const [userType, setUserType] = useState("trainer"); // 'trainer' 또는 'user'
-  const [id, setId] = useState("");
-  const [password, setPassword] = useState("");
+  const [userType, setUserType] = useState('trainer'); // 'trainer' 또는 'user'
+  const [id, setId] = useState('');
+  const [password, setPassword] = useState('');
 
-  const handleLogin = async () => {
-    const endpoint = userType === "trainer" ? "trainer/login" : "user/login";
-    try {
-      const response = await axios.post(`http://localhost:8000/${endpoint}`, {
-        [userType === "trainer" ? "trainer_id" : "user_id"]: id,
-        pass: password,
-      });
-
-      if (response.status === 200) {
-        // 로그인 성공 시 페이지 이동
-        if (userType === "trainer") {
-          navigate("/trainermypage");
-        } else {
-          navigate("/usermypage");
-        }
-      } else {
-        alert("로그인에 실패했습니다.");
-      }
-    } catch (error) {
-      console.error("로그인 오류:", error);
-      alert("로그인 중 오류가 발생했습니다. 다시 시도해주세요.");
+  const handleLogin = () => {
+    if (userType === 'trainer') {
+      navigate('/trainermypage'); // 트레이너 메인 페이지로 이동
+    } else {
+      navigate('/usermypage'); // 유저 메인 페이지로 이동
     }
   };
-
   // relative flex justify-between items-center p-4 bg-[#edf1f6]
   return (
     <div className="w-full  min-h-screen bg-[#edf1f6] flex flex-col items-center">
+  
+
       <div className="w-full max-w-[390px] mt-8 flex flex-col items-center p-6 bg-[#edf1f6]">
         <h2 className="text-2xl font-semibold text-[#081f5c] mb-6 text-center">
-          AI 챗봇과 전문 트레이너가 함께하는
-          <br /> 나만의 피트니스 여정을 시작해보세요
+          AI 챗봇과 전문 트레이너가 함께하는<br /> 나만의 피트니스 여정을 시작해보세요
         </h2>
         {/* 회원 구분 선택 */}
         <div className="flex w-full max-w-xs mb-4">
           <button
-            onClick={() => setUserType("trainer")}
-            className={`flex-1 py-2 rounded-l-lg ${
-              userType === "trainer"
-                ? "bg-[#081f5c] text-white"
-                : "bg-[#d0e3ff] text-[#081f5c]"
-            }`}
+            onClick={() => setUserType('trainer')}
+            className={`flex-1 py-2 rounded-l-lg ${userType === 'trainer' ? 'bg-[#081f5c] text-white' : 'bg-[#d0e3ff] text-[#081f5c]'}`}
           >
             트레이너
           </button>
           <button
-            onClick={() => setUserType("user")}
-            className={`flex-1 py-2 rounded-r-lg ${
-              userType === "user"
-                ? "bg-[#081f5c] text-white"
-                : "bg-[#d0e3ff] text-[#081f5c]"
-            }`}
+            onClick={() => setUserType('user')}
+            className={`flex-1 py-2 rounded-r-lg ${userType === 'user' ? 'bg-[#081f5c] text-white' : 'bg-[#d0e3ff] text-[#081f5c]'}`}
           >
             유저
           </button>
@@ -85,17 +61,17 @@ function Login() {
         />
 
         {/* 로그인 버튼 */}
-
-        <Buttons size="middle" onClick={handleLogin}>
-          로그인
+   
+        <Buttons size="middle" onClick={handleLogin} >
+           로그인 
         </Buttons>
 
         {/* 회원가입 안내 */}
-        <p className="text-center text-[#081f5c] my-7">
-          아직 계정이 없으신가요?
-        </p>
+        <p className="text-center text-[#081f5c] my-7">아직 계정이 없으신가요?</p>
         <Link to="/sortsignup">
-          <Buttons size="middle">회원가입</Buttons>
+          <Buttons size="middle">
+            회원가입
+          </Buttons>
         </Link>
       </div>
     </div>

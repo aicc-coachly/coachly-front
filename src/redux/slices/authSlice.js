@@ -1,21 +1,46 @@
-import { createSlice } from "@reduxjs/toolkit";
-import { loginUser, registerUser } from "../thunks/authThunk";
+import { createSlice } from '@reduxjs/toolkit';
+import {
+  loginUser,
+  registerUser,
+  loginTrainer,
+  registerTrainer,
+} from '../thunks/authThunks';
 
 const authSlice = createSlice({
-  name: "auth",
+  name: 'auth',
   initialState: {
     user: null,
+    trainer: null,
     loading: false,
     error: null,
   },
   reducers: {
-    logout: (state) => {
+    logoutUser: (state) => {
       state.user = null;
+      state.error = null;
+    },
+    logoutTrainer: (state) => {
+      state.trainer = null;
       state.error = null;
     },
   },
   extraReducers: (builder) => {
     builder
+      // 사용자 회원가입
+      .addCase(registerUser.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(registerUser.fulfilled, (state, action) => {
+        state.loading = false;
+        state.user = action.payload;
+      })
+      .addCase(registerUser.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.error.message;
+      })
+
+      // 사용자 로그인
       .addCase(loginUser.pending, (state) => {
         state.loading = true;
         state.error = null;
@@ -28,26 +53,36 @@ const authSlice = createSlice({
         state.loading = false;
         state.error = action.error.message;
       })
-      .addCase(registerUser.pending, (state) => {
+
+      // 트레이너 회원가입
+      .addCase(registerTrainer.pending, (state) => {
         state.loading = true;
         state.error = null;
-        state.status = "pending"; // 상태 업데이트
       })
-      .addCase(registerUser.fulfilled, (state, action) => {
+      .addCase(registerTrainer.fulfilled, (state, action) => {
         state.loading = false;
-        state.user = action.payload;
-        state.status = "success"; // 상태 업데이트
+        state.trainer = action.payload;
       })
-      .addCase(registerUser.rejected, (state, action) => {
+      .addCase(registerTrainer.rejected, (state, action) => {
         state.loading = false;
         state.error = action.error.message;
-        state.status = "failed"; // 상태 업데이트
+      })
+
+      // 트레이너 로그인
+      .addCase(loginTrainer.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(loginTrainer.fulfilled, (state, action) => {
+        state.loading = false;
+        state.trainer = action.payload;
+      })
+      .addCase(loginTrainer.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.error.message;
       });
   },
 });
 
-export const selectAuthStatus = (state) => state.auth.status;
-export const selectUserError = (state) => state.auth.error;
-
-export const { logout } = authSlice.actions;
+export const { logoutUser, logoutTrainer } = authSlice.actions;
 export default authSlice.reducer;
