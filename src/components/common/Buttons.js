@@ -1,6 +1,10 @@
 // src/components/common/Buttons.js
 import React from 'react';
 import { Link } from 'react-router-dom';
+import { PTModal } from '../trainer/PTModal';
+import { PaymentListModal } from '../trainer/PaymentListModal';
+import { RefundPTModal } from '../user/RefundPTModal';
+import { useModal } from '../../components/common/ModalProvider';
 
 function Buttons({ size, color = '#ACD0F2', children, onClick }) {
   // 버튼 크기에 따라 클래스 지정
@@ -58,11 +62,34 @@ export function TrainerMenuButtons({ onClick }) {
 
 export function MenuButton({ label, to, onClick }) {
   return (
-    <button className="text-sm z-50 p-2 rounded bg-[#081f5c] text-white hover:bg-[#041c3d]" onClick={onClick}>
+    <button className="text-sm z-50 p-2 rounded bg-[#081f5c] text-white " onClick={onClick}>
       <Link to={to}>{label}</Link>
     </button>
   );
 }
+
+// ChatRoom navbar
+
+export function UserChatButtons({ onClick }) {
+  const { openModal } = useModal();
+  return (
+    <>
+       <button onClick={() => openModal(<PTModal/>)}>결제하기</button>
+       <button onClick={() => openModal(<RefundPTModal/>)}>결제취소/환불</button>
+    </>
+  );
+}
+
+export function TrainerChatButtons({ onClick }) {
+  const { openModal } = useModal();
+  return (
+    <>
+       <button onClick={() => openModal(<PaymentListModal/>)}>결제요청하기</button>
+    </>
+  );
+}
+
+
 
 
 export default Buttons;
