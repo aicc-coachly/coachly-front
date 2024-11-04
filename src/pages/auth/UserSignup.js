@@ -1,26 +1,26 @@
 // src/pages/auth/UserSignup.js
-import React, { useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import { useNavigate } from 'react-router-dom';
-import { RegisterUser } from '../../redux/user/UserThunks';
+import React, { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
+import { RegisterUser } from "../../redux/user/UserThunks";
 import {
   SelectAuthStatus,
   SelectUserError,
-} from '../../redux/user/UserSelectors';
+} from "../../redux/user/UserSelectors";
 
 function UserSignup() {
   const [formData, setFormData] = useState({
-    user_id: '', // 아이디
-    pass: '', // 비밀번호
-    confirmPassword: '', // 비밀번호 확인 (전송 제외)
-    email: '', // 이메일
-    name: '', // 이름
-    phone: '', // 전화번호
-    gender: '', // 성별
-    birth: '', // 생년월일
-    user_zipcode: '', // 우편번호
-    user_address: '', // 주소
-    user_detail_address: '', // 상세 주소
+    user_id: "",
+    pass: "",
+    confirmPassword: "",
+    email: "",
+    name: "",
+    phone: "",
+    gender: "",
+    birth: "",
+    user_zipcode: "",
+    user_address: "",
+    user_detail_address: "",
   });
 
   const dispatch = useDispatch();
@@ -32,7 +32,7 @@ function UserSignup() {
     const { name, value, type, checked } = e.target;
     setFormData({
       ...formData,
-      [name]: type === 'checkbox' ? checked : value,
+      [name]: type === "checkbox" ? checked : value,
     });
   };
 
@@ -41,50 +41,42 @@ function UserSignup() {
 
     // 비밀번호 확인
     if (formData.pass !== formData.confirmPassword) {
-      alert('비밀번호가 일치하지 않습니다.');
+      alert("비밀번호가 일치하지 않습니다.");
       return;
     }
 
     // 필수 필드 검증
-    if (
-      !formData.user_id ||
-      !formData.pass ||
-      !formData.email ||
-      !formData.name ||
-      !formData.phone ||
-      !formData.gender ||
-      !formData.birth ||
-      !formData.user_zipcode ||
-      !formData.user_address
-    ) {
-      alert('모든 필수 항목을 입력해주세요.');
-      return;
+    const requiredFields = [
+      "user_id",
+      "pass",
+      "email",
+      "name",
+      "phone",
+      "gender",
+      "birth",
+      "user_zipcode",
+      "user_address",
+    ];
+    for (const field of requiredFields) {
+      if (!formData[field]) {
+        alert(`${field.replace("_", " ")}(을)를 입력해주세요.`);
+        return;
+      }
     }
 
-    // DB에 맞는 필드명으로 데이터 매핑 (confirmPassword 및 agreeTerms 필드는 제외)
-    const mappedData = {
-      user_id: formData.user_id,
-      pass: formData.pass,
-      email: formData.email,
-      name: formData.name,
-      phone: formData.phone,
-      gender: formData.gender,
-      birth: formData.birth,
-      user_zipcode: formData.user_zipcode,
-      user_address: formData.user_address,
-      user_detail_address: formData.user_detail_address,
-    };
+    // DB에 맞는 필드명으로 데이터 매핑
+    const { confirmPassword, ...mappedData } = formData;
+    console.log(mappedData);
 
     // 회원가입 액션 디스패치
     dispatch(RegisterUser(mappedData));
   };
 
-  // 회원가입 성공 또는 실패 시 처리
-  React.useEffect(() => {
-    if (authStatus === 'success') {
-      alert('회원가입이 완료되었습니다.');
-      navigate('/login'); // 로그인 페이지로 이동
-    } else if (authStatus === 'failed' && userError) {
+  useEffect(() => {
+    if (authStatus === "success") {
+      alert("회원가입이 완료되었습니다.");
+      navigate("/login"); // 로그인 페이지로 이동
+    } else if (authStatus === "failed" && userError) {
       alert(`회원가입 실패: ${userError}`);
     }
   }, [authStatus, userError, navigate]);
@@ -198,7 +190,7 @@ function UserSignup() {
                 type="radio"
                 name="gender"
                 value="male"
-                checked={formData.gender === 'male'}
+                checked={formData.gender === "male"}
                 onChange={handleChange}
                 className="mr-1"
               />
@@ -209,7 +201,7 @@ function UserSignup() {
                 type="radio"
                 name="gender"
                 value="female"
-                checked={formData.gender === 'female'}
+                checked={formData.gender === "female"}
                 onChange={handleChange}
                 className="mr-1"
               />

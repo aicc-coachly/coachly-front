@@ -10,9 +10,8 @@ export const RefundPTModal = () => {
   };
 
   return (
-    <div className="w-[90%] max-w-md bg-gray-300 p-6 rounded-lg relative">
+    <div className="max-w-sm p-6 rounded-lg relative">
       <h2 className="text-lg font-bold text-center mb-6">결제 취소 및 환불</h2>
-      <button className="absolute top-4 right-4 text-lg font-bold">X</button>
 
       {/* 환불할 항목 선택 */}
       <div className="flex items-center justify-between mb-4">
