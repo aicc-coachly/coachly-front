@@ -5,7 +5,7 @@ const ChatList = () => {
   const navigate = useNavigate();
 
   const handleClick = () => {
-    navigate('/trainerchat');
+    navigate('/chatroom');
   };
 
   return (
