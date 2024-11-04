@@ -1,11 +1,14 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
 import axios from 'axios';
-
+// axios 인스턴스를 생성하고 baseURL에 환경 변수 사용
+const api = axios.create({
+  baseURL: process.env.REACT_APP_API_URL, // 환경 변수에서 가져온 백엔드 주소 사용
+});
 // 트레이너 회원가입
 export const RegisterTrainer = createAsyncThunk(
   'trainers/register',
   async (trainerData) => {
-    const response = await axios.post('/trainers', trainerData);
+    const response = await api.post('/trainer/signup', trainerData);
     return response.data;
   }
 );

@@ -1,69 +1,102 @@
 // src/pages/auth/TrainerSignup.js
-import React, { useState } from 'react';
-
-import { api } from '../../utils/apiUtils';
-import { Link, useNavigate } from 'react-router-dom';
+import React, { useState, useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
+import { RegisterTrainer } from '../../redux/trainer/TrainerThunks';
+import {
+  SelectAuthStatus,
+  SelectTrainerError,
+} from '../../redux/trainer/TrainerSelectors';
 
 function TrainerSignup() {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
+  const authStatus = useSelector(SelectAuthStatus);
+  const trainerError = useSelector(SelectTrainerError);
   const [formData, setFormData] = useState({
-    name: '',
-    username: '',
-    password: '',
-    confirmPassword: '',
-    phone: '',
-    email: '',
-    gender: '',
-    specialization: '',
-    introduction: '',
-    classLocation1: '',
-    classLocation2: '',
-    accountInfo: '',
-    mainAccount: false,
-    classFee: '',
-    consultationFee: '',
-    agreeTerms: false,
+    trainer_id: '', // 아이디
+    pass: '', // 비밀번호
+    confirmPassword: '', // 비밀번호 확인
+    name: '', // 이름
+    phone: '', // 핸드폰 번호
+    gender: '', // 성별
+    resume: '', // 자기소개서
+    trainer_zipcode: '', // 우편번호
+    trainer_address: '', // 기본 주소
+    trainer_detail_address: '', // 상세 주소
+    option: '', // 옵션
+    amount: '', // 금액
+    frequency: '', // 빈도수
+    account: '', // 계좌번호
+    bank_name: '', // 은행명
+    account_name: '', // 계좌 소유자명
+    service_options: '', // 서비스 옵션
+    classFee: '', // 원데이 클래스 비용
+    consultationFee: '', // 회당 비용
+    agreeTerms: false, // 개인정보 수집 동의
   });
 
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
     setFormData({
       ...formData,
-      [name]: type === 'checkbox' ? checked : value
+      [name]: type === 'checkbox' ? checked : value,
     });
   };
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = (e) => {
     e.preventDefault();
-
-    try {
-      // API 호출 - 백엔드 엔드포인트가 준비되면 URL을 업데이트하세요.
-      const response = await api.post('/trainers/signup', formData);
-
-      // 서버 응답에 따라 처리
-      if (response.status === 201) {
-        alert('회원가입이 완료되었습니다!');
-        navigate('/login'); // 회원가입 후 로그인 페이지로 이동
-      } else {
-        alert('회원가입에 실패했습니다.');
-      }
-    } catch (error) {
-      console.error('회원가입 오류:', error);
-      alert('오류가 발생했습니다. 다시 시도해주세요.');
+    if (formData.pass !== formData.confirmPassword) {
+      alert('비밀번호가 일치하지 않습니다.');
+      return;
     }
+
+    const mappedData = {
+      trainer_id: formData.trainer_id,
+      pass: formData.pass,
+      name: formData.name,
+      phone: formData.phone,
+      gender: formData.gender,
+      resume: formData.resume,
+      trainer_zipcode: formData.trainer_zipcode,
+      trainer_address: formData.trainer_address,
+      trainer_detail_address: formData.trainer_detail_address,
+      option: formData.option,
+      amount: formData.amount,
+      frequency: formData.frequency,
+      account: formData.account,
+      bank_name: formData.bank_name,
+      account_name: formData.account_name,
+      service_options: formData.service_options,
+      classFee: formData.classFee,
+      consultationFee: formData.consultationFee,
+    };
+
+    dispatch(RegisterTrainer(mappedData));
   };
+
+  // 회원가입 성공 또는 실패 시 처리
+  useEffect(() => {
+    if (authStatus === 'success') {
+      alert('회원가입이 완료되었습니다.');
+      navigate('/login'); // 로그인 페이지로 이동
+    } else if (authStatus === 'failed' && trainerError) {
+      alert(`회원가입 실패: ${trainerError}`);
+    }
+  }, [authStatus, trainerError, navigate]);
 
   return (
     <div className="flex flex-col min-h-screen">
-
-
       <div className="flex-grow max-w-[390px] mx-auto p-6 bg-white rounded-lg shadow-md overflow-y-auto mt-0 h-screen">
-        <h2 className="text-2xl font-bold mb-4 text-center">트레이너 회원가입</h2>
+        <h2 className="text-2xl font-bold mb-4 text-center">
+          트레이너 회원가입
+        </h2>
         <form onSubmit={handleSubmit}>
-
           {/* 이름 */}
           <div className="mb-4">
-            <label htmlFor="name" className="block mb-2">이름</label>
+            <label htmlFor="name" className="block mb-2">
+              이름
+            </label>
             <input
               type="text"
               id="name"
@@ -74,36 +107,40 @@ function TrainerSignup() {
               required
             />
           </div>
-
           {/* 아이디 */}
           <div className="mb-4">
-            <label htmlFor="username" className="block mb-2">아이디</label>
+            <label htmlFor="trainer_id" className="block mb-2">
+              아이디
+            </label>
             <input
               type="text"
-              id="username"
-              name="username"
-              value={formData.username}
+              id="trainer_id"
+              name="trainer_id"
+              value={formData.trainer_id}
               onChange={handleChange}
               className="w-full px-3 py-2 border rounded"
               required
             />
           </div>
-
           {/* 비밀번호 및 확인 */}
           <div className="mb-4">
-            <label htmlFor="password" className="block mb-2">비밀번호</label>
+            <label htmlFor="pass" className="block mb-2">
+              비밀번호
+            </label>
             <input
               type="password"
-              id="password"
-              name="password"
-              value={formData.password}
+              id="pass"
+              name="pass"
+              value={formData.pass}
               onChange={handleChange}
               className="w-full px-3 py-2 border rounded"
               required
             />
           </div>
           <div className="mb-4">
-            <label htmlFor="confirmPassword" className="block mb-2">비밀번호 확인</label>
+            <label htmlFor="confirmPassword" className="block mb-2">
+              비밀번호 확인
+            </label>
             <input
               type="password"
               id="confirmPassword"
@@ -114,10 +151,11 @@ function TrainerSignup() {
               required
             />
           </div>
-
           {/* 핸드폰 번호 */}
           <div className="mb-4">
-            <label htmlFor="phone" className="block mb-2">핸드폰 번호</label>
+            <label htmlFor="phone" className="block mb-2">
+              핸드폰 번호
+            </label>
             <input
               type="tel"
               id="phone"
@@ -128,21 +166,6 @@ function TrainerSignup() {
               required
             />
           </div>
-
-          {/* 이메일 주소 */}
-          <div className="mb-4">
-            <label htmlFor="email" className="block mb-2">이메일 주소</label>
-            <input
-              type="email"
-              id="email"
-              name="email"
-              value={formData.email}
-              onChange={handleChange}
-              className="w-full px-3 py-2 border rounded"
-              required
-            />
-          </div>
-
           {/* 성별 */}
           <div className="mb-4">
             <label className="block mb-2">성별</label>
@@ -171,82 +194,105 @@ function TrainerSignup() {
               </label>
             </div>
           </div>
-
           {/* 특기 선택 */}
           <div className="mb-4">
-            <label htmlFor="specialization" className="block mb-2">특기 선택</label>
+            <label htmlFor="service_options" className="block mb-2">
+              특기 선택
+            </label>
             <input
               type="text"
-              id="specialization"
-              name="specialization"
-              value={formData.specialization}
+              id="service_options"
+              name="service_options"
+              value={formData.service_options}
               onChange={handleChange}
               className="w-full px-3 py-2 border rounded"
               placeholder="예: 요가, 필라테스 등"
             />
           </div>
-
           {/* 자기소개서 */}
           <div className="mb-4">
-            <label htmlFor="introduction" className="block mb-2">자기소개서</label>
+            <label htmlFor="resume" className="block mb-2">
+              자기소개서
+            </label>
             <textarea
-              id="introduction"
-              name="introduction"
-              value={formData.introduction}
+              id="resume"
+              name="resume"
+              value={formData.resume}
               onChange={handleChange}
               className="w-full px-3 py-2 border rounded"
               placeholder="자기소개를 입력하세요."
             ></textarea>
           </div>
-
+          {/* 우편 주소 */}
+          <div className="mb-4">
+            <label htmlFor="trainer_zipcode" className="block mb-2">
+              우편 주소
+            </label>
+            <input
+              type="text"
+              id="trainer_zipcode"
+              name="trainer_zipcode"
+              value={formData.trainer_zipcode}
+              onChange={handleChange}
+              className="w-full px-3 py-2 border rounded"
+              required
+            />
+          </div>
           {/* 수업 장소 */}
           <div className="mb-4">
             <label className="block mb-2">수업 장소</label>
             <input
               type="text"
-              name="classLocation1"
-              value={formData.classLocation1}
+              name="trainer_address"
+              value={formData.trainer_address}
               onChange={handleChange}
               className="w-full px-3 py-2 border rounded mb-2"
               placeholder="주소 1"
             />
             <input
               type="text"
-              name="classLocation2"
-              value={formData.classLocation2}
+              name="trainer_detail_address"
+              value={formData.trainer_detail_address}
               onChange={handleChange}
               className="w-full px-3 py-2 border rounded"
               placeholder="주소 2"
             />
           </div>
-
           {/* 계좌 정보 */}
           <div className="mb-4">
-            <label htmlFor="accountInfo" className="block mb-2">계좌 정보</label>
+            <label htmlFor="account" className="block mb-2">
+              계좌 정보
+            </label>
             <input
               type="text"
-              id="accountInfo"
-              name="accountInfo"
-              value={formData.accountInfo}
+              id="account"
+              name="account"
+              value={formData.account}
               onChange={handleChange}
               className="w-full px-3 py-2 border rounded"
-              placeholder="계좌 정보를 입력하세요"
+              placeholder="계좌번호"
             />
-            <div className="mt-2">
-              <label>
-                <input
-                  type="checkbox"
-                  name="mainAccount"
-                  checked={formData.mainAccount}
-                  onChange={handleChange}
-                  className="mr-2"
-                />
-                대표 계좌로 설정
-              </label>
-            </div>
+            <input
+              type="text"
+              id="bank_name"
+              name="bank_name"
+              value={formData.bank_name}
+              onChange={handleChange}
+              className="w-full px-3 py-2 border rounded mt-2"
+              placeholder="은행명"
+            />
+            <input
+              type="text"
+              id="account_name"
+              name="account_name"
+              value={formData.account_name}
+              onChange={handleChange}
+              className="w-full px-3 py-2 border rounded mt-2"
+              placeholder="계좌 소유자명"
+            />
           </div>
-                    {/* 가격 정보 */}
-                    <div className="mb-4">
+          {/* 가격 정보 */}
+          <div className="mb-4">
             <label className="block mb-2">가격</label>
             <input
               type="text"
@@ -265,8 +311,8 @@ function TrainerSignup() {
               placeholder="회당 비용"
             />
           </div>
-                    {/* 개인정보 수집 동의 */}
-                    <div className="mb-6 flex items-center">
+          {/* 개인정보 수집 동의 */}
+          <div className="mb-6 flex items-center">
             <input
               type="checkbox"
               id="agreeTerms"
@@ -279,14 +325,13 @@ function TrainerSignup() {
               개인정보 수집 및 활용 동의(필수)
             </label>
           </div>
-
           {/* 회원가입 버튼 */}
-          <Link to="/" className="flex justify-center flex-grow">    
-            <button type="submit" className="w-full bg-[#081f5c] text-white py-2 rounded hover:bg-[#041c3d]">
-              회원가입 하기
-            </button>
-          </Link>
-
+          <button
+            type="submit"
+            className="w-full bg-[#081f5c] text-white py-2 rounded hover:bg-[#041c3d]"
+          >
+            회원가입 하기
+          </button>
           <div className="h-16"></div> {/* 하단 여백 */}
         </form>
       </div>
