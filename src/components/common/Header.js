@@ -20,9 +20,13 @@ function Header() {
     '/usersignup'
   ].includes(location.pathname);
 
-  // 트레이너 페이지와 회원 페이지 확인
-  const isTrainerPage = location.pathname.startsWith('/trainer');
-  const isUserPage = location.pathname.startsWith('/user');
+  // 트레이너 페이지와 유저 페이지 확인
+  const trainerPages = ['/trainerprofile', '/trainermypage', '/pricelist', '/trainerchat'];
+  const userPages = ['/usermypage', '/trainersearch', '/userprofile','/userchat'];
+  
+  const isTrainerPage = trainerPages.includes(location.pathname);
+  const isUserPage = userPages.includes(location.pathname);
+
 
   return (
     <header className="relative flex justify-between items-center p-4 bg-[#edf1f6] shadow-md max-w-[390px] mx-auto">
