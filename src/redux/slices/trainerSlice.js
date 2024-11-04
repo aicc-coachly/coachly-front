@@ -1,5 +1,8 @@
 import { createSlice } from '@reduxjs/toolkit';
-import { fetchTrainerProfile, updateTrainerProfile } from '../thunks/trainerThunks';
+import {
+  fetchTrainerProfile,
+  updateTrainerProfile,
+} from '../thunks/trainerThunks';
 
 const trainerSlice = createSlice({
   name: 'trainer',
@@ -33,4 +36,9 @@ const trainerSlice = createSlice({
       })
       .addCase(updateTrainerProfile.rejected, (state, action) => {
         state.loading = false;
-        st
+        state.error = action.error.message;
+      });
+  },
+});
+
+export default trainerSlice.reducer;
