@@ -1,13 +1,13 @@
-import { createSlice } from '@reduxjs/toolkit';
+import { createSlice } from "@reduxjs/toolkit";
 import {
   fetchInbodyData,
   addInbodyData,
   updateInbodyData,
   deleteInbodyData,
-} from '../thunks/inbodyThunks';
+} from "../thunks/inbodyThunks";
 
 const inbodySlice = createSlice({
-  name: 'inbody',
+  name: "inbody",
   initialState: {
     data: [],
     loading: false,

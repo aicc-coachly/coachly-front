@@ -1,12 +1,12 @@
-import { createSlice } from '@reduxjs/toolkit';
+import { createSlice } from "@reduxjs/toolkit";
 import {
   fetchChatMessages,
   sendMessage,
   deleteMessage,
-} from '../thunks/chatThunks';
+} from "../thunks/chatThunks";
 
 const chatSlice = createSlice({
-  name: 'chat',
+  name: "chat",
   initialState: {
     messages: [],
     loading: false,

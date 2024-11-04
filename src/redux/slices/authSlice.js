@@ -1,8 +1,8 @@
-import { createSlice } from '@reduxjs/toolkit';
-import { loginUser, registerUser } from '../thunks/authThunks';
+import { createSlice } from "@reduxjs/toolkit";
+import { loginUser, registerUser } from "../thunks/authThunk";
 
 const authSlice = createSlice({
-  name: 'auth',
+  name: "auth",
   initialState: {
     user: null,
     loading: false,
@@ -31,17 +31,23 @@ const authSlice = createSlice({
       .addCase(registerUser.pending, (state) => {
         state.loading = true;
         state.error = null;
+        state.status = "pending"; // 상태 업데이트
       })
       .addCase(registerUser.fulfilled, (state, action) => {
         state.loading = false;
         state.user = action.payload;
+        state.status = "success"; // 상태 업데이트
       })
       .addCase(registerUser.rejected, (state, action) => {
         state.loading = false;
         state.error = action.error.message;
+        state.status = "failed"; // 상태 업데이트
       });
   },
 });
+
+export const selectAuthStatus = (state) => state.auth.status;
+export const selectUserError = (state) => state.auth.error;
 
 export const { logout } = authSlice.actions;
 export default authSlice.reducer;

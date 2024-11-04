@@ -1,11 +1,11 @@
-import axios from 'axios';
+import axios from "axios";
 
 const InbodyRepository = {
-  getInbodyData: (userId) => axios.get(`/api/inbody/${userId}`),
-  addInbodyData: (inbodyData) => axios.post('/api/inbody', inbodyData),
+  getInbodyData: (userId) => axios.get(`/inbody/${userId}`),
+  addInbodyData: (inbodyData) => axios.post("/inbody", inbodyData),
   updateInbodyData: (inbodyData) =>
-    axios.put(`/api/inbody/${inbodyData.id}`, inbodyData),
-  deleteInbodyData: (inbodyId) => axios.delete(`/api/inbody/${inbodyId}`),
+    axios.patch(`/inbody/user_number/inbody`, inbodyData),
+  deleteInbodyData: (inbodyId) => axios.delete(`/inbody/user_number`),
 };
 
 export default InbodyRepository;

@@ -1,11 +1,11 @@
-import { createSlice } from '@reduxjs/toolkit';
+import { createSlice } from "@reduxjs/toolkit";
 import {
   fetchTrainerProfile,
   updateTrainerProfile,
-} from '../thunks/trainerThunks';
+} from "../thunks/trainerThunks";
 
 const trainerSlice = createSlice({
-  name: 'trainer',
+  name: "trainer",
   initialState: {
     profile: null,
     loading: false,

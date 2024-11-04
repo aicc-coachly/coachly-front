@@ -1,8 +1,8 @@
-import { createSlice } from '@reduxjs/toolkit';
-import { fetchPtSchedules, updatePtSchedule } from '../thunks/ptScheduleThunks';
+import { createSlice } from "@reduxjs/toolkit";
+import { fetchPtSchedules, updatePtSchedule } from "../thunks/ptScheduleThunks";
 
 const ptScheduleSlice = createSlice({
-  name: 'ptSchedule',
+  name: "ptSchedule",
   initialState: {
     schedules: [],
     loading: false,

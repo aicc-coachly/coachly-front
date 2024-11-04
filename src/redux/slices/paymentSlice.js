@@ -1,12 +1,12 @@
-import { createSlice } from '@reduxjs/toolkit';
+import { createSlice } from "@reduxjs/toolkit";
 import {
   fetchPaymentHistory,
   initiatePayment,
   cancelPayment,
-} from '../thunks/paymentThunks';
+} from "../thunks/paymentThunks";
 
 const paymentSlice = createSlice({
-  name: 'payment',
+  name: "payment",
   initialState: {
     history: [],
     loading: false,

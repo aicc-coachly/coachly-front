@@ -1,9 +1,9 @@
-import { createAsyncThunk } from '@reduxjs/toolkit';
-import AuthRepository from '../../repositories/AuthRepository';
+import { createAsyncThunk } from "@reduxjs/toolkit";
+import AuthRepository from "../../repositories/AuthRepository";
 
 // 회원용 로그인/가입
 export const loginUser = createAsyncThunk(
-  'auth/loginUser',
+  "auth/loginUser",
   async (credentials, { rejectWithValue }) => {
     try {
       const response = await AuthRepository.loginUser(credentials);
@@ -15,7 +15,7 @@ export const loginUser = createAsyncThunk(
 );
 
 export const registerUser = createAsyncThunk(
-  'auth/registerUser',
+  "auth/registerUser",
   async (userData, { rejectWithValue }) => {
     try {
       const response = await AuthRepository.registerUser(userData);
@@ -28,7 +28,7 @@ export const registerUser = createAsyncThunk(
 
 // 트레이너용 로그인/가입
 export const loginTrainer = createAsyncThunk(
-  'auth/loginTrainer',
+  "auth/loginTrainer",
   async (credentials, { rejectWithValue }) => {
     try {
       const response = await AuthRepository.loginTrainer(credentials);
@@ -40,7 +40,7 @@ export const loginTrainer = createAsyncThunk(
 );
 
 export const registerTrainer = createAsyncThunk(
-  'auth/registerTrainer',
+  "auth/registerTrainer",
   async (trainerData, { rejectWithValue }) => {
     try {
       const response = await AuthRepository.registerTrainer(trainerData);

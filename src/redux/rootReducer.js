@@ -1,16 +1,22 @@
-import { combineReducers } from 'redux';
-import authSlice from './slices/authSlice';
-import trainerSlice from './slices/trainerSlice';
-import ptScheduleSlice from './slices/ptScheduleSlice';
-import chatSlice from './slices/chatSlice';
-import refundSlice from './slices/refundSlice';
+import { combineReducers } from "@reduxjs/toolkit";
+import authSlice from "./slices/authSlice";
+import chatSlice from "./slices/chatSlice";
+import inbodySlice from "./slices/inbodySlice";
+import paymentSlice from "./slices/paymentSlice";
+import ptScheduleSlice from "./slices/ptScheduleSlice";
+import refundSlice from "./slices/refundSlice";
+import trainerSlice from "./slices/trainerSlice";
+import userSlice from "./slices/userSlice";
 
-const rootReducer = combineReducers({
+const RootReducer = combineReducers({
   auth: authSlice,
-  trainer: trainerSlice,
-  ptSchedule: ptScheduleSlice,
   chat: chatSlice,
+  inbody: inbodySlice,
+  ptPayment: paymentSlice,
+  ptSchedule: ptScheduleSlice,
   refund: refundSlice,
+  trainers: trainerSlice,
+  users: userSlice,
 });
 
-export default rootReducer;
+export default RootReducer;

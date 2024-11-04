@@ -1,8 +1,8 @@
-import { createSlice } from '@reduxjs/toolkit';
-import { fetchUserProfile, updateUserProfile } from '../thunks/userThunks';
+import { createSlice } from "@reduxjs/toolkit";
+import { fetchUserProfile, updateUserProfile } from "../thunks/userThunk";
 
 const userSlice = createSlice({
-  name: 'user',
+  name: "user",
   initialState: {
     profile: null,
     loading: false,
