@@ -50,7 +50,7 @@ export function TrainerMenuButtons({ onClick }) {
   return (
     <>
       <MenuButton label="마이페이지" to="/trainermypage" onClick={onClick} />
-      <MenuButton label="내 수업 가격" to="/trainerpricing" onClick={onClick} />
+      <MenuButton label="내 수업 가격" to="/pricelist" onClick={onClick} />
       <MenuButton label="내 채팅방" to="/trainerchat" onClick={onClick} />
     </>
   );

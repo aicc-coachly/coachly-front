@@ -46,7 +46,7 @@ function App() {
             {/* 트레이너 메인 페이지 */}
             <Route path="/trainerprofile" element={<TrainerProfile />} />
             <Route path="/trainermypage" element={<TrainerMypage />} /> ?
-            {/* 트레이너의 회원 채팅리스트페이지로 넘어감 */}
+            {/* 트레이너의 PT 가격관리 페이지 */}
             <Route path="/pricelist" element={<PriceList />} />
             {/* 회원 메인 페이지 */}
             <Route path="/usermypage" element={<UserMypage/>} />
