@@ -1,17 +1,39 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
 import axios from 'axios';
 
+// axios 인스턴스를 생성하고 baseURL에 환경 변수 사용
+const api = axios.create({
+  baseURL: process.env.REACT_APP_API_URL, // 환경 변수에서 가져온 백엔드 주소 사용
+});
+
 // 회원가입
 export const RegisterUser = createAsyncThunk(
   'users/register',
-  async (userData) => {
-    const response = await axios.post('/users', userData);
-    return response.data;
+  async (userData, { rejectWithValue }) => {
+    try {
+      const response = await api.post('/user/signup', userData);
+      return response.data;
+    } catch (error) {
+      if (error.response) {
+        return rejectWithValue(error.response.data);
+      } else if (error.request) {
+        return rejectWithValue('No response from server');
+      } else {
+        return rejectWithValue(error.message);
+      }
+    }
   }
 );
+// export const RegisterUser = createAsyncThunk(
+//   'users/register',
+//   async (userData) => {
+//     const response = await api.post('/user/signup', userData);
+//     return response.data;
+//   }
+// );
 
 // 로그인
-export const LoginUser = createAsyncThunk('users/login', async (loginData) => {
+export const LoginUser = createAsyncThunk('/users/login', async (loginData) => {
   const response = await axios.post('/users/signin', loginData);
   return response.data;
 });
@@ -35,7 +57,7 @@ export const SaveUserAddress = createAsyncThunk(
 );
 
 // 모든 회원 정보 조회
-export const FetchAllUsers = createAsyncThunk('users/fetchAll', async () => {
+export const FetchAllUsers = createAsyncThunk('/users/fetchAll', async () => {
   const response = await axios.get('/users');
   return response.data.messages.users;
 });
