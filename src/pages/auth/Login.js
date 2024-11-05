@@ -1,4 +1,3 @@
-
 import React, { useEffect, useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import axios from "axios";
@@ -49,7 +48,6 @@ function Login() {
 
   // relative flex justify-between items-center p-4 bg-[#edf1f6]
   return (
-    <div className="w-full min-h-screen bg-[#edf1f6] flex flex-col items-center">
     <div className="w-full min-h-screen bg-[#edf1f6] flex flex-col items-center">
       <div className="w-full max-w-[390px] mt-8 flex flex-col items-center p-6 bg-[#edf1f6]">
         <h2 className="text-2xl font-semibold text-[#081f5c] mb-6 text-center">

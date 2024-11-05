@@ -18,10 +18,10 @@ function UserSignup() {
     user_zipcode: "",
     user_address: "",
     user_detail_address: "",
+    agreeTerms: false,
   });
 
   const dispatch = useDispatch();
-  const navigate = useNavigate();
 
   // 회원가입 상태 확인
   const { data, error } = useSelector((state) => state.auth);
@@ -40,24 +40,18 @@ function UserSignup() {
     const { name, value, type, checked } = e.target;
     setFormData({
       ...formData,
-      [name]: type === 'checkbox' ? checked : value
+      [name]: type === "checkbox" ? checked : value,
     });
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    
-    // 필수 값이 입력되었는지 확인하는 검증
-    const { name, username, password, confirmPassword, phone, email, birthdate, address, agreeTerms } = formData;
-    if (!name || !username || !password || !confirmPassword || !phone || !email || !birthdate || !address || !agreeTerms) {
-      alert('모든 필수 필드를 입력하고 개인정보 수집 동의에 체크해 주세요.');
-      return;
-    }
 
-    // 필수 필드 검증
+    // 필수 값이 입력되었는지 확인하는 검증
     const requiredFields = [
       "user_id",
       "pass",
+      "confirmPassword",
       "email",
       "name",
       "phone",
@@ -66,6 +60,7 @@ function UserSignup() {
       "user_zipcode",
       "user_address",
       "user_detail_address",
+      "agreeTerms",
     ];
     for (const field of requiredFields) {
       if (!formData[field]) {
@@ -74,8 +69,9 @@ function UserSignup() {
       }
     }
 
-    // DB에 맞는 필드명으로 데이터 매핑
-    const { confirmPassword, ...mappedData } = formData;
+    // confirmPassword 필드 제거
+    const mappedData = { ...formData };
+    delete mappedData.confirmPassword;
 
     // 회원가입 액션 디스패치
     dispatch(userSignup(mappedData));
@@ -98,35 +94,35 @@ function UserSignup() {
             required
           />
         </div>
-        
+
         {/* 아이디 */}
         <div className="mb-4">
-          <label htmlFor="username" className="block mb-2">아이디</label>
+          <label htmlFor="user_id" className="block mb-2">아이디</label>
           <input
             type="text"
-            id="username"
-            name="username"
-            value={formData.username}
+            id="user_id"
+            name="user_id"
+            value={formData.user_id}
             onChange={handleChange}
             className="w-full px-3 py-2 border rounded"
             required
           />
         </div>
-        
+
         {/* 비밀번호 */}
         <div className="mb-4">
-          <label htmlFor="password" className="block mb-2">비밀번호</label>
+          <label htmlFor="pass" className="block mb-2">비밀번호</label>
           <input
             type="password"
-            id="password"
-            name="password"
-            value={formData.password}
+            id="pass"
+            name="pass"
+            value={formData.pass}
             onChange={handleChange}
             className="w-full px-3 py-2 border rounded"
             required
           />
         </div>
-        
+
         {/* 비밀번호 확인 */}
         <div className="mb-4">
           <label htmlFor="confirmPassword" className="block mb-2">비밀번호 확인</label>
@@ -140,7 +136,7 @@ function UserSignup() {
             required
           />
         </div>
-        
+
         {/* 핸드폰 번호 */}
         <div className="mb-4">
           <label htmlFor="phone" className="block mb-2">핸드폰 번호</label>
@@ -154,7 +150,7 @@ function UserSignup() {
             required
           />
         </div>
-        
+
         {/* 이메일 주소 */}
         <div className="mb-4">
           <label htmlFor="email" className="block mb-2">이메일 주소</label>
@@ -168,7 +164,7 @@ function UserSignup() {
             required
           />
         </div>
-        
+
         {/* 성별 */}
         <div className="mb-4">
           <label className="block mb-2">성별</label>
@@ -178,7 +174,7 @@ function UserSignup() {
                 type="radio"
                 name="gender"
                 value="male"
-                checked={formData.gender === 'male'}
+                checked={formData.gender === "male"}
                 onChange={handleChange}
                 className="mr-1"
               />
@@ -189,7 +185,7 @@ function UserSignup() {
                 type="radio"
                 name="gender"
                 value="female"
-                checked={formData.gender === 'female'}
+                checked={formData.gender === "female"}
                 onChange={handleChange}
                 className="mr-1"
               />
@@ -197,29 +193,29 @@ function UserSignup() {
             </label>
           </div>
         </div>
-        
+
         {/* 생년월일 */}
         <div className="mb-4">
-          <label htmlFor="birthdate" className="block mb-2">생년월일</label>
+          <label htmlFor="birth" className="block mb-2">생년월일</label>
           <input
             type="date"
-            id="birthdate"
-            name="birthdate"
-            value={formData.birthdate}
+            id="birth"
+            name="birth"
+            value={formData.birth}
             onChange={handleChange}
             className="w-full px-3 py-2 border rounded"
             required
           />
         </div>
-        
+
         {/* 주소 */}
         <div className="mb-4">
-          <label htmlFor="address" className="block mb-2">주소</label>
+          <label htmlFor="user_address" className="block mb-2">주소</label>
           <div className="flex space-x-2 mb-2">
             <input
               type="text"
-              name="address"
-              value={formData.address}
+              name="user_address"
+              value={formData.user_address}
               onChange={handleChange}
               className="w-full px-3 py-2 border rounded"
               placeholder="주소"
@@ -227,15 +223,15 @@ function UserSignup() {
             />
             <input
               type="text"
-              name="addressDetail"
-              value={formData.addressDetail}
+              name="user_detail_address"
+              value={formData.user_detail_address}
               onChange={handleChange}
               className="w-full px-3 py-2 border rounded"
               placeholder="상세 주소"
             />
           </div>
         </div>
-        
+
         {/* 개인정보 수집 동의 */}
         <div className="mb-6 flex items-center">
           <input
