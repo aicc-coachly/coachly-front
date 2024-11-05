@@ -6,6 +6,8 @@ import { BodyCompositionModal } from "../../components/user/BodyCompositionModal
 import { useDispatch, useSelector } from "react-redux";
 import { loginUser } from "../../redux/thunks/authThunk";
 import { fetchUserProfile } from "../../redux/thunks/userThunk";
+import { EditBodyCompositionModal } from '../../components/user/EditBodyCompositionModal';
+
 
 function UserMypage() {
   const dispatch = useDispatch();
@@ -83,59 +85,59 @@ function UserMypage() {
         </div>
       </div>
 
-      {/* 담당 트레이너 */}
-      <div className="bg-white rounded-lg shadow-md p-2 mb-4">
-        <h2 className="text-lg font-semibold p-2">담당 트레이너</h2>
-        <div className="flex items-center justify-between bg-gray-300 p-1">
-          <p className="text-base text-sm">이건 트레이너</p>
-          <button
-            onClick={() => navigate("/UserChat")} // 페이지 이동 설정
-            className="px-3 py-1 bg-pink-300 text-sm rounded-md"
-          >
-            1:1 채팅하기
-          </button>
-        </div>
-      </div>
+            {/* 담당 트레이너 */}
+            <div className="bg-white rounded-lg shadow-md p-2 mb-4">
+                <h2 className="text-lg font-semibold p-2">담당 트레이너</h2>
+                <div className="flex items-center justify-between bg-gray-300 p-1">
+                    <p className="text-base text-sm">이건 트레이너</p>
+                    <button 
+                    onClick={() => navigate('/UserChat')}  // 페이지 이동 설정
+                    className="px-3 py-1 bg-pink-300 text-sm  rounded-md"
+                >
+                    1:1 채팅하기
+                </button>
+                </div>
+            </div>
 
-      {/* 예약된 수업 섹션 */}
-      <div className="bg-white rounded-lg shadow-md p-2 mb-4">
-        <h2 className="text-lg font-semibold p-2">예약된 수업</h2>
-        <div className="flex items-center justify-between bg-gray-300 p-1">
-          <p className="text-base text-sm">이건 트레이너</p>
-          <span className="text-sm text-gray-500">24-11-01</span>
-          <button
-            onClick={() => openModal(<CheckScheduleModal />)}
-            className="text-center px-3 py-1 bg-pink-300 text-sm rounded-md"
-          >
-            자세히 보기
-          </button>
+            {/* 예약된 수업 섹션 */}
+            <div className="bg-white rounded-lg shadow-md p-2 mb-4">
+                <h2 className="text-lg font-semibold p-2">예약된 수업</h2>
+                <div className="flex items-center justify-between bg-gray-300 p-1">
+                    <p className="text-base text-sm">이건 트레이너</p>
+                    <span className="text-sm text-gray-500">24-11-01</span>
+                    <button 
+                    onClick={() => openModal(<CheckScheduleModal />)} 
+                    className="text-center px-3 py-1 bg-pink-300 text-sm rounded-md"
+                >
+                    자세히 보기
+                </button>
+                </div>
+            </div>
+            {/* 인바디 세션*/}
+            <div className="bg-white rounded-lg shadow-md p-2 mb-4">
+              <div className='flex justify-between p-2'>
+              <h2 className="text-lg font-semibold">나의 체성분 기록</h2>
+                <button 
+                    onClick={() => openModal(<BodyCompositionModal />)} 
+                    className="text-center px-3 py-1 bg-pink-300 text-sm rounded-md"
+                >
+                    추가하기
+                </button>
+              </div>
+                
+                <div className="flex items-center justify-between bg-gray-300 p-1">
+                    <p className="text-base text-sm">첫번째 인바디</p>
+                    <span className="text-sm text-gray-500">24-11-01</span>
+                    <button 
+                    onClick={() => openModal(<EditBodyCompositionModal />)} 
+                    className="text-center px-3 py-1 bg-pink-300 text-sm rounded-md"
+                >
+                    더보기
+                </button>
+                </div>
+            </div>
         </div>
-      </div>
-      {/* 인바디 세션*/}
-      <div className="bg-white rounded-lg shadow-md p-2 mb-4">
-        <div className="flex justify-between p-2">
-          <h2 className="text-lg font-semibold">나의 체성분 기록</h2>
-          <button
-            onClick={() => openModal(<BodyCompositionModal />)}
-            className="text-center px-3 py-1 bg-pink-300 text-sm rounded-md"
-          >
-            추가하기
-          </button>
-        </div>
-
-        <div className="flex items-center justify-between bg-gray-300 p-1">
-          <p className="text-base text-sm">첫번째 인바디</p>
-          <span className="text-sm text-gray-500"></span>
-          <button
-            onClick={() => openModal(<BodyCompositionModal />)}
-            className="text-center px-3 py-1 bg-pink-300 text-sm rounded-md"
-          >
-            더보기
-          </button>
-        </div>
-      </div>
-    </div>
-  );
+    );
 }
 
 export default UserMypage;

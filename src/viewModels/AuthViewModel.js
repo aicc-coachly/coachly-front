@@ -4,6 +4,7 @@ import {
   loginTrainer,
   registerTrainer,
 } from '../redux/thunks/authThunks';
+import { logoutUser, logoutTrainer } from '../redux/slices/authSlice';
 import store from '../redux/store';
 
 class AuthViewModel {
@@ -45,8 +46,14 @@ class AuthViewModel {
     }
   }
 
-  static logout() {
-    store.dispatch({ type: 'auth/logout' });
+  // 회원 로그아웃
+  static logoutUser() {
+    store.dispatch(logoutUser());
+  }
+
+  // 트레이너 로그아웃
+  static logoutTrainer() {
+    store.dispatch(logoutTrainer());
   }
 }
 

@@ -1,16 +1,16 @@
-import React from "react";
-import ReactDOM from "react-dom";
-import App from "./App"; // App 컴포넌트 경로 확인
-import store from "./redux/store"; // store 설정 파일 경로
-import { Provider } from "react-redux";
-
-import "./assets/styles/styles.css"; // Tailwind 및 전역 스타일 설정
+// src/index.js
+import React from 'react';
+import ReactDOM from 'react-dom';
+import { Provider } from 'react-redux'; // Provider 추가
+import store from './redux/store'; // store 추가
+import App from './App';
+import './assets/styles/styles.css';
 
 ReactDOM.render(
-  <Provider store={store}>
-    <React.StrictMode>
+  <React.StrictMode>
+    <Provider store={store}> {/* Provider로 전체 애플리케이션 감싸기 */}
       <App />
-    </React.StrictMode>
-  </Provider>,
-  document.getElementById("root")
+    </Provider>
+  </React.StrictMode>,
+  document.getElementById('root')
 );

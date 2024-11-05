@@ -1,18 +1,18 @@
-import { createSlice } from "@reduxjs/toolkit";
-import { loginUser, registerUser } from "../thunks/authThunk";
-
+// src/redux/slices/authSlice.js
+import { createSlice } from '@reduxjs/toolkit';
+import {loginUser} from '../thunks/authThunks'
 const authSlice = createSlice({
-  name: "auth",
+  name: 'auth',
   initialState: {
     user: JSON.parse(localStorage.getItem("user")) || null,
-    loading: false,
+    userType: null,
     error: null,
+    loading: false,
   },
   reducers: {
     logout: (state) => {
       state.user = null;
       state.error = null;
-      localStorage.removeItem("user");
     },
   },
   extraReducers: (builder) => {
@@ -29,7 +29,6 @@ const authSlice = createSlice({
       .addCase(loginUser.rejected, (state, action) => {
         state.loading = false;
         state.error = action.error.message;
-        localStorage.removeItem("user"); // 로그아웃 시 로컬 스토리지에서 제거
       })
       .addCase(registerUser.pending, (state) => {
         state.loading = true;
@@ -40,7 +39,6 @@ const authSlice = createSlice({
         state.loading = false;
         state.user = action.payload;
         state.status = "success"; // 상태 업데이트
-        // 로컬 스토리지에 사용자 정보 저장
       })
       .addCase(registerUser.rejected, (state, action) => {
         state.loading = false;
@@ -48,10 +46,7 @@ const authSlice = createSlice({
         state.status = "failed"; // 상태 업데이트
       });
   },
-});
+}});
 
-export const selectAuthStatus = (state) => state.auth.status;
-export const selectUserError = (state) => state.auth.error;
-
-export const { logout } = authSlice.actions;
+export const { setUserType } = authSlice.actions;
 export default authSlice.reducer;
