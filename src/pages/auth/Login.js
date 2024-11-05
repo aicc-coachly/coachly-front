@@ -5,57 +5,68 @@ import { useDispatch } from 'react-redux';
 import { setUserType } from '../../redux/slices/authSlice';
 import { loginUser } from '../../redux/thunks/authThunks';
 import Buttons from '../../components/common/Buttons';
+import React, { useEffect, useState } from "react";
+import { useNavigate, Link } from "react-router-dom";
+import axios from "axios";
+import Buttons from "../../components/common/Buttons";
+import { useSelector } from "react-redux";
+import { fetchUserProfile } from "../../redux/thunks/userThunk";
 
 function Login() {
   const navigate = useNavigate();
-  const dispatch = useDispatch();
-  const [userType, setUserTypeLocal] = useState('trainer'); // 로컬 상태로 회원타입 관리
-  const [id, setId] = useState('');
-  const [password, setPassword] = useState('');
+  const [userType, setUserType] = useState("trainer"); // 'trainer' 또는 'user'
+  const [id, setId] = useState("");
+  const [password, setPassword] = useState("");
 
-  const handleLogin = () => {
-    // 개별 필드 검증
-    if (!id) {
-      alert('아이디를 입력해 주세요.');
-      return;
-    }
-    if (!password) {
-      alert('비밀번호를 입력해 주세요.');
-      return;
-    }
-
-    const handleLogin = async () => {
-      if (!id) {
-        alert('아이디를 입력해 주세요.');
-        return;
-      }
-      if (!password) {
-        alert('비밀번호를 입력해 주세요.');
-        return;
-      }
-  
-      // 로그인 요청 보내기
-      const loginData = { id, password };
-      const resultAction = await dispatch(loginUser(loginData));
-  
-      // 로그인 성공 시 페이지 이동
-      if (loginUser.fulfilled.match(resultAction)) {
-        dispatch(setUserType(userType));
-        navigate(userType === 'trainer' ? '/trainermypage' : '/usermypage');
-      }
-    };
-
-    // 선택된 회원 타입을 Redux 전역 상태에 설정
-    dispatch(setUserType(userType));
-
-    // 로그인 후 페이지 이동
-    if (userType === 'trainer') {
-      navigate('/trainermypage'); // 트레이너 메인 페이지로 이동
+  useEffect(() => {
+    const storedUser = localStorage.getItem("user");
+    if (storedUser) {
+      console.log("로컬스토리지에 저장된 사용자 정보:", storedUser);
+      localStorage.removeItem("user"); // 이전 정보가 있다면 삭제
     } else {
-      navigate('/usermypage'); // 유저 메인 페이지로 이동
+      console.log("로컬스토리지에 사용자 정보 없음");
+    }
+  }, []);
+
+  const handleLogin = async () => {
+    const endpoint = userType === "trainer" ? "trainer/login" : "user/login";
+    const idField = userType === "trainer" ? "trainer_id" : "user_id"; // 'trainer'일 때 'trainer_id'를, 'user'일 때 'user_id'를 사용
+
+    try {
+      const response = await axios.post(`http://localhost:8000/${endpoint}`, {
+        [idField]: id,
+        pass: password,
+      });
+
+      if (response.status === 200) {
+        // 로그인 성공 시 localStorage에 사용자 정보 저장
+        const userData = response.data; // 서버에서 받은 로그인된 사용자 정보 (예: { id, name, role })
+
+        // 트레이너와 일반 사용자를 구분하여 로컬스토리지에 저장
+        if (userType === "trainer") {
+          localStorage.setItem("trainer", JSON.stringify(userData)); // 트레이너 정보 저장
+        } else {
+          localStorage.setItem("user", JSON.stringify(userData)); // 사용자 정보 저장
+        }
+
+        // console.log(`${userType} 정보 저장:`, userData);
+
+        // 로그인 성공 후 페이지 이동
+        if (userType === "trainer") {
+          navigate("/trainermypage"); // 트레이너 페이지로 이동
+        } else {
+          navigate("/usermypage"); // 사용자 페이지로 이동
+        }
+      } else {
+        alert("로그인에 실패했습니다.");
+      }
+    } catch (error) {
+      console.error("로그인 오류:", error);
+      alert("로그인 중 오류가 발생했습니다. 다시 시도해주세요.");
     }
   };
 
+  // relative flex justify-between items-center p-4 bg-[#edf1f6]
   return (
     <div className="w-full min-h-screen bg-[#edf1f6] flex flex-col items-center">
       <div className="w-full max-w-[390px] mt-8 flex flex-col items-center p-6 bg-[#edf1f6]">

@@ -1,4 +1,5 @@
-import axios from 'axios';
+import axios from "axios";
+const url = process.env.REACT_APP_API_URL;
 
 const TrainerRepository = {
   // 모든 트레이너 조회

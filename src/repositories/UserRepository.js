@@ -1,5 +1,6 @@
-import axios from 'axios';
+import axios from "axios";
 
+const url = process.env.REACT_APP_API_URL;
 const UserRepository = {
   // 모든 사용자 조회
   getAllUsers: () => axios.get('/users'),

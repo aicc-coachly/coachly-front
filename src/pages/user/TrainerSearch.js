@@ -1,28 +1,24 @@
-import React, { useState } from 'react';
-import Buttons from '../../components/common/Buttons';
-import { useModal } from '../../components/common/ModalProvider';
-import { TrainerInfoModal } from '../../components/trainer/TrainerInfoModal';
+import React, { useState } from "react";
+import Buttons from "../../components/common/Buttons";
+import { useModal } from "../../components/common/ModalProvider";
+import { TrainerInfoModal } from "../../components/trainer/TrainerInfoModal";
 
 function TrainerSearch() {
   const { openModal } = useModal();
   const [filters, setFilters] = useState({
-    category: '여성전문',
-    area: '',
-    neighborhood: '',
-    gender: '',
+    category: "여성전문",
+    area: "",
+    neighborhood: "",
+    gender: "",
   });
   const [showAreaDropdown, setShowAreaDropdown] = useState(false);
-  const [showNeighborhoodDropdown, setShowNeighborhoodDropdown] = useState(false);
-  const [areaSearch, setAreaSearch] = useState('');
-  const [neighborhoodSearch, setNeighborhoodSearch] = useState('');
+  const [showNeighborhoodDropdown, setShowNeighborhoodDropdown] =
+    useState(false);
+  const [areaSearch, setAreaSearch] = useState("");
+  const [neighborhoodSearch, setNeighborhoodSearch] = useState("");
 
-  const areaList = ['마포구', '용산구', '강남구', '서초구'];
-  const neighborhoodList = ['방배동', '청룡동', '논현동', '서교동'];
-
-  const trainers = [
-    { id: 1, name: '정민석 트레이너', category: '여성전문', area: '마포구', neighborhood: '방배동', gender: '남성' },
-    { id: 2, name: '정혜련 트레이너', category: '교정/재활', area: '용산구', neighborhood: '청룡동', gender: '여성' },
-  ];
+  const areaList = ["마포구", "용산구", "강남구", "서초구"];
+  const neighborhoodList = ["방배동", "청룡동", "논현동", "서교동"];
 
   const handleFilterChange = (key, value) => {
     setFilters((prevFilters) => ({
@@ -44,12 +40,14 @@ function TrainerSearch() {
   const handleClearFilter = (key) => {
     setFilters((prevFilters) => ({
       ...prevFilters,
-      [key]: '',
+      [key]: "",
     }));
   };
 
   const handleSearch = () => {
-    alert(`검색 결과: ${filters.area}, ${filters.neighborhood}, ${filters.gender}`);
+    alert(
+      `검색 결과: ${filters.area}, ${filters.neighborhood}, ${filters.gender}`
+    );
   };
 
   const handleConsult = (trainer) => {
@@ -59,32 +57,51 @@ function TrainerSearch() {
   return (
     <div className="w-full min-h-screen bg-[#edf1f6] flex flex-col items-center p-4">
       <div className="w-full max-w-[390px] mt-4">
-      <div>TrainerSearch
-            <button onClick={() => openModal(<TrainerInfoModal/>)}>트레이너 자세히보기</button>
+        <div>
+          TrainerSearch
+          <button onClick={() => openModal(<TrainerInfoModal />)}>
+            트레이너 자세히보기
+          </button>
         </div>
         {/* 상단 필터 버튼들 */}
         <div className="flex justify-around mb-4">
           <button
-            className={`px-4 py-2 rounded ${filters.category === '여성전문' ? 'bg-[#081f5c] text-white' : 'bg-[#d0e3ff]'}`}
-            onClick={() => handleFilterChange('category', '여성전문')}
+            className={`px-4 py-2 rounded ${
+              filters.category === "여성전문"
+                ? "bg-[#081f5c] text-white"
+                : "bg-[#d0e3ff]"
+            }`}
+            onClick={() => handleFilterChange("category", "여성전문")}
           >
             여성전문
           </button>
           <button
-            className={`px-4 py-2 rounded ${filters.category === '교정/재활' ? 'bg-[#081f5c] text-white' : 'bg-[#d0e3ff]'}`}
-            onClick={() => handleFilterChange('category', '교정/재활')}
+            className={`px-4 py-2 rounded ${
+              filters.category === "재활전무"
+                ? "bg-[#081f5c] text-white"
+                : "bg-[#d0e3ff]"
+            }`}
+            onClick={() => handleFilterChange("category", "교정/재활")}
           >
             교정/재활
           </button>
           <button
-            className={`px-4 py-2 rounded ${filters.category === '노인전문' ? 'bg-[#081f5c] text-white' : 'bg-[#d0e3ff]'}`}
-            onClick={() => handleFilterChange('category', '노인전문')}
+            className={`px-4 py-2 rounded ${
+              filters.category === "노인전문"
+                ? "bg-[#081f5c] text-white"
+                : "bg-[#d0e3ff]"
+            }`}
+            onClick={() => handleFilterChange("category", "노인전문")}
           >
             실버전문
           </button>
           <button
-            className={`px-4 py-2 rounded ${filters.category === '선수/대회전문' ? 'bg-[#081f5c] text-white' : 'bg-[#d0e3ff]'}`}
-            onClick={() => handleFilterChange('category', '선수/대회전문')}
+            className={`px-4 py-2 rounded ${
+              filters.category === "선수/대회전문"
+                ? "bg-[#081f5c] text-white"
+                : "bg-[#d0e3ff]"
+            }`}
+            onClick={() => handleFilterChange("category", "선수/대회전문")}
           >
             선수/대회전문
           </button>
@@ -92,17 +109,39 @@ function TrainerSearch() {
 
         {/* 구, 동, 성별 필터 버튼들 */}
         <div className="flex justify-around mb-4">
-          <button onClick={handleToggleAreaDropdown} className={`px-4 py-2 rounded ${filters.area ? 'bg-[#081f5c] text-white' : 'bg-[#d0e3ff]'}`}>구</button>
-          <button onClick={handleToggleNeighborhoodDropdown} className={`px-4 py-2 rounded ${filters.neighborhood ? 'bg-[#081f5c] text-white' : 'bg-[#d0e3ff]'}`}>동</button>
           <button
-            className={`px-4 py-2 rounded ${filters.gender === 'male' ? 'bg-[#081f5c] text-white' : 'bg-[#d0e3ff]'}`}
-            onClick={() => handleFilterChange('gender', 'male')}
+            onClick={handleToggleAreaDropdown}
+            className={`px-4 py-2 rounded ${
+              filters.area ? "bg-[#081f5c] text-white" : "bg-[#d0e3ff]"
+            }`}
+          >
+            구
+          </button>
+          <button
+            onClick={handleToggleNeighborhoodDropdown}
+            className={`px-4 py-2 rounded ${
+              filters.neighborhood ? "bg-[#081f5c] text-white" : "bg-[#d0e3ff]"
+            }`}
+          >
+            동
+          </button>
+          <button
+            className={`px-4 py-2 rounded ${
+              filters.gender === "male"
+                ? "bg-[#081f5c] text-white"
+                : "bg-[#d0e3ff]"
+            }`}
+            onClick={() => handleFilterChange("gender", "male")}
           >
             남성
           </button>
           <button
-            className={`px-4 py-2 rounded ${filters.gender === 'female' ? 'bg-[#081f5c] text-white' : 'bg-[#d0e3ff]'}`}
-            onClick={() => handleFilterChange('gender', 'female')}
+            className={`px-4 py-2 rounded ${
+              filters.gender === "female"
+                ? "bg-[#081f5c] text-white"
+                : "bg-[#d0e3ff]"
+            }`}
+            onClick={() => handleFilterChange("gender", "female")}
           >
             여성
           </button>
@@ -129,10 +168,14 @@ function TrainerSearch() {
                   <button
                     key={area}
                     onClick={() => {
-                      handleFilterChange('area', area);
+                      handleFilterChange("area", area);
                       setShowAreaDropdown(false);
                     }}
-                    className={`block w-full text-left px-3 py-2 ${filters.area === area ? 'bg-[#081f5c] text-white' : 'hover:bg-[#edf1f6]'}`}
+                    className={`block w-full text-left px-3 py-2 ${
+                      filters.area === area
+                        ? "bg-[#081f5c] text-white"
+                        : "hover:bg-[#edf1f6]"
+                    }`}
                   >
                     {area}
                   </button>
@@ -153,15 +196,21 @@ function TrainerSearch() {
             />
             <div className="absolute w-full bg-white border rounded shadow-lg max-h-40 overflow-y-auto">
               {neighborhoodList
-                .filter((neighborhood) => neighborhood.includes(neighborhoodSearch))
+                .filter((neighborhood) =>
+                  neighborhood.includes(neighborhoodSearch)
+                )
                 .map((neighborhood) => (
                   <button
                     key={neighborhood}
                     onClick={() => {
-                      handleFilterChange('neighborhood', neighborhood);
+                      handleFilterChange("neighborhood", neighborhood);
                       setShowNeighborhoodDropdown(false);
                     }}
-                    className={`block w-full text-left px-3 py-2 ${filters.neighborhood === neighborhood ? 'bg-[#081f5c] text-white' : 'hover:bg-[#edf1f6]'}`}
+                    className={`block w-full text-left px-3 py-2 ${
+                      filters.neighborhood === neighborhood
+                        ? "bg-[#081f5c] text-white"
+                        : "hover:bg-[#edf1f6]"
+                    }`}
                   >
                     {neighborhood}
                   </button>
@@ -175,35 +224,36 @@ function TrainerSearch() {
           {filters.area && (
             <div className="flex items-center bg-[#d0e3ff] px-3 py-1 rounded mr-2 mb-2">
               <span>{filters.area}</span>
-              <button onClick={() => handleClearFilter('area')} className="ml-2 text-lg font-semibold text-[#081f5c]">×</button>
+              <button
+                onClick={() => handleClearFilter("area")}
+                className="ml-2 text-lg font-semibold text-[#081f5c]"
+              >
+                ×
+              </button>
             </div>
           )}
           {filters.neighborhood && (
             <div className="flex items-center bg-[#d0e3ff] px-3 py-1 rounded mr-2 mb-2">
               <span>{filters.neighborhood}</span>
-              <button onClick={() => handleClearFilter('neighborhood')} className="ml-2 text-lg font-semibold text-[#081f5c]">×</button>
+              <button
+                onClick={() => handleClearFilter("neighborhood")}
+                className="ml-2 text-lg font-semibold text-[#081f5c]"
+              >
+                ×
+              </button>
             </div>
           )}
         </div>
 
         {/* 트레이너 리스트 */}
         <div className="grid grid-cols-2 gap-4">
-          {trainers
-            .filter(
-              (trainer) =>
-                (!filters.area || trainer.area === filters.area) &&
-                (!filters.neighborhood || trainer.neighborhood === filters.neighborhood) &&
-                (!filters.gender || trainer.gender === filters.gender)
-            )
-            .map((trainer) => (
-              <div key={trainer.id} className="p-4 border rounded-lg bg-white text-center">
-                <div className="bg-gray-200 h-24 mb-4">트레이너 사진</div>
-                <p>{trainer.name}</p>
-                <Buttons size="small" onClick={() => handleConsult(trainer)}>
-                  1:1 상담 받기
-                </Buttons>
-              </div>
-            ))}
+          <div className="p-4 border rounded-lg bg-white text-center">
+            <div className="bg-gray-200 h-24 mb-4">트레이너 사진</div>
+            <p></p>
+            <Buttons size="small" onClick={() => handleConsult()}>
+              1:1 상담 받기
+            </Buttons>
+          </div>
         </div>
       </div>
     </div>

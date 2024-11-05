@@ -4,14 +4,15 @@ import {loginUser} from '../thunks/authThunks'
 const authSlice = createSlice({
   name: 'auth',
   initialState: {
-    user: null,
+    user: JSON.parse(localStorage.getItem("user")) || null,
     userType: null,
     error: null,
     loading: false,
   },
   reducers: {
-    setUserType: (state, action) => {
-      state.userType = action.payload;
+    logout: (state) => {
+      state.user = null;
+      state.error = null;
     },
   },
   extraReducers: (builder) => {
@@ -22,15 +23,30 @@ const authSlice = createSlice({
       })
       .addCase(loginUser.fulfilled, (state, action) => {
         state.loading = false;
-        state.user = action.payload.user; // 서버에서 반환된 유저 정보
-        state.error = null;
+        state.user = action.payload;
+        localStorage.setItem("user", JSON.stringify(action.payload)); // 로컬스토리지에 user 저장
       })
       .addCase(loginUser.rejected, (state, action) => {
         state.loading = false;
-        state.error = action.payload || '로그인에 실패했습니다.';
+        state.error = action.error.message;
+      })
+      .addCase(registerUser.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+        state.status = "pending"; // 상태 업데이트
+      })
+      .addCase(registerUser.fulfilled, (state, action) => {
+        state.loading = false;
+        state.user = action.payload;
+        state.status = "success"; // 상태 업데이트
+      })
+      .addCase(registerUser.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.error.message;
+        state.status = "failed"; // 상태 업데이트
       });
   },
-});
+}});
 
 export const { setUserType } = authSlice.actions;
 export default authSlice.reducer;
