@@ -3,7 +3,7 @@ import axios from 'axios';
 
 // Axios 인스턴스 생성 (기본 URL 및 인터셉터 설정)
 const apiClient = axios.create({
-  baseURL: REACT_APP_API_URL, // 백엔드 서버 URL에 맞게 설정
+  // baseURL: REACT_APP_API_URL, // 백엔드 서버 URL에 맞게 설정
 });
 
 // 요청 인터셉터를 통해 토큰을 자동으로 Authorization 헤더에 추가

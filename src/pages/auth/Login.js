@@ -3,6 +3,7 @@ import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 import { setUserType } from '../../redux/slices/authSlice';
+import { loginUser } from '../../redux/thunks/authThunks';
 import Buttons from '../../components/common/Buttons';
 
 function Login() {
@@ -22,6 +23,27 @@ function Login() {
       alert('비밀번호를 입력해 주세요.');
       return;
     }
+
+    const handleLogin = async () => {
+      if (!id) {
+        alert('아이디를 입력해 주세요.');
+        return;
+      }
+      if (!password) {
+        alert('비밀번호를 입력해 주세요.');
+        return;
+      }
+  
+      // 로그인 요청 보내기
+      const loginData = { id, password };
+      const resultAction = await dispatch(loginUser(loginData));
+  
+      // 로그인 성공 시 페이지 이동
+      if (loginUser.fulfilled.match(resultAction)) {
+        dispatch(setUserType(userType));
+        navigate(userType === 'trainer' ? '/trainermypage' : '/usermypage');
+      }
+    };
 
     // 선택된 회원 타입을 Redux 전역 상태에 설정
     dispatch(setUserType(userType));
