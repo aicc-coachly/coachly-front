@@ -55,7 +55,7 @@ function UserMypage() {
                     <p className="text-base text-sm">이건 트레이너</p>
                     <button 
                     onClick={() => navigate('/UserChat')}  // 페이지 이동 설정
-                    className="px-3 py-1 bg-pink-300 text-sm rounded-md"
+                    className="px-3 py-1 bg-pink-300 text-sm  rounded-md"
                 >
                     1:1 채팅하기
                 </button>

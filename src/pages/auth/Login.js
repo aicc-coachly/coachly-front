@@ -66,14 +66,14 @@ function Login() {
         {/* 회원 구분 선택 */}
         <div className="flex w-full max-w-xs mb-4">
           <button
-            onClick={() => setUserTypeLocal('trainer')}
-            className={`flex-1 py-2 rounded-l-lg ${userType === 'trainer' ? 'bg-[#081f5c] text-white' : 'bg-[#d0e3ff] text-[#081f5c]'}`}
+            onClick={() => setUserType('trainer')}
+            className={`flex-1 py-2 rounded-l-lg ${userType === 'trainer' ? 'bg-[#4831D4] text-[#CCF381]' : 'bg-[#CCF381] text-[#081f5c]'}`}
           >
             트레이너
           </button>
           <button
-            onClick={() => setUserTypeLocal('user')}
-            className={`flex-1 py-2 rounded-r-lg ${userType === 'user' ? 'bg-[#081f5c] text-white' : 'bg-[#d0e3ff] text-[#081f5c]'}`}
+            onClick={() => setUserType('user')}
+            className={`flex-1 py-2 rounded-r-lg ${userType === 'user' ? 'bg-[#4831D4] text-[#CCF381]' : 'bg-[#CCF381] text-[#081f5c]'}`}
           >
             유저
           </button>
