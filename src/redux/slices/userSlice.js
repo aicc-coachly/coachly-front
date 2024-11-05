@@ -15,7 +15,7 @@ import {
 const userSlice = createSlice({
   name: 'user',
   initialState: {
-    profile: null,
+    profile: {},
     pageData: null,
     inbodyData: null,
     loading: false,

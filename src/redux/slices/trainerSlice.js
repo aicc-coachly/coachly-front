@@ -17,7 +17,7 @@ import {
 const trainerSlice = createSlice({
   name: 'trainer',
   initialState: {
-    profile: null,
+    profile: {},
     ptAmount: null,
     gymAddress: null,
     account: null,

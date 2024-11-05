@@ -3,17 +3,18 @@ import { useModal } from "../../components/common/ModalProvider";
 import { EditScheduleModal } from "../../components/trainer/EditScheduleModal";
 import { CreateScheduleModal } from "../../components/trainer/CreateScheduleModal";
 import { UserModal } from "../../components/user/UserModal";
-import { useNavigate } from "react-router-dom"; // useNavigate 추가
+import { useNavigate } from "react-router-dom";
 import { fetchTrainerProfile } from "../../redux/thunks/trainerThunks";
 import { useDispatch, useSelector } from "react-redux";
 
 const TrainerMypage = () => {
   const { openModal } = useModal();
-  const navigate = useNavigate(); // navigate 함수 생성
+  const navigate = useNavigate();
   const dispatch = useDispatch();
   const [trainer, setTrainer] = useState(null);
-  // 유저 프로필 정보와 상태 관리
-  const profile = useSelector((state) => state.trainers.profile);
+
+  // useSelector로 profile을 안전하게 가져오기
+  const profile = useSelector((state) => state?.trainers?.profile || {});
   const trainerId = trainer?.trainer_number;
 
   useEffect(() => {
@@ -21,20 +22,17 @@ const TrainerMypage = () => {
     const storedTrainer = localStorage.getItem("trainer");
 
     if (storedTrainer) {
-      // JSON으로 파싱하여 사용자 정보 상태에 저장
       setTrainer(JSON.parse(storedTrainer));
     }
-    // console.log(storedTrainer);
   }, []);
 
   useEffect(() => {
     if (trainerId) {
-      // 유저 아이디가 존재하면 프로필 정보를 가져옴
       dispatch(fetchTrainerProfile(trainerId));
     }
   }, [trainerId, dispatch]);
-  console.log(profile);
-  // console.log(trainerId);
+
+  console.log("프로필 정보:", profile);
 
   return (
     <div className="max-w-[390px] mx-auto bg-gray-100 p-4">
@@ -42,24 +40,16 @@ const TrainerMypage = () => {
       <div className="bg-white rounded-lg shadow-md p-4 mb-4 relative">
         <h2 className="text-lg font-semibold mb-2">내 정보</h2>
         <button
-          onClick={() => navigate("/trainerProfile")} // 페이지 이동 설정
+          onClick={() => navigate("/trainerProfile")}
           className="absolute top-4 right-4 px-3 py-1 bg-gray-300 text-sm rounded-full"
         >
           수정하기
         </button>
         <div className="flex items-start mt-4 space-x-4">
-          {/* 프로필 사진 */}
           <div className="w-[8rem] h-[8rem] bg-gray-200 overflow-hidden">
-            {/* <img 
-                    // src="https://via.placeholder.com/64" // 프로필 사진 URL 또는 경로로 대체
-                    alt="프로필 사진" 
-                    className="object-cover w-full h-full"
-                  /> */}
+            {/* 프로필 사진 자리 */}
           </div>
-
-          {/* 텍스트 정보와 체크박스 */}
           <div className="flex-1">
-            {/* 체크박스 */}
             <div className="flex justify-end">
               <label className="inline-flex items-center">
                 <input
@@ -69,17 +59,12 @@ const TrainerMypage = () => {
                 <span className="ml-2 text-sm">수업 그만 받기</span>
               </label>
             </div>
-
-            {/* 텍스트 정보 */}
-            <p className="mt-2 text-base font-medium">정혜현</p>
-            <p className="text-sm text-gray-500">010-1234-5678</p>
-
-            {/* 태그들 */}
+            <p className="mt-2 text-base font-medium">{profile?.name || "정보 없음"}</p>
+            <p className="text-sm text-gray-500">{profile?.phone || "정보 없음"}</p>
             <div className="flex mt-2 space-x-2">
               <p className="px-3 py-1 bg-gray-300 text-sm rounded-md">
-                동대문구
+                {profile?.address || "정보 없음"}
               </p>
-              <p className="px-3 py-1 bg-gray-300 text-sm rounded-md">종로구</p>
             </div>
           </div>
         </div>
@@ -89,15 +74,12 @@ const TrainerMypage = () => {
       <div className="bg-white rounded-lg shadow-md p-4 mb-4">
         <h2 className="text-lg font-semibold mb-2">내 회원 관리</h2>
         <div className="flex items-center justify-between">
-          <button
-            onClick={() => openModal(<UserModal />)}
-            className="px-1 py-1 text-sm text-base"
-          >
+          <button onClick={() => openModal(<UserModal />)} className="px-1 py-1 text-sm text-base">
             <p>풀도핑 회원님</p>
             <p>(fulldoping12)</p>
           </button>
           <button
-            onClick={() => navigate("/trainerChat")} // 페이지 이동 설정
+            onClick={() => navigate("/trainerChat")}
             className="px-3 py-1 bg-pink-300 text-sm rounded-md"
           >
             1:1 채팅하기
