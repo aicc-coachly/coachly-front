@@ -44,6 +44,8 @@ export function UserMenuButtons({ onClick }) {
       <MenuButton label="마이페이지" to="/usermypage" onClick={onClick} />
       <MenuButton label="트레이너 찾기" to="/trainersearch" onClick={onClick} />
       <MenuButton label="내 채팅방" to="/chatlist" onClick={onClick} />
+      <MenuButton label="로그아웃" to="/" onClick={onClick} />
+
     </>
   );
 }
@@ -54,6 +56,8 @@ export function TrainerMenuButtons({ onClick }) {
       <MenuButton label="마이페이지" to="/trainermypage" onClick={onClick} />
       <MenuButton label="내 수업 가격" to="/pricelist" onClick={onClick} />
       <MenuButton label="내 채팅방" to="/chatlist" onClick={onClick} />
+      <MenuButton label="로그아웃" to="/t" onClick={onClick} />
+      
     </>
   );
 }
