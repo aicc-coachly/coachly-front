@@ -1,14 +1,13 @@
-// src/slices/store.js
 import { configureStore } from '@reduxjs/toolkit';
-import authReducer from './slices/authSlice';
-// import otherReducer from './otherSlice';
+import rootReducer from './rootReducer';
 
 const store = configureStore({
-  reducer: {
-    auth: authReducer,
-    // 다른 슬라이스 추가
-    // other: otherReducer,
-  },
+  reducer: rootReducer,
+  middleware: (getDefaultMiddleware) =>
+    getDefaultMiddleware({
+      serializableCheck: false,
+    }),
+  devTools: process.env.NODE_ENV !== 'production', // 개발 환경에서 Redux DevTools 활성화
 });
 
 export default store;
