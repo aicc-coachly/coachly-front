@@ -7,8 +7,10 @@ const AuthRepository = {
   registerUser: (userData) => axios.post(`${url}/user/signup`, userData),
 
   // 트레이너용 엔드포인트
-  loginTrainer: (credentials) => axios.post("/trainer/login", credentials),
-  registerTrainer: (trainerData) => axios.post("/trainer/signup", trainerData),
+  loginTrainer: (credentials) =>
+    axios.post(`${url}/trainer/login`, credentials),
+  registerTrainer: (trainerData) =>
+    axios.post(`${url}/trainer/signup`, trainerData),
 };
 
 export default AuthRepository;
