@@ -4,7 +4,7 @@ import { loginUser, registerUser } from "../thunks/authThunk";
 const authSlice = createSlice({
   name: "auth",
   initialState: {
-    user: null,
+    user: JSON.parse(localStorage.getItem("user")) || null,
     loading: false,
     error: null,
   },
@@ -12,6 +12,7 @@ const authSlice = createSlice({
     logout: (state) => {
       state.user = null;
       state.error = null;
+      localStorage.removeItem("user");
     },
   },
   extraReducers: (builder) => {
@@ -23,18 +24,17 @@ const authSlice = createSlice({
       .addCase(loginUser.fulfilled, (state, action) => {
         state.loading = false;
         state.user = action.payload;
-        localStorage.setItem("auth", JSON.stringify(action.payload));
-        console.log("로그인 성공:", action.payload);
+        localStorage.setItem("user", JSON.stringify(action.payload)); // 로컬스토리지에 user 저장
       })
       .addCase(loginUser.rejected, (state, action) => {
         state.loading = false;
         state.error = action.error.message;
+        localStorage.removeItem("user"); // 로그아웃 시 로컬 스토리지에서 제거
       })
       .addCase(registerUser.pending, (state) => {
         state.loading = true;
         state.error = null;
         state.status = "pending"; // 상태 업데이트
-        localStorage.removeItem("user"); // 로그아웃 시 로컬 스토리지에서 제거
       })
       .addCase(registerUser.fulfilled, (state, action) => {
         state.loading = false;
