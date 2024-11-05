@@ -10,7 +10,7 @@ import { setTrainer } from "../../redux/silce/authSlice";
 
 const TrainerMypage = () => {
   const { openModal } = useModal();
-  const navigate = useNavigate(); // navigate 함수 생성
+  const navigate = useNavigate();
   const dispatch = useDispatch();
   // 유저 프로필 정보와 상태 관리
   const trainerNumber = useSelector(
@@ -38,24 +38,16 @@ const TrainerMypage = () => {
       <div className="bg-white rounded-lg shadow-md p-4 mb-4 relative">
         <h2 className="text-lg font-semibold mb-2">내 정보</h2>
         <button
-          onClick={() => navigate("/trainerProfile")} // 페이지 이동 설정
+          onClick={() => navigate("/trainerProfile")}
           className="absolute top-4 right-4 px-3 py-1 bg-gray-300 text-sm rounded-full"
         >
           수정하기
         </button>
         <div className="flex items-start mt-4 space-x-4">
-          {/* 프로필 사진 */}
           <div className="w-[8rem] h-[8rem] bg-gray-200 overflow-hidden">
-            {/* <img 
-                    // src="https://via.placeholder.com/64" // 프로필 사진 URL 또는 경로로 대체
-                    alt="프로필 사진" 
-                    className="object-cover w-full h-full"
-                  /> */}
+            {/* 프로필 사진 자리 */}
           </div>
-
-          {/* 텍스트 정보와 체크박스 */}
           <div className="flex-1">
-            {/* 체크박스 */}
             <div className="flex justify-end">
               <label className="inline-flex items-center">
                 <input
@@ -85,15 +77,12 @@ const TrainerMypage = () => {
       <div className="bg-white rounded-lg shadow-md p-4 mb-4">
         <h2 className="text-lg font-semibold mb-2">내 회원 관리</h2>
         <div className="flex items-center justify-between">
-          <button
-            onClick={() => openModal(<UserModal />)}
-            className="px-1 py-1 text-sm text-base"
-          >
+          <button onClick={() => openModal(<UserModal />)} className="px-1 py-1 text-sm text-base">
             <p>풀도핑 회원님</p>
             <p>(fulldoping12)</p>
           </button>
           <button
-            onClick={() => navigate("/trainerChat")} // 페이지 이동 설정
+            onClick={() => navigate("/trainerChat")}
             className="px-3 py-1 bg-pink-300 text-sm rounded-md"
           >
             1:1 채팅하기

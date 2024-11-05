@@ -1,4 +1,4 @@
-// src/pages/auth/Login.js
+
 import React, { useEffect, useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import axios from "axios";
@@ -50,10 +50,10 @@ function Login() {
   // relative flex justify-between items-center p-4 bg-[#edf1f6]
   return (
     <div className="w-full min-h-screen bg-[#edf1f6] flex flex-col items-center">
+    <div className="w-full min-h-screen bg-[#edf1f6] flex flex-col items-center">
       <div className="w-full max-w-[390px] mt-8 flex flex-col items-center p-6 bg-[#edf1f6]">
         <h2 className="text-2xl font-semibold text-[#081f5c] mb-6 text-center">
-          AI 챗봇과 전문 트레이너가 함께하는
-          <br /> 나만의 피트니스 여정을 시작해보세요
+          AI 챗봇과 전문 트레이너가 함께하는<br /> 나만의 피트니스 여정을 시작해보세요
         </h2>
 
         {/* 회원 구분 선택 */}
@@ -100,15 +100,15 @@ function Login() {
 
         {/* 로그인 버튼 */}
         <Buttons size="middle" onClick={handleLogin}>
-          로그인
+          로그인 
         </Buttons>
 
         {/* 회원가입 안내 */}
-        <p className="text-center text-[#081f5c] my-7">
-          아직 계정이 없으신가요?
-        </p>
+        <p className="text-center text-[#081f5c] my-7">아직 계정이 없으신가요?</p>
         <Link to="/sortsignup">
-          <Buttons size="middle">회원가입</Buttons>
+          <Buttons size="middle">
+            회원가입
+          </Buttons>
         </Link>
       </div>
     </div>

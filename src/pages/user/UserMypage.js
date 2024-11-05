@@ -17,6 +17,8 @@ function UserMypage() {
   const profile = useSelector((state) => state.user?.data); // Redux에서 프로필 정보 가져오기
   const [isLoading, setIsLoading] = useState(true); // 로딩 상태
 
+  console.log("UserMypage 컴포넌트 렌더링"); // 컴포넌트가 렌더링될 때마다 로그
+
   useEffect(() => {
     if (userId) {
       dispatch(getUser(userId)); // userId가 존재할 때 유저 정보 불러오기
@@ -81,9 +83,9 @@ function UserMypage() {
         <h2 className="text-lg font-semibold p-2">담당 트레이너</h2>
         <div className="flex items-center justify-between bg-gray-300 p-1">
           <p className="text-base text-sm">이건 트레이너</p>
-          <button
-            onClick={() => navigate("/UserChat")} // 페이지 이동 설정
-            className="px-3 py-1 bg-pink-300 text-sm rounded-md"
+          <button 
+            onClick={() => navigate('/UserChat')}  // 페이지 이동 설정
+            className="px-3 py-1 bg-pink-300 text-sm  rounded-md"
           >
             1:1 채팅하기
           </button>
@@ -96,26 +98,27 @@ function UserMypage() {
         <div className="flex items-center justify-between bg-gray-300 p-1">
           <p className="text-base text-sm">이건 트레이너</p>
           <span className="text-sm text-gray-500">24-11-01</span>
-          <button
-            onClick={() => openModal(<CheckScheduleModal />)}
+          <button 
+            onClick={() => openModal(<CheckScheduleModal />)} 
             className="text-center px-3 py-1 bg-pink-300 text-sm rounded-md"
           >
             자세히 보기
           </button>
         </div>
       </div>
+
       {/* 인바디 세션*/}
       <div className="bg-white rounded-lg shadow-md p-2 mb-4">
-        <div className="flex justify-between p-2">
+        <div className='flex justify-between p-2'>
           <h2 className="text-lg font-semibold">나의 체성분 기록</h2>
-          <button
-            onClick={() => openModal(<BodyCompositionModal />)}
+          <button 
+            onClick={() => openModal(<BodyCompositionModal />)} 
             className="text-center px-3 py-1 bg-pink-300 text-sm rounded-md"
           >
             추가하기
           </button>
         </div>
-
+          
         <div className="flex items-center justify-between bg-gray-300 p-1">
           <p className="text-base text-sm">첫번째 인바디</p>
           <span className="text-sm text-gray-500"></span>
@@ -131,4 +134,4 @@ function UserMypage() {
   );
 }
 
-export default UserMypage;
+export default UserMypage
