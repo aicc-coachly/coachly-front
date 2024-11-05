@@ -1,41 +1,46 @@
 // src/pages/auth/Login.js
 import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
-
+import { useDispatch } from 'react-redux';
+import { setUserType } from '../../redux/slices/authSlice';
 import Buttons from '../../components/common/Buttons';
 
 function Login() {
   const navigate = useNavigate();
-  const [userType, setUserType] = useState('trainer'); // 'trainer' 또는 'user'
+  const dispatch = useDispatch();
+  const [userType, setUserTypeLocal] = useState('trainer'); // 로컬 상태로 회원타입 관리
   const [id, setId] = useState('');
   const [password, setPassword] = useState('');
 
   const handleLogin = () => {
+    // 선택된 회원타입을 Redux 전역 상태에 설정
+    dispatch(setUserType(userType));
+
+    // 로그인 후 페이지 이동
     if (userType === 'trainer') {
       navigate('/trainermypage'); // 트레이너 메인 페이지로 이동
     } else {
       navigate('/usermypage'); // 유저 메인 페이지로 이동
     }
   };
-  // relative flex justify-between items-center p-4 bg-[#edf1f6]
-  return (
-    <div className="w-full  min-h-screen bg-[#edf1f6] flex flex-col items-center">
-  
 
+  return (
+    <div className="w-full min-h-screen bg-[#edf1f6] flex flex-col items-center">
       <div className="w-full max-w-[390px] mt-8 flex flex-col items-center p-6 bg-[#edf1f6]">
         <h2 className="text-2xl font-semibold text-[#081f5c] mb-6 text-center">
           AI 챗봇과 전문 트레이너가 함께하는<br /> 나만의 피트니스 여정을 시작해보세요
         </h2>
+        
         {/* 회원 구분 선택 */}
         <div className="flex w-full max-w-xs mb-4">
           <button
-            onClick={() => setUserType('trainer')}
+            onClick={() => setUserTypeLocal('trainer')}
             className={`flex-1 py-2 rounded-l-lg ${userType === 'trainer' ? 'bg-[#081f5c] text-white' : 'bg-[#d0e3ff] text-[#081f5c]'}`}
           >
             트레이너
           </button>
           <button
-            onClick={() => setUserType('user')}
+            onClick={() => setUserTypeLocal('user')}
             className={`flex-1 py-2 rounded-r-lg ${userType === 'user' ? 'bg-[#081f5c] text-white' : 'bg-[#d0e3ff] text-[#081f5c]'}`}
           >
             유저
@@ -61,9 +66,8 @@ function Login() {
         />
 
         {/* 로그인 버튼 */}
-   
-        <Buttons size="middle" onClick={handleLogin} >
-           로그인 
+        <Buttons size="middle" onClick={handleLogin}>
+          로그인 
         </Buttons>
 
         {/* 회원가입 안내 */}
