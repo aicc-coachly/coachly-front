@@ -1,13 +1,22 @@
 import { configureStore } from "@reduxjs/toolkit";
-import rootReducer from "./reducer";
+import authReducer from "./silce/authSlice";
+import chatReducer from "./silce/chatSlice";
+import paymentReducer from "./silce/paymentSlice";
+import refundReducer from "./silce/refundSlice";
+import scheduleReducer from "./silce/scheduleSlice";
+import trainerReducer from "./silce/trainerSlice";
+import userReducer from "./silce/userSlice";
 
 const store = configureStore({
-  reducer: rootReducer,
-  middleware: (getDefaultMiddleware) =>
-    getDefaultMiddleware({
-      serializableCheck: false,
-    }),
-  devTools: process.env.NODE_ENV !== 'production', // 개발 환경에서 Redux DevTools 활성화
+  reducer: {
+    auth: authReducer,
+    chat: chatReducer,
+    payment: paymentReducer,
+    refund: refundReducer,
+    schedule: scheduleReducer,
+    trainer: trainerReducer,
+    user: userReducer,
+  },
 });
 
 export default store;

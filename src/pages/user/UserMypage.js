@@ -3,52 +3,41 @@ import { useModal } from "../../components/common/ModalProvider";
 import { useNavigate } from "react-router-dom"; // useNavigate 추가
 import { CheckScheduleModal } from "../../components/trainer/CheckScheduleModal";
 import { BodyCompositionModal } from "../../components/user/BodyCompositionModal";
+import { EditBodyCompositionModal } from "../../components/user/EditBodyCompositionModal";
+
 import { useDispatch, useSelector } from "react-redux";
-import { fetchUserProfile } from "../../redux/thunks/userThunks";
-import { EditBodyCompositionModal } from '../../components/user/EditBodyCompositionModal';
+import { getUser } from "../../redux/silce/userSlice";
+import { setUser } from "../../redux/silce/authSlice";
 
 function UserMypage() {
   const dispatch = useDispatch();
   const { openModal } = useModal();
   const navigate = useNavigate(); // navigate 함수 생성
-  const userId = useSelector((state) => state?.auth?.user?.user_id); // userId 접근 안전성 추가
-  const profile = useSelector((state) => state?.user?.profile || {}); // profile 접근 안전성 추가
+  const userId = useSelector((state) => state.auth?.user?.user_id); // Redux에서 user_id를 가져옵니다.
+  const profile = useSelector((state) => state.user?.data); // Redux에서 프로필 정보 가져오기
   const [isLoading, setIsLoading] = useState(true); // 로딩 상태
 
   console.log("UserMypage 컴포넌트 렌더링"); // 컴포넌트가 렌더링될 때마다 로그
 
   useEffect(() => {
-    console.log("userId 상태 변화:", userId); // userId 변경 시 로그
-    // userId가 존재하면 프로필을 fetchUserProfile로 가져옴
     if (userId) {
-      console.log("userId가 존재하여 fetchUserProfile 디스패치:", userId);
-      dispatch(fetchUserProfile(userId)); // Redux로 프로필을 가져오는 액션 디스패치
+      dispatch(getUser(userId)); // userId가 존재할 때 유저 정보 불러오기
+    } else {
+      const storedUser = JSON.parse(localStorage.getItem("user"));
+      if (storedUser) {
+        dispatch(setUser(storedUser)); // localStorage에서 유저 정보 가져오기
+      }
     }
-  }, [userId, dispatch]);
+  }, [dispatch, userId]);
 
-  useEffect(() => {
-    console.log("profile 상태 변화:", profile); // profile 변경 시 로그
-    if (profile) {
-      console.log("profile이 존재하여 fetchUserProfile 실행:", profile.user_id);
-      dispatch(fetchUserProfile(profile.user_id));
-      setIsLoading(false); // 프로필 로딩 완료되면 로딩 상태 변경
-    }
-  }, [profile, dispatch]);
+  // useEffect(() => {
+  //   if (profile) {
+  //     setIsLoading(false);
+  //   }
+  // }, [profile]);
 
-  // 로딩 중이면 로딩 화면을 표시
-  if (isLoading) {
-    console.log("로딩 중..."); // 로딩 상태일 때 로그
-    return <div>로딩 중...</div>;
-  }
-
-  // 프로필이 없으면 로그인 페이지로 리디렉션
-  if (!profile) {
-    console.log("profile이 존재하지 않음. 로그인 페이지로 리디렉션"); // profile이 없을 때 로그
-    navigate("/");
-    return (
-      <div>프로필 정보를 가져오지 못했습니다. 로그인 상태를 확인해주세요.</div>
-    );
-  }
+  // console.log(userId);
+  // console.log(profile);
 
   return (
     <div className="max-w-[390px] mx-auto bg-gray-100 p-4">
@@ -76,14 +65,15 @@ function UserMypage() {
             {/* 체크박스 */}
             <div className="flex justify-end">
               <p className="px-3 py-1 bg-gray-300 text-sm rounded-md">
-                {profile?.user_detail_address || "정보 없음"}
+                {profile?.user_detail_address}
               </p>
             </div>
 
             {/* 텍스트 정보 */}
-            <p className="mt-2 text-base font-medium">{profile?.name || "정보 없음"}</p>
-            <p className="text-sm text-gray-500">{profile?.phone || "정보 없음"}</p>
-            <p className="text-sm text-gray-500">{profile?.email || "정보 없음"}</p>
+            <p className="mt-2 text-base font-medium">{profile?.name}</p>
+            <p className="text-sm text-gray-500">{profile?.email}</p>
+            <p className="text-sm text-gray-500">{profile?.phone}</p>
+            <p className="text-sm text-gray-500">{profile?.gender}</p>
           </div>
         </div>
       </div>
@@ -131,9 +121,9 @@ function UserMypage() {
           
         <div className="flex items-center justify-between bg-gray-300 p-1">
           <p className="text-base text-sm">첫번째 인바디</p>
-          <span className="text-sm text-gray-500">24-11-01</span>
-          <button 
-            onClick={() => openModal(<EditBodyCompositionModal />)} 
+          <span className="text-sm text-gray-500"></span>
+          <button
+            onClick={() => openModal(<EditBodyCompositionModal />)}
             className="text-center px-3 py-1 bg-pink-300 text-sm rounded-md"
           >
             더보기

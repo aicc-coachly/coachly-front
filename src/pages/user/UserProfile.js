@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import { updateUserProfile } from "../../redux/thunks/userThunks"; // 프로필 업데이트 액션
 
 const UserProfile = () => {
   const dispatch = useDispatch();
@@ -21,20 +20,6 @@ const UserProfile = () => {
     Array.isArray(user?.user_detail_address) ? user?.user_detail_address : [""]
   );
 
-  useEffect(() => {
-    // 유저 정보가 있을 때 프로필 정보 갱신
-    if (profile) {
-      setName(profile.name);
-      setPhone(profile.phone);
-      setEmail(profile.email);
-      setAddress(
-        Array.isArray(profile.user_detail_address)
-          ? profile.user_detail_address
-          : [""]
-      ); // 주소는 배열이어야 함
-    }
-  }, [profile]);
-
   const handleSave = () => {
     const updatedUser = {
       name,
@@ -42,9 +27,6 @@ const UserProfile = () => {
       email,
       address, // 수정된 주소 정보
     };
-
-    // Redux에서 프로필 업데이트를 위한 액션 디스패치
-    dispatch(updateUserProfile(updatedUser));
 
     // 저장 후, 마이페이지로 돌아가기
     navigate("/usermypage");

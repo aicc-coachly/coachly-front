@@ -57,7 +57,6 @@ function TrainerSearch() {
   return (
     <div className="w-full min-h-screen bg-[#edf1f6] flex flex-col items-center p-4">
       <div className="w-full max-w-[390px] mt-4">
-
         {/* 상단 필터 버튼들 */}
         <div className="flex justify-around mb-4">
           <button
@@ -244,8 +243,11 @@ function TrainerSearch() {
         <div className="grid grid-cols-2 gap-4">
           <div className="p-4 border rounded-lg bg-white text-center">
             {/* 트레이너 자세히 보기    */}
-          <button onClick={() => openModal(<TrainerInfoModal />) } calssName="bg-gray-200 w-30 h-24 mb-4">  
-            <div className="bg-gray-200 h-24 mb-6">트레이너 사진</div>
+            <button
+              onClick={() => openModal(<TrainerInfoModal />)}
+              calssName="bg-gray-200 w-30 h-24 mb-4"
+            >
+              <div className="bg-gray-200 h-24 mb-6">트레이너 사진</div>
             </button>
             <p></p>
             <Buttons size="small" onClick={() => handleConsult()}>

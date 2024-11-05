@@ -1,9 +1,12 @@
-import React from 'react';
-import { Link } from 'react-router-dom';
-import { PTModal } from '../trainer/PTModal';
-import { PaymentListModal } from '../trainer/PaymentListModal';
-import { RefundPTModal } from '../user/RefundPTModal';
-import { useModal } from '../../components/common/ModalProvider';
+// src/components/common/Buttons.js
+import React, { useEffect } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import { PTModal } from "../trainer/PTModal";
+import { PaymentListModal } from "../trainer/PaymentListModal";
+import { RefundPTModal } from "../user/RefundPTModal";
+import { useModal } from "../../components/common/ModalProvider";
+import { useDispatch, useSelector } from "react-redux";
+import { logout } from "../../redux/silce/authSlice";
 
 function Buttons({ size, color = '#4831D4', children, onClick }) {
   // 버튼 크기에 따라 클래스 지정
@@ -39,25 +42,39 @@ function Buttons({ size, color = '#4831D4', children, onClick }) {
 // src/components/common/Buttons.js
 
 export function UserMenuButtons({ onClick }) {
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+
+  const handleLogout = () => {
+    dispatch(logout());
+    navigate("/");
+  };
+
   return (
     <>
       <MenuButton label="마이페이지" to="/usermypage" onClick={onClick} />
       <MenuButton label="트레이너 찾기" to="/trainersearch" onClick={onClick} />
       <MenuButton label="내 채팅방" to="/chatlist" onClick={onClick} />
-      <MenuButton label="로그아웃" to="/" onClick={onClick} />
-
+      <MenuButton label="로그아웃" to="/" onClick={handleLogout} />
     </>
   );
 }
 
 export function TrainerMenuButtons({ onClick }) {
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+
+  const handleLogout = () => {
+    dispatch(logout());
+    navigate("/");
+  };
+
   return (
     <>
       <MenuButton label="마이페이지" to="/trainermypage" onClick={onClick} />
       <MenuButton label="내 수업 가격" to="/pricelist" onClick={onClick} />
       <MenuButton label="내 채팅방" to="/chatlist" onClick={onClick} />
-      <MenuButton label="로그아웃" to="/t" onClick={onClick} />
-      
+      <MenuButton label="로그아웃" to="/" onClick={handleLogout} />
     </>
   );
 }

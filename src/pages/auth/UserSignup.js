@@ -1,22 +1,40 @@
 // src/pages/auth/UserSignup.js
-import React, { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom'; 
+import React, { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
+import { userSignup } from "../../redux/silce/authSlice";
 
 function UserSignup() {
   const navigate = useNavigate();
   const [formData, setFormData] = useState({
-    name: '',
-    username: '',
-    password: '',
-    confirmPassword: '',
-    phone: '',
-    email: '',
-    gender: '',
-    birthdate: '',
-    address: '',
-    addressDetail: '',
-    agreeTerms: false
+    user_id: "",
+    pass: "",
+    confirmPassword: "",
+    email: "",
+    name: "",
+    phone: "",
+    gender: "",
+    birth: "",
+    user_zipcode: "",
+    user_address: "",
+    user_detail_address: "",
   });
+
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+
+  // 회원가입 상태 확인
+  const { data, error } = useSelector((state) => state.auth);
+
+  useEffect(() => {
+    if (data) {
+      alert("회원가입이 완료되었습니다!");
+      navigate("/"); // 로그인 페이지로 이동
+    }
+    if (error) {
+      alert("회원가입에 실패했습니다.");
+    }
+  }, [data, error, navigate]);
 
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
@@ -36,14 +54,31 @@ function UserSignup() {
       return;
     }
 
-    if (password !== confirmPassword) {
-      alert('비밀번호와 비밀번호 확인이 일치하지 않습니다.');
-      return;
+    // 필수 필드 검증
+    const requiredFields = [
+      "user_id",
+      "pass",
+      "email",
+      "name",
+      "phone",
+      "gender",
+      "birth",
+      "user_zipcode",
+      "user_address",
+      "user_detail_address",
+    ];
+    for (const field of requiredFields) {
+      if (!formData[field]) {
+        alert(`${field.replace("_", " ")}(을)를 입력해주세요.`);
+        return;
+      }
     }
 
-    // 회원가입 API 호출 등 추가 기능
-    console.log('회원가입 정보:', formData);
-    navigate('/');
+    // DB에 맞는 필드명으로 데이터 매핑
+    const { confirmPassword, ...mappedData } = formData;
+
+    // 회원가입 액션 디스패치
+    dispatch(userSignup(mappedData));
   };
 
   return (

@@ -1,4 +1,4 @@
-import React from 'react';
+import React from "react";
 
 export const BodyCompositionModal = () => {
   return (
@@ -81,7 +81,9 @@ export const BodyCompositionModal = () => {
 
         {/* 내장지방레벨 */}
         <div>
-          <label className="block text-sm font-semibold">내장지방레벨(Lv)</label>
+          <label className="block text-sm font-semibold">
+            내장지방레벨(Lv)
+          </label>
           <input
             type="text"
             className="w-full bg-gray-200 p-2 rounded text-center"
@@ -98,4 +100,3 @@ export const BodyCompositionModal = () => {
     </div>
   );
 };
-

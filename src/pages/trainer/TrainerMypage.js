@@ -3,36 +3,34 @@ import { useModal } from "../../components/common/ModalProvider";
 import { EditScheduleModal } from "../../components/trainer/EditScheduleModal";
 import { CreateScheduleModal } from "../../components/trainer/CreateScheduleModal";
 import { UserModal } from "../../components/user/UserModal";
-import { useNavigate } from "react-router-dom";
-import { fetchTrainerProfile } from "../../redux/thunks/trainerThunks";
+import { useNavigate } from "react-router-dom"; // useNavigate 추가
 import { useDispatch, useSelector } from "react-redux";
+import { getTrainer } from "../../redux/silce/trainerSlice";
+import { setTrainer } from "../../redux/silce/authSlice";
 
 const TrainerMypage = () => {
   const { openModal } = useModal();
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const [trainer, setTrainer] = useState(null);
-
-  // useSelector로 profile을 안전하게 가져오기
-  const profile = useSelector((state) => state?.trainers?.profile || {});
-  const trainerId = trainer?.trainer_number;
-
-  useEffect(() => {
-    // 로컬 스토리지에서 사용자 정보 가져오기
-    const storedTrainer = localStorage.getItem("trainer");
-
-    if (storedTrainer) {
-      setTrainer(JSON.parse(storedTrainer));
-    }
-  }, []);
+  // 유저 프로필 정보와 상태 관리
+  const trainerNumber = useSelector(
+    (state) => state.auth?.trainer?.trainer_number
+  );
+  const profile = useSelector((state) => state.trainer?.data);
 
   useEffect(() => {
-    if (trainerId) {
-      dispatch(fetchTrainerProfile(trainerId));
+    if (trainerNumber) {
+      dispatch(getTrainer(trainerNumber)); // trainerNumber가 존재할 때 트레이너 정보 불러오기
+    } else {
+      const storedTrainer = JSON.parse(localStorage.getItem("trainer"));
+      if (storedTrainer) {
+        dispatch(setTrainer(storedTrainer)); // localStorage에서 트레이너 정보 가져오기
+      }
     }
-  }, [trainerId, dispatch]);
+  }, [dispatch, trainerNumber]);
 
-  console.log("프로필 정보:", profile);
+  // console.log(trainerNumber);
+  // console.log(profile);
 
   return (
     <div className="max-w-[390px] mx-auto bg-gray-100 p-4">
@@ -59,12 +57,17 @@ const TrainerMypage = () => {
                 <span className="ml-2 text-sm">수업 그만 받기</span>
               </label>
             </div>
-            <p className="mt-2 text-base font-medium">{profile?.name || "정보 없음"}</p>
-            <p className="text-sm text-gray-500">{profile?.phone || "정보 없음"}</p>
+
+            {/* 텍스트 정보 */}
+            <p className="mt-2 text-base font-medium">{profile?.name}</p>
+            <p className="text-sm text-gray-500">{profile?.phone}</p>
+
+            {/* 태그들 */}
             <div className="flex mt-2 space-x-2">
               <p className="px-3 py-1 bg-gray-300 text-sm rounded-md">
-                {profile?.address || "정보 없음"}
+                {profile?.trainer_detail_address}
               </p>
+              <p className="px-3 py-1 bg-gray-300 text-sm rounded-md">{}</p>
             </div>
           </div>
         </div>
