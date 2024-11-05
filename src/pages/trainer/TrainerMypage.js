@@ -4,37 +4,33 @@ import { EditScheduleModal } from "../../components/trainer/EditScheduleModal";
 import { CreateScheduleModal } from "../../components/trainer/CreateScheduleModal";
 import { UserModal } from "../../components/user/UserModal";
 import { useNavigate } from "react-router-dom"; // useNavigate 추가
-import { fetchTrainerProfile } from "../../redux/thunks/trainerThunks";
 import { useDispatch, useSelector } from "react-redux";
+import { getTrainer } from "../../redux/silce/trainerSlice";
+import { setTrainer } from "../../redux/silce/authSlice";
 
 const TrainerMypage = () => {
   const { openModal } = useModal();
   const navigate = useNavigate(); // navigate 함수 생성
   const dispatch = useDispatch();
-  const [trainer, setTrainer] = useState(null);
   // 유저 프로필 정보와 상태 관리
-  const profile = useSelector((state) => state.trainers.profile);
-  const trainerId = trainer?.trainer_number;
+  const trainerNumber = useSelector(
+    (state) => state.auth?.trainer?.trainer_number
+  );
+  const profile = useSelector((state) => state.trainer?.data);
 
   useEffect(() => {
-    // 로컬 스토리지에서 사용자 정보 가져오기
-    const storedTrainer = localStorage.getItem("trainer");
-
-    if (storedTrainer) {
-      // JSON으로 파싱하여 사용자 정보 상태에 저장
-      setTrainer(JSON.parse(storedTrainer));
+    if (trainerNumber) {
+      dispatch(getTrainer(trainerNumber)); // trainerNumber가 존재할 때 트레이너 정보 불러오기
+    } else {
+      const storedTrainer = JSON.parse(localStorage.getItem("trainer"));
+      if (storedTrainer) {
+        dispatch(setTrainer(storedTrainer)); // localStorage에서 트레이너 정보 가져오기
+      }
     }
-    // console.log(storedTrainer);
-  }, []);
+  }, [dispatch, trainerNumber]);
 
-  useEffect(() => {
-    if (trainerId) {
-      // 유저 아이디가 존재하면 프로필 정보를 가져옴
-      dispatch(fetchTrainerProfile(trainerId));
-    }
-  }, [trainerId, dispatch]);
-  console.log(profile);
-  // console.log(trainerId);
+  // console.log(trainerNumber);
+  // console.log(profile);
 
   return (
     <div className="max-w-[390px] mx-auto bg-gray-100 p-4">
@@ -71,15 +67,15 @@ const TrainerMypage = () => {
             </div>
 
             {/* 텍스트 정보 */}
-            <p className="mt-2 text-base font-medium">정혜현</p>
-            <p className="text-sm text-gray-500">010-1234-5678</p>
+            <p className="mt-2 text-base font-medium">{profile?.name}</p>
+            <p className="text-sm text-gray-500">{profile?.phone}</p>
 
             {/* 태그들 */}
             <div className="flex mt-2 space-x-2">
               <p className="px-3 py-1 bg-gray-300 text-sm rounded-md">
-                동대문구
+                {profile?.trainer_detail_address}
               </p>
-              <p className="px-3 py-1 bg-gray-300 text-sm rounded-md">종로구</p>
+              <p className="px-3 py-1 bg-gray-300 text-sm rounded-md">{}</p>
             </div>
           </div>
         </div>

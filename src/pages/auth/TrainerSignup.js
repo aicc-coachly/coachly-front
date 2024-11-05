@@ -3,8 +3,7 @@
 import React, { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import { RegisterTrainer } from "../../redux/thunks/authThunk";
-// import { SelectAuthStatus, SelectTrainerError } from "../../redux";
+
 import axios from "axios";
 
 function TrainerSignup() {
@@ -170,61 +169,63 @@ function TrainerSignup() {
     }));
   };
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    if (!formData.agreeTerms) {
-      alert("개인정보 수집 및 활용에 동의해야 합니다.");
-      return;
-    }
+  const handleSubmit = () => {};
 
-    const data = new FormData();
-    Object.entries(formData).forEach(([key, value]) => {
-      if (key === "price_options") {
-        // 가격 옵션 구조에 맞춰서 처리
-        const oneDayOption = {
-          option: "원데이 클래스",
-          amount: value.one_day.amount,
-          frequency: 1, // 원데이 클래스는 항상 1회
-        };
-        data.append(`price_options[]`, JSON.stringify(oneDayOption));
+  // const handleSubmit = async (e) => {
+  //   e.preventDefault();
+  //   if (!formData.agreeTerms) {
+  //     alert("개인정보 수집 및 활용에 동의해야 합니다.");
+  //     return;
+  //   }
 
-        const packageOption = {
-          option: "패키지",
-          amount: value.per_session.amount,
-          frequency: value.per_session.frequency,
-        };
-        data.append(`price_options[]`, JSON.stringify(packageOption));
-      } else if (key === "service_options") {
-        value.forEach((item) => data.append(`${key}[]`, item));
-      } else {
-        data.append(key, value);
-      }
-    });
+  //   const data = new FormData();
+  //   Object.entries(formData).forEach(([key, value]) => {
+  //     if (key === "price_options") {
+  //       // 가격 옵션 구조에 맞춰서 처리
+  //       const oneDayOption = {
+  //         option: "원데이 클래스",
+  //         amount: value.one_day.amount,
+  //         frequency: 1, // 원데이 클래스는 항상 1회
+  //       };
+  //       data.append(`price_options[]`, JSON.stringify(oneDayOption));
 
-    if (selectedImage) {
-      data.append("trainer_image", selectedImage);
-    }
+  //       const packageOption = {
+  //         option: "패키지",
+  //         amount: value.per_session.amount,
+  //         frequency: value.per_session.frequency,
+  //       };
+  //       data.append(`price_options[]`, JSON.stringify(packageOption));
+  //     } else if (key === "service_options") {
+  //       value.forEach((item) => data.append(`${key}[]`, item));
+  //     } else {
+  //       data.append(key, value);
+  //     }
+  //   });
 
-    try {
-      const response = await axios.post(
-        "http://localhost:8000/trainer/signup",
-        data,
-        {
-          headers: { "Content-Type": "multipart/form-data" },
-        }
-      );
-      if (response.status === 200 || response.status === 201) {
-        alert("회원가입이 완료되었습니다!");
-        navigate("/login");
-      } else {
-        alert("회원가입에 실패했습니다. 다시 시도해주세요.");
-      }
-    } catch (error) {
-      console.error("회원가입 오류:", error);
-      alert("오류가 발생했습니다. 다시 시도해주세요.");
-    }
-    console.log(formData);
-  };
+  //   if (selectedImage) {
+  //     data.append("trainer_image", selectedImage);
+  //   }
+
+  //   try {
+  //     const response = await axios.post(
+  //       "http://localhost:8000/trainer/signup",
+  //       data,
+  //       {
+  //         headers: { "Content-Type": "multipart/form-data" },
+  //       }
+  //     );
+  //     if (response.status === 200 || response.status === 201) {
+  //       alert("회원가입이 완료되었습니다!");
+  //       navigate("/login");
+  //     } else {
+  //       alert("회원가입에 실패했습니다. 다시 시도해주세요.");
+  //     }
+  //   } catch (error) {
+  //     console.error("회원가입 오류:", error);
+  //     alert("오류가 발생했습니다. 다시 시도해주세요.");
+  //   }
+  //   console.log(formData);
+  // };
 
   // 회원가입 성공 또는 실패 시 처리
   // useEffect(() => {

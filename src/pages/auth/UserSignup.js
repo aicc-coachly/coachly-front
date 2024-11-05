@@ -2,11 +2,7 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import { registerUser } from "../../redux/thunks/authThunk";
-import {
-  selectAuthStatus,
-  selectUserError,
-} from "../../redux/slices/authSlice";
+import { userSignup } from "../../redux/silce/authSlice";
 
 function UserSignup() {
   const [formData, setFormData] = useState({
@@ -25,8 +21,19 @@ function UserSignup() {
 
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const authStatus = useSelector(selectAuthStatus);
-  const userError = useSelector(selectUserError);
+
+  // 회원가입 상태 확인
+  const { data, error } = useSelector((state) => state.auth);
+
+  useEffect(() => {
+    if (data) {
+      alert("회원가입이 완료되었습니다!");
+      navigate("/"); // 로그인 페이지로 이동
+    }
+    if (error) {
+      alert("회원가입에 실패했습니다.");
+    }
+  }, [data, error, navigate]);
 
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
@@ -56,6 +63,7 @@ function UserSignup() {
       "birth",
       "user_zipcode",
       "user_address",
+      "user_detail_address",
     ];
     for (const field of requiredFields) {
       if (!formData[field]) {
@@ -66,20 +74,10 @@ function UserSignup() {
 
     // DB에 맞는 필드명으로 데이터 매핑
     const { confirmPassword, ...mappedData } = formData;
-    console.log(mappedData);
 
     // 회원가입 액션 디스패치
-    dispatch(registerUser(mappedData));
+    dispatch(userSignup(mappedData));
   };
-
-  useEffect(() => {
-    if (authStatus === "success") {
-      alert("회원가입이 완료되었습니다.");
-      navigate("/login"); // 로그인 페이지로 이동
-    } else if (authStatus === "failed" && userError) {
-      alert(`회원가입 실패: ${userError}`);
-    }
-  }, [authStatus, userError, navigate]);
 
   return (
     <div className="max-w-[390px] mx-auto p-6 bg-white rounded-lg shadow-md mt-0 overflow-y-auto h-screen">
