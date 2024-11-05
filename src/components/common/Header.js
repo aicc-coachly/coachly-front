@@ -27,7 +27,7 @@ function Header() {
       </Link>
 
       {/* 로그인 후에만 토글 버튼 보이기 */}
-      {!hideMenuBar && isLoggedIn && (
+      {!hideMenuBar && (
         <>
           <button onClick={toggleMenu} className="text-2xl">
             {menuOpen ? '✕' : '≡'}
