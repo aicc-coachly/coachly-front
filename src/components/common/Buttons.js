@@ -1,12 +1,3 @@
-// src/components/common/Buttons.js
-import React from "react";
-import { Link } from "react-router-dom";
-import { PTModal } from "../trainer/PTModal";
-import { PaymentListModal } from "../trainer/PaymentListModal";
-import { RefundPTModal } from "../user/RefundPTModal";
-import { useModal } from "../../components/common/ModalProvider";
-
-function Buttons({ size, color = "#4831D4", children, onClick }) {
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { PTModal } from '../trainer/PTModal';
@@ -17,7 +8,6 @@ import { useModal } from '../../components/common/ModalProvider';
 function Buttons({ size, color = '#4831D4', children, onClick }) {
   // 버튼 크기에 따라 클래스 지정
   let buttonClasses = "rounded font-semibold flex items-center justify-center";
-  let buttonClasses = 'rounded font-semibold flex items-center justify-center ';
 
   switch (size) {
     case "big":

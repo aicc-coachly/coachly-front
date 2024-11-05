@@ -4,8 +4,7 @@ import { useNavigate } from "react-router-dom"; // useNavigate 추가
 import { CheckScheduleModal } from "../../components/trainer/CheckScheduleModal";
 import { BodyCompositionModal } from "../../components/user/BodyCompositionModal";
 import { useDispatch, useSelector } from "react-redux";
-import { loginUser } from "../../redux/thunks/authThunk";
-import { fetchUserProfile } from "../../redux/thunks/userThunk";
+import { fetchUserProfile } from "../../redux/thunks/userThunks";
 import { EditBodyCompositionModal } from '../../components/user/EditBodyCompositionModal';
 
 

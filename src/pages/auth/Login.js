@@ -1,16 +1,16 @@
-// src/pages/auth/Login.js
-import React, { useState } from 'react';
-import { useNavigate, Link } from 'react-router-dom';
-import { useDispatch } from 'react-redux';
-import { setUserType } from '../../redux/slices/authSlice';
-import { loginUser } from '../../redux/thunks/authThunks';
-import Buttons from '../../components/common/Buttons';
+
 import React, { useEffect, useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import axios from "axios";
 import Buttons from "../../components/common/Buttons";
-import { useSelector } from "react-redux";
-import { fetchUserProfile } from "../../redux/thunks/userThunk";
+
+import { useDispatch } from 'react-redux';
+import { setUserType } from '../../redux/slices/authSlice';
+import { loginUser } from '../../redux/thunks/authThunks';
+
+
+
+
 
 function Login() {
   const navigate = useNavigate();

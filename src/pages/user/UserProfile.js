@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import { updateUserProfile } from "../../redux/thunks/userThunk"; // 프로필 업데이트 액션
+import { updateUserProfile } from "../../redux/thunks/userThunks"; // 프로필 업데이트 액션
 
 const UserProfile = () => {
   const dispatch = useDispatch();

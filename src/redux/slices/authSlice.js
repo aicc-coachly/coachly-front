@@ -1,6 +1,6 @@
 // src/redux/slices/authSlice.js
 import { createSlice } from '@reduxjs/toolkit';
-import {loginUser} from '../thunks/authThunks'
+import {loginUser, registerUser} from '../thunks/authThunks'
 const authSlice = createSlice({
   name: 'auth',
   initialState: {
@@ -46,7 +46,7 @@ const authSlice = createSlice({
         state.status = "failed"; // 상태 업데이트
       });
   },
-}});
+});
 
 export const { setUserType } = authSlice.actions;
 export default authSlice.reducer;
