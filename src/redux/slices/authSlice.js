@@ -1,23 +1,36 @@
-// src/slices/authSlice.js
+// src/redux/slices/authSlice.js
 import { createSlice } from '@reduxjs/toolkit';
-
+import {loginUser} from '../thunks/authThunks'
 const authSlice = createSlice({
   name: 'auth',
   initialState: {
-    userType: null, // 'trainer', 'user', 또는 null
-    isLoggedIn: false, // 로그인 여부 상태
+    user: null,
+    userType: null,
+    error: null,
+    loading: false,
   },
   reducers: {
     setUserType: (state, action) => {
       state.userType = action.payload;
-      state.isLoggedIn = true; // 로그인 시 isLoggedIn을 true로 설정
     },
-    clearUserType: (state) => {
-      state.userType = null;
-      state.isLoggedIn = false; // 로그아웃 시 isLoggedIn을 false로 설정
-    },
+  },
+  extraReducers: (builder) => {
+    builder
+      .addCase(loginUser.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(loginUser.fulfilled, (state, action) => {
+        state.loading = false;
+        state.user = action.payload.user; // 서버에서 반환된 유저 정보
+        state.error = null;
+      })
+      .addCase(loginUser.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload || '로그인에 실패했습니다.';
+      });
   },
 });
 
-export const { setUserType, clearUserType } = authSlice.actions;
+export const { setUserType } = authSlice.actions;
 export default authSlice.reducer;

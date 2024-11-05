@@ -3,6 +3,7 @@ import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 import { setUserType } from '../../redux/slices/authSlice';
+import { loginUser } from '../../redux/thunks/authThunks';
 import Buttons from '../../components/common/Buttons';
 
 function Login() {
@@ -13,7 +14,38 @@ function Login() {
   const [password, setPassword] = useState('');
 
   const handleLogin = () => {
-    // 선택된 회원타입을 Redux 전역 상태에 설정
+    // 개별 필드 검증
+    if (!id) {
+      alert('아이디를 입력해 주세요.');
+      return;
+    }
+    if (!password) {
+      alert('비밀번호를 입력해 주세요.');
+      return;
+    }
+
+    const handleLogin = async () => {
+      if (!id) {
+        alert('아이디를 입력해 주세요.');
+        return;
+      }
+      if (!password) {
+        alert('비밀번호를 입력해 주세요.');
+        return;
+      }
+  
+      // 로그인 요청 보내기
+      const loginData = { id, password };
+      const resultAction = await dispatch(loginUser(loginData));
+  
+      // 로그인 성공 시 페이지 이동
+      if (loginUser.fulfilled.match(resultAction)) {
+        dispatch(setUserType(userType));
+        navigate(userType === 'trainer' ? '/trainermypage' : '/usermypage');
+      }
+    };
+
+    // 선택된 회원 타입을 Redux 전역 상태에 설정
     dispatch(setUserType(userType));
 
     // 로그인 후 페이지 이동
@@ -34,14 +66,14 @@ function Login() {
         {/* 회원 구분 선택 */}
         <div className="flex w-full max-w-xs mb-4">
           <button
-            onClick={() => setUserTypeLocal('trainer')}
-            className={`flex-1 py-2 rounded-l-lg ${userType === 'trainer' ? 'bg-[#081f5c] text-white' : 'bg-[#d0e3ff] text-[#081f5c]'}`}
+            onClick={() => setUserType('trainer')}
+            className={`flex-1 py-2 rounded-l-lg ${userType === 'trainer' ? 'bg-[#4831D4] text-[#CCF381]' : 'bg-[#CCF381] text-[#081f5c]'}`}
           >
             트레이너
           </button>
           <button
-            onClick={() => setUserTypeLocal('user')}
-            className={`flex-1 py-2 rounded-r-lg ${userType === 'user' ? 'bg-[#081f5c] text-white' : 'bg-[#d0e3ff] text-[#081f5c]'}`}
+            onClick={() => setUserType('user')}
+            className={`flex-1 py-2 rounded-r-lg ${userType === 'user' ? 'bg-[#4831D4] text-[#CCF381]' : 'bg-[#CCF381] text-[#081f5c]'}`}
           >
             유저
           </button>

@@ -1,6 +1,6 @@
 import React from 'react';
 
-export const BodyCompositionModal = () => {
+export const EditBodyCompositionModal = () => {
   return (
     <div className="max-w-sm p-6 rounded-lg relative">
       <h2 className="text-lg font-bold text-center mb-6">첫번째 기록</h2>
@@ -89,10 +89,13 @@ export const BodyCompositionModal = () => {
         </div>
       </div>
 
-      {/* 저장하기 버튼 */}
+      {/* 수정하기, 삭제하기 버튼 */}
       <div className="flex gap-4 mt-4">
         <button className="w-full bg-pink-200 py-2 rounded text-black font-semibold">
-          저장하기
+          수정하기
+        </button>
+        <button className="w-full bg-pink-200 py-2 rounded text-black font-semibold">
+          삭제하기
         </button>
       </div>
     </div>

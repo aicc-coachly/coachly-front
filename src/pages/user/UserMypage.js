@@ -3,6 +3,7 @@ import { useModal } from '../../components/common/ModalProvider';
 import { useNavigate } from 'react-router-dom'; // useNavigate 추가
 import { CheckScheduleModal } from '../../components/trainer/CheckScheduleModal';
 import { BodyCompositionModal } from '../../components/user/BodyCompositionModal';
+import { EditBodyCompositionModal } from '../../components/user/EditBodyCompositionModal';
 
 
 function UserMypage() {
@@ -54,7 +55,7 @@ function UserMypage() {
                     <p className="text-base text-sm">이건 트레이너</p>
                     <button 
                     onClick={() => navigate('/UserChat')}  // 페이지 이동 설정
-                    className="px-3 py-1 bg-pink-300 text-sm rounded-md"
+                    className="px-3 py-1 bg-pink-300 text-sm  rounded-md"
                 >
                     1:1 채팅하기
                 </button>
@@ -91,7 +92,7 @@ function UserMypage() {
                     <p className="text-base text-sm">첫번째 인바디</p>
                     <span className="text-sm text-gray-500">24-11-01</span>
                     <button 
-                    onClick={() => openModal(<BodyCompositionModal />)} 
+                    onClick={() => openModal(<EditBodyCompositionModal />)} 
                     className="text-center px-3 py-1 bg-pink-300 text-sm rounded-md"
                 >
                     더보기

@@ -1,8 +1,9 @@
 // src/pages/auth/UserSignup.js
 import React, { useState } from 'react';
-import {Link } from 'react-router-dom'; 
+import { Link, useNavigate } from 'react-router-dom'; 
 
 function UserSignup() {
+  const navigate = useNavigate();
   const [formData, setFormData] = useState({
     name: '',
     username: '',
@@ -27,13 +28,27 @@ function UserSignup() {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    console.log('회원가입 정보:', formData);
+    
+    // 필수 값이 입력되었는지 확인하는 검증
+    const { name, username, password, confirmPassword, phone, email, birthdate, address, agreeTerms } = formData;
+    if (!name || !username || !password || !confirmPassword || !phone || !email || !birthdate || !address || !agreeTerms) {
+      alert('모든 필수 필드를 입력하고 개인정보 수집 동의에 체크해 주세요.');
+      return;
+    }
+
+    if (password !== confirmPassword) {
+      alert('비밀번호와 비밀번호 확인이 일치하지 않습니다.');
+      return;
+    }
+
     // 회원가입 API 호출 등 추가 기능
+    console.log('회원가입 정보:', formData);
+    navigate('/');
   };
 
   return (
     <div className="max-w-[390px] mx-auto p-6 bg-white rounded-lg shadow-md mt-0 overflow-y-auto h-screen">
-      <h2 className="text-2xl font-bold mb-4 text-center">회원가입</h2>
+      <h2 className="text-2xl font-bold mb-4 text-center">회원 회원가입</h2>
       <form onSubmit={handleSubmit}>
         {/* 이름 */}
         <div className="mb-4">
@@ -202,14 +217,11 @@ function UserSignup() {
         </div>
 
         {/* 회원가입 버튼 */}
-       
-        <Link to="/" className="flex justify-center flex-grow">    
         <button type="submit" className="w-full bg-[#081f5c] text-white py-2 rounded hover:bg-[#041c3d]">
-            회원가입 하기
-          </button>
-          </Link>
+          회원가입 하기
+        </button>
 
-          <div className="h-16"></div>
+        <div className="h-16"></div>
       </form>
     </div>
   );
