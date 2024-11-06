@@ -19,10 +19,11 @@ function Login() {
   } = useSelector((state) => state.auth);
 
   useEffect(() => {
-    if (data) {
+    // 로그인 상태가 설정되었고, 'data'가 유효할 때만 리디렉션 실행
+    if (data && loggedInUserType) {
       if (loggedInUserType === "trainer") {
         navigate("/trainermypage");
-      } else {
+      } else if (loggedInUserType === "user") {
         navigate("/usermypage");
       }
     }
@@ -60,7 +61,7 @@ function Login() {
             onClick={() => setUserType("trainer")}
             className={`flex-1 py-2 rounded-l-lg ${
               userType === "trainer"
-                ? "bg-[#4831D4] text-[#CCF381]"
+                ? "bg-[#4831D4] text-white"
                 : "bg-[#CCF381] text-[#081f5c]"
             }`}
           >
@@ -70,7 +71,7 @@ function Login() {
             onClick={() => setUserType("user")}
             className={`flex-1 py-2 rounded-r-lg ${
               userType === "user"
-                ? "bg-[#4831D4] text-[#CCF381]"
+                ? "bg-[#4831D4] text-white"
                 : "bg-[#CCF381] text-[#081f5c]"
             }`}
           >

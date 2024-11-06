@@ -248,7 +248,7 @@ function UserSignup() {
         </div>
 
         {/* 회원가입 버튼 */}
-        <button type="submit" className="w-full bg-[#081f5c] text-white py-2 rounded hover:bg-[#041c3d]">
+        <button type="submit" className="w-full bg-[#4831D4] text-white py-2 rounded hover:bg-[#3824ae]">
           회원가입 하기
         </button>
 
