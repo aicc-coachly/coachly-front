@@ -10,11 +10,15 @@ export async function getRequest(url) {
 
 /* ====== Common Post Request Function ====== */
 export async function postRequest(url, options) {
+  const isFormData = options.body instanceof FormData;
+
   const defaultOptions = {
     method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
+    ...(!isFormData && {
+      headers: {
+        "Content-Type": "application/json",
+      },
+    }),
     ...options,
   };
 
@@ -28,7 +32,15 @@ export async function postRequest(url, options) {
 
 /* ====== Common Patch Request Function ====== */
 export async function patchRequest(url, options) {
-  return await fetch(url, options).then((response) => {
+  const defaultOptions = {
+    method: "PATCH",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    ...options,
+  };
+
+  return await fetch(url, defaultOptions).then((response) => {
     if (!response.ok) {
       throw new Error("Network response was not ok");
     }

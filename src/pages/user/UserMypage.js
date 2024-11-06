@@ -6,24 +6,33 @@ import { BodyCompositionModal } from "../../components/user/BodyCompositionModal
 import { EditBodyCompositionModal } from "../../components/user/EditBodyCompositionModal";
 
 import { useDispatch, useSelector } from "react-redux";
-import { getUser } from "../../redux/silce/userSlice";
-import { setUser } from "../../redux/silce/authSlice";
+import { getUser, getUserInbody } from "../../redux/slice/userSlice";
+import { setUser } from "../../redux/slice/authSlice";
 
 function UserMypage() {
   const dispatch = useDispatch();
   const { openModal } = useModal();
-  const navigate = useNavigate(); // navigate 함수 생성
-  const userId = useSelector((state) => state.auth?.user?.user_id); // Redux에서 user_id를 가져옵니다.
-  const profile = useSelector((state) => state.user?.data); // Redux에서 프로필 정보 가져오기
-  const [isLoading, setIsLoading] = useState(true); // 로딩 상태
+  const navigate = useNavigate();
+  const userId = useSelector((state) => state.auth?.user?.user_id);
+  const inbodyData = useSelector((state) => state.user?.inbodyData || []); // 인바디 데이터 가져오기
+  const profile = useSelector((state) => state.user?.userInfo);
+  const [isLoading, setIsLoading] = useState(true);
+  console.log(inbodyData);
+  // 측정 날짜가 유효한 경우만 포맷하고, 유효하지 않으면 빈 문자열을 반환
+  const formatDate = (date) => {
+    return date ? new Date(date).toISOString().split("T")[0] : "";
+  };
+
+  // console.log(inbodyData);
 
   useEffect(() => {
     if (userId) {
-      dispatch(getUser(userId)); // userId가 존재할 때 유저 정보 불러오기
+      dispatch(getUser(userId));
+      dispatch(getUserInbody(userId)); // 유저의 인바디 데이터 불러오기
     } else {
       const storedUser = JSON.parse(localStorage.getItem("user"));
       if (storedUser) {
-        dispatch(setUser(storedUser)); // localStorage에서 유저 정보 가져오기
+        dispatch(setUser(storedUser));
       }
     }
   }, [dispatch, userId]);
@@ -116,16 +125,25 @@ function UserMypage() {
           </button>
         </div>
 
-        <div className="flex items-center justify-between bg-gray-300 p-1">
-          <p className="text-base text-sm">첫번째 인바디</p>
-          <span className="text-sm text-gray-500"></span>
-          <button
-            onClick={() => openModal(<EditBodyCompositionModal />)}
-            className="text-center px-3 py-1 bg-pink-300 text-sm rounded-md"
-          >
-            더보기
-          </button>
-        </div>
+        {Array.isArray(inbodyData) &&
+          inbodyData.map((inbody, index) => (
+            <div
+              key={index}
+              className="flex items-center justify-between bg-gray-300 p-1 mb-2"
+            >
+              <p className="text-base text-sm">
+                측정날짜: {formatDate(inbody.user_measurement_date)}
+              </p>
+              <button
+                onClick={() =>
+                  openModal(<EditBodyCompositionModal inbodyData={inbody} />)
+                }
+                className="text-center px-3 py-1 bg-pink-300 text-sm rounded-md"
+              >
+                더보기
+              </button>
+            </div>
+          ))}
       </div>
     </div>
   );

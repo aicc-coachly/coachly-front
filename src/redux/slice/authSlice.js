@@ -51,7 +51,7 @@ export const trainerSignup = createAsyncThunk(
   async (trainerData, { rejectWithValue }) => {
     try {
       const response = await postRequest(TRAINER_SIGNUP_URL, {
-        body: JSON.stringify(trainerData),
+        body: trainerData,
       });
       return response;
     } catch (error) {

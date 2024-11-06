@@ -5,8 +5,8 @@ import { CreateScheduleModal } from "../../components/trainer/CreateScheduleModa
 import { UserModal } from "../../components/user/UserModal";
 import { useNavigate } from "react-router-dom"; // useNavigate 추가
 import { useDispatch, useSelector } from "react-redux";
-import { getTrainer } from "../../redux/silce/trainerSlice";
-import { setTrainer } from "../../redux/silce/authSlice";
+import { getTrainer } from "../../redux/slice/trainerSlice";
+import { setTrainer } from "../../redux/slice/authSlice";
 
 const TrainerMypage = () => {
   const { openModal } = useModal();
@@ -17,6 +17,7 @@ const TrainerMypage = () => {
     (state) => state.auth?.trainer?.trainer_number
   );
   const profile = useSelector((state) => state.trainer?.data);
+  console.log(profile);
 
   useEffect(() => {
     if (trainerNumber) {

@@ -32,5 +32,5 @@ export const PATCH_USER_ADDRESS_URL = (user_number) =>
   `${url}/user/${user_number}/address`;
 
 // 사용자 인바디 정보 업데이트
-export const PATCH_USER_INBODY_URL = (user_number) =>
-  `${url}/user/${user_number}/inbody`;
+export const PATCH_USER_INBODY_URL = (user_inbody_number) =>
+  `${url}/inbody/${user_inbody_number}`;

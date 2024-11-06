@@ -5,6 +5,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 
 import axios from "axios";
+import { trainerSignup } from "../../redux/slice/authSlice";
 
 function TrainerSignup() {
   const navigate = useNavigate();
@@ -32,6 +33,19 @@ function TrainerSignup() {
     service_options: [], // 특기 옵션
     trainer_image: "",
   });
+
+  // 회원가입 상태 확인
+  const { data, error } = useSelector((state) => state.auth);
+
+  useEffect(() => {
+    if (data) {
+      alert("회원가입이 완료되었습니다!");
+      navigate("/"); // 로그인 페이지로 이동
+    }
+    if (error) {
+      alert("회원가입에 실패했습니다.");
+    }
+  }, [data, error, navigate]);
 
   const [selectedImage, setSelectedImage] = useState(null); // 이미지 선택 상태
   const optionMap = {
@@ -169,73 +183,43 @@ function TrainerSignup() {
     }));
   };
 
-  const handleSubmit = () => {};
+  const handleSubmit = async (e) => {
+    e.preventDefault();
 
-  // const handleSubmit = async (e) => {
-  //   e.preventDefault();
-  //   if (!formData.agreeTerms) {
-  //     alert("개인정보 수집 및 활용에 동의해야 합니다.");
-  //     return;
-  //   }
+    if (!formData.agreeTerms) {
+      alert("개인정보 수집 및 활용에 동의해야 합니다.");
+      return;
+    }
 
-  //   const data = new FormData();
-  //   Object.entries(formData).forEach(([key, value]) => {
-  //     if (key === "price_options") {
-  //       // 가격 옵션 구조에 맞춰서 처리
-  //       const oneDayOption = {
-  //         option: "원데이 클래스",
-  //         amount: value.one_day.amount,
-  //         frequency: 1, // 원데이 클래스는 항상 1회
-  //       };
-  //       data.append(`price_options[]`, JSON.stringify(oneDayOption));
+    const data = new FormData();
+    Object.entries(formData).forEach(([key, value]) => {
+      if (key === "price_options") {
+        const oneDayOption = {
+          option: "원데이 클래스",
+          amount: value.one_day.amount,
+          frequency: 1,
+        };
+        data.append("price_options[]", JSON.stringify(oneDayOption));
 
-  //       const packageOption = {
-  //         option: "패키지",
-  //         amount: value.per_session.amount,
-  //         frequency: value.per_session.frequency,
-  //       };
-  //       data.append(`price_options[]`, JSON.stringify(packageOption));
-  //     } else if (key === "service_options") {
-  //       value.forEach((item) => data.append(`${key}[]`, item));
-  //     } else {
-  //       data.append(key, value);
-  //     }
-  //   });
+        const packageOption = {
+          option: "패키지",
+          amount: value.per_session.amount,
+          frequency: value.per_session.frequency,
+        };
+        data.append("price_options[]", JSON.stringify(packageOption));
+      } else if (key === "service_options") {
+        value.forEach((item) => data.append(`${key}[]`, item));
+      } else {
+        data.append(key, value);
+      }
+    });
 
-  //   if (selectedImage) {
-  //     data.append("trainer_image", selectedImage);
-  //   }
+    if (selectedImage) {
+      data.append("trainer_image", selectedImage);
+    }
 
-  //   try {
-  //     const response = await axios.post(
-  //       "http://localhost:8000/trainer/signup",
-  //       data,
-  //       {
-  //         headers: { "Content-Type": "multipart/form-data" },
-  //       }
-  //     );
-  //     if (response.status === 200 || response.status === 201) {
-  //       alert("회원가입이 완료되었습니다!");
-  //       navigate("/login");
-  //     } else {
-  //       alert("회원가입에 실패했습니다. 다시 시도해주세요.");
-  //     }
-  //   } catch (error) {
-  //     console.error("회원가입 오류:", error);
-  //     alert("오류가 발생했습니다. 다시 시도해주세요.");
-  //   }
-  //   console.log(formData);
-  // };
-
-  // 회원가입 성공 또는 실패 시 처리
-  // useEffect(() => {
-  //   if (authStatus === "success") {
-  //     alert("회원가입이 완료되었습니다.");
-  //     navigate("/login"); // 로그인 페이지로 이동
-  //   } else if (authStatus === "failed" && trainerError) {
-  //     alert(`회원가입 실패: ${trainerError}`);
-  //   }
-  // }, [authStatus, trainerError, navigate]);
+    dispatch(trainerSignup(data));
+  };
 
   return (
     <div className="flex flex-col min-h-screen">
