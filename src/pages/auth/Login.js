@@ -61,7 +61,7 @@ function Login() {
             onClick={() => setUserType("trainer")}
             className={`flex-1 py-2 rounded-l-lg ${
               userType === "trainer"
-                ? "bg-[#4831D4] text-[#CCF381]"
+                ? "bg-[#4831D4] text-white"
                 : "bg-[#CCF381] text-[#081f5c]"
             }`}
           >
@@ -71,7 +71,7 @@ function Login() {
             onClick={() => setUserType("user")}
             className={`flex-1 py-2 rounded-r-lg ${
               userType === "user"
-                ? "bg-[#4831D4] text-[#CCF381]"
+                ? "bg-[#4831D4] text-white"
                 : "bg-[#CCF381] text-[#081f5c]"
             }`}
           >

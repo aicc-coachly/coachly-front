@@ -239,7 +239,7 @@ function TrainerSignup() {
               name="name"
               value={formData.name}
               onChange={handleChange}
-              className="w-full px-3 py-2 border rounded"
+              className="w-full px-3 py-2 border rounded "
               required
             />
           </div>
@@ -362,29 +362,20 @@ function TrainerSignup() {
               placeholder="자기소개를 입력하세요."
             ></textarea>
           </div>
-          {/* 우편 주소 */}
-          <div className="mb-4">
-            <label htmlFor="trainer_zipcode" className="block mb-2">
-              우편 주소
-            </label>
-            <input
-              type="text"
-              id="trainer_zipcode"
-              name="trainer_zipcode"
-              value={formData.trainer_zipcode}
-              onChange={handleChange}
-              className="w-full px-3 py-2 border rounded"
-              required
-            />
-          </div>
+
           {/* 수업 장소 */}
           <div className="mb-4">
             <label className="block mb-2">수업 장소</label>
             <input
-              type="text"
+              type="number"
               name="trainer_zipcode"
               value={formData.trainer_zipcode}
-              onChange={handleChange}
+              onChange={(e) => {
+                if (/^\d*$/.test(e.target.value) && e.target.value.length <= 5) {
+                  handleChange(e);
+                }
+              }}
+              maxLength="5"
               className="w-full px-3 py-2 border rounded mb-2"
               placeholder="우편번호"
             />
@@ -447,7 +438,7 @@ function TrainerSignup() {
                 name="frequency"
                 value={formData.price_options.per_session.frequency || ""}
                 onChange={(e) => handleFrequencyChange(e.target.value)} // 0~30 범위로 제한
-                className="w-1/5 px-3 py-2 border rounded mr-2"
+                className="w-16 px-2 py-2 border rounded mr-21"
                 placeholder="횟수"
                 min="0"
                 max="30"
@@ -464,7 +455,7 @@ function TrainerSignup() {
                 onChange={(e) =>
                   handleAmountChange("per_session", e.target.value)
                 } // 콤마 추가 후 저장
-                className="w-1/2 px-3 py-2 border rounded ml-2"
+                className="w-32 px-4 py-2 border rounded ml-2  mr-2"
                 placeholder="금액"
               />
               <span className="text-gray-700">원</span>
@@ -567,7 +558,7 @@ function TrainerSignup() {
           <div className="mt-6">
             <button
               type="submit"
-              className="w-full bg-[#081f5c] text-white py-2 rounded hover:bg-[#041c3d]"
+              className="w-full bg-[#4831D4] text-white py-2 rounded hover:bg-[#3824ae]"
             >
               회원가입 하기
             </button>
