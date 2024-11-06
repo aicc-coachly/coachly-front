@@ -19,10 +19,11 @@ function Login() {
   } = useSelector((state) => state.auth);
 
   useEffect(() => {
-    if (data) {
+    // 로그인 상태가 설정되었고, 'data'가 유효할 때만 리디렉션 실행
+    if (data && loggedInUserType) {
       if (loggedInUserType === "trainer") {
         navigate("/trainermypage");
-      } else {
+      } else if (loggedInUserType === "user") {
         navigate("/usermypage");
       }
     }
