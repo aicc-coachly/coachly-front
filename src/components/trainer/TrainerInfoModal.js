@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import Buttons from '../common/Buttons';
 import { useModal } from '../common/ModalProvider';
-import PTModal from './PTModal'; // PTModal을 import
+import {PTModal} from './PTModal'; // PTModal을 import
 
 export const TrainerInfoModal = ({ trainer }) => {
   const { closeModal, openModal } = useModal();
