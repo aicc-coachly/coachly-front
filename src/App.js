@@ -22,6 +22,8 @@ import ChatList from './pages/chat/ChatList';
 import TrainerChat from './pages/chat/TrainerChat';
 import AIChat from './pages/chat/AIChat';
 import Success from './components/common/Success';
+import ChatRoom from './pages/chat/ChatRoom';
+
 
 function App() {
   return (
@@ -43,6 +45,8 @@ function App() {
             <Route path="/trainerchat" element={<TrainerChat />} />
             <Route path="/aichat" element={<AIChat />} />
             <Route path="/Success" element={<Success />} />
+            <Route path="/chatroom" element={<ChatRoom />} />
+
             {/* 트레이너 메인 페이지 */}
             <Route path="/trainerprofile" element={<TrainerProfile />} />
             <Route path="/trainermypage" element={<TrainerMypage />} /> ?

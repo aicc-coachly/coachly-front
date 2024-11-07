@@ -17,7 +17,7 @@ function UserMypage() {
   const profile = useSelector((state) => state.user?.data); // Redux에서 프로필 정보 가져오기
   const [isLoading, setIsLoading] = useState(true); // 로딩 상태
 
-  console.log('UserMypage 컴포넌트 렌더링'); // 컴포넌트가 렌더링될 때마다 로그
+  // console.log("UserMypage 컴포넌트 렌더링"); // 컴포넌트가 렌더링될 때마다 로그
 
   useEffect(() => {
     if (userId) {
@@ -83,8 +83,8 @@ function UserMypage() {
         <h2 className="text-lg font-semibold p-2">담당 트레이너</h2>
         <div className="flex items-center justify-between bg-gray-300 p-1">
           <p className="text-base text-sm">이건 트레이너</p>
-          <button
-            onClick={() => navigate('/UserChat')} // 페이지 이동 설정
+          <button 
+            onClick={() => navigate('/ChatRoom')}  // 페이지 이동 설정
             className="px-3 py-1 bg-pink-300 text-sm  rounded-md"
           >
             1:1 채팅하기
