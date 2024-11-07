@@ -7,7 +7,6 @@ import {
 } from '../../utils/authApiUrl';
 import { postRequest } from '../../utils/requestMethod';
 
-// 초기 상태 설정
 const initialState = {
   user: JSON.parse(localStorage.getItem('user')) || null,
   trainer: JSON.parse(localStorage.getItem('trainer')) || null,
@@ -15,33 +14,28 @@ const initialState = {
   userType: null,
 };
 
-// 사용자 회원가입
-export const userSignup = createAsyncThunk(
-  'user/signup',
-  async (userData, { rejectWithValue }) => {
-    try {
-      const response = await postRequest(USER_SIGNUP_URL, userData); // userData를 data 파라미터로 전달
-      return response;
-    } catch (error) {
-      return rejectWithValue(error.message || '회원가입 실패');
-    }
+export const userSignup = createAsyncThunk("user/signup", async (userData, { rejectWithValue }) => {
+  try {
+    const response = await postRequest(USER_SIGNUP_URL, {
+      body: JSON.stringify(userData),
+    });
+    return response;
+  } catch (error) {
+    return rejectWithValue(error.message || "회원가입 실패");
   }
-);
+});
 
-// 사용자 로그인
-export const userLogin = createAsyncThunk(
-  'user/login',
-  async (loginData, { rejectWithValue }) => {
-    try {
-      const response = await postRequest(USER_LOGIN_URL, loginData); // loginData를 data 파라미터로 전달
-      return response;
-    } catch (error) {
-      return rejectWithValue(error.message || '로그인 실패');
-    }
+export const userLogin = createAsyncThunk("user/login", async (loginData, { rejectWithValue }) => {
+  try {
+    const response = await postRequest(USER_LOGIN_URL, {
+      body: JSON.stringify(loginData),
+    });
+    return response;
+  } catch (error) {
+    return rejectWithValue(error.message || "로그인 실패");
   }
-);
+});
 
-// 트레이너 회원가입
 export const trainerSignup = createAsyncThunk(
   'trainer/signup',
   async (trainerData, { rejectWithValue }) => {
@@ -54,7 +48,6 @@ export const trainerSignup = createAsyncThunk(
   }
 );
 
-// 트레이너 로그인
 export const trainerLogin = createAsyncThunk(
   'trainer/login',
   async (loginData, { rejectWithValue }) => {
@@ -73,18 +66,21 @@ const authSlice = createSlice({
   reducers: {
     setUser: (state, action) => {
       state.user = action.payload;
-      state.userType = 'user';
+      state.userType = "user";
+      localStorage.setItem("userType", "user"); // 로컬 스토리지에 유저 타입 저장
     },
     setTrainer: (state, action) => {
       state.trainer = action.payload;
-      state.userType = 'trainer';
+      state.userType = "trainer";
+      localStorage.setItem("userType", "trainer"); // 로컬 스토리지에 트레이너 타입 저장
     },
     logout: (state) => {
       state.user = null;
       state.trainer = null;
       state.userType = null;
-      localStorage.removeItem('user');
-      localStorage.removeItem('trainer');
+      localStorage.removeItem("user");
+      localStorage.removeItem("trainer");
+      localStorage.removeItem("userType"); // 로그아웃 시 유저 타입 제거
     },
   },
   extraReducers: (builder) => {
