@@ -8,7 +8,9 @@ import './assets/styles/styles.css';
 
 ReactDOM.render(
   <React.StrictMode>
-    <Provider store={store}> {/* Provider로 전체 애플리케이션 감싸기 */}
+    <Provider store={store}>
+      {' '}
+      {/* Provider로 전체 애플리케이션 감싸기 */}
       <App />
     </Provider>
   </React.StrictMode>,
