@@ -1,53 +1,68 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Buttons from "../../components/common/Buttons";
 import { useModal } from "../../components/common/ModalProvider";
 import { TrainerInfoModal } from "../../components/trainer/TrainerInfoModal";
+import axios from "axios";
 
 function TrainerSearch() {
   const { openModal } = useModal();
   const [filters, setFilters] = useState({
-    category: "여성전문",
-    area: "",
-    neighborhood: "",
+    searchTerm: "",
     gender: "",
+    service_option: ""
   });
-  const [showAreaDropdown, setShowAreaDropdown] = useState(false);
-  const [showNeighborhoodDropdown, setShowNeighborhoodDropdown] =
-    useState(false);
-  const [areaSearch, setAreaSearch] = useState("");
-  const [neighborhoodSearch, setNeighborhoodSearch] = useState("");
+  const [trainers, setTrainers] = useState([]);
+  const [filteredTrainers, setFilteredTrainers] = useState([]);
+  const [isSearching, setIsSearching] = useState(false);
 
-  const areaList = ["마포구", "용산구", "강남구", "서초구"];
-  const neighborhoodList = ["방배동", "청룡동", "논현동", "서교동"];
+  // 모든 트레이너 데이터 가져오기
+  useEffect(() => {
+    axios
+      .get("http://localhost:8000/trainers") 
+      .then((response) => {
+        const uniqueTrainers = response.data.filter(
+          (trainer, index, self) =>
+            index === self.findIndex((t) => t.trainer_number === trainer.trainer_number)
+        );
+        setTrainers(uniqueTrainers);
+      })
+      .catch((error) => console.error("Error fetching trainers:", error));
+  }, []);
+
+  // 필터 적용
+  const applyFilters = () => {
+    const searchAddress = filters.searchTerm.trim(); // 검색어에서 공백 제거
+    const filtered = trainers.filter((trainer) => {
+      const matchesService = filters.service_option
+        ? trainer.service_options.includes(filters.service_option)
+        : true;
+      const matchesAddress = searchAddress
+        ? trainer.trainer_detail_address.includes(searchAddress)
+        : true;
+      const matchesGender = filters.gender
+        ? trainer.gender === filters.gender
+        : true;
+      return matchesService && matchesAddress && matchesGender;
+    });
+    setFilteredTrainers(filtered);
+  };
 
   const handleFilterChange = (key, value) => {
     setFilters((prevFilters) => ({
       ...prevFilters,
-      [key]: value,
-    }));
-  };
-
-  const handleToggleAreaDropdown = () => {
-    setShowAreaDropdown((prev) => !prev);
-    setShowNeighborhoodDropdown(false);
-  };
-
-  const handleToggleNeighborhoodDropdown = () => {
-    setShowNeighborhoodDropdown((prev) => !prev);
-    setShowAreaDropdown(false);
-  };
-
-  const handleClearFilter = (key) => {
-    setFilters((prevFilters) => ({
-      ...prevFilters,
-      [key]: "",
+      [key]: prevFilters[key] === value ? "" : value,
     }));
   };
 
   const handleSearch = () => {
-    alert(
-      `검색 결과: ${filters.area}, ${filters.neighborhood}, ${filters.gender}`
-    );
+    setIsSearching(true); 
+    applyFilters();
+    setTimeout(() => setIsSearching(false), 200); 
+  };
+
+  // Show trainer info in a modal with the trainer's image
+  const handleShowTrainerInfo = (trainer) => {
+    openModal(<TrainerInfoModal trainer={trainer} />);
   };
 
   const handleConsult = (trainer) => {
@@ -57,203 +72,95 @@ function TrainerSearch() {
   return (
     <div className="w-full min-h-screen bg-[#edf1f6] flex flex-col items-center p-4">
       <div className="w-full max-w-[390px] mt-4">
-        {/* 상단 필터 버튼들 */}
+
+        {/* 서비스 옵션 필터 버튼들 */}
         <div className="flex justify-around mb-4">
           <button
-            className={`px-4 py-2 rounded ${
-              filters.category === "여성전문"
-                ? "bg-[#081f5c] text-white"
-                : "bg-[#d0e3ff]"
-            }`}
-            onClick={() => handleFilterChange("category", "여성전문")}
+            className={`px-4 py-2 rounded ${filters.service_option === "여성전문" ? "bg-[#4831D4] text-white" : "bg-[#CCF381]"}`}
+            onClick={() => handleFilterChange("service_option", "여성전문")}
           >
             여성전문
           </button>
           <button
-            className={`px-4 py-2 rounded ${
-              filters.category === "재활전무"
-                ? "bg-[#081f5c] text-white"
-                : "bg-[#d0e3ff]"
-            }`}
-            onClick={() => handleFilterChange("category", "교정/재활")}
+            className={`px-4 py-2 rounded ${filters.service_option === "재활전문" ? "bg-[#4831D4] text-white" : "bg-[#CCF381]"}`}
+            onClick={() => handleFilterChange("service_option", "재활전문")}
           >
-            교정/재활
+            재활전문
           </button>
           <button
-            className={`px-4 py-2 rounded ${
-              filters.category === "노인전문"
-                ? "bg-[#081f5c] text-white"
-                : "bg-[#d0e3ff]"
-            }`}
-            onClick={() => handleFilterChange("category", "노인전문")}
+            className={`px-4 py-2 rounded ${filters.service_option === "실버전문" ? "bg-[#4831D4] text-white" : "bg-[#CCF381]"}`}
+            onClick={() => handleFilterChange("service_option", "실버전문")}
           >
             실버전문
           </button>
           <button
-            className={`px-4 py-2 rounded ${
-              filters.category === "선수/대회전문"
-                ? "bg-[#081f5c] text-white"
-                : "bg-[#d0e3ff]"
-            }`}
-            onClick={() => handleFilterChange("category", "선수/대회전문")}
+            className={`px-4 py-2 rounded ${filters.service_option === "선수/대회전문" ? "bg-[#4831D4] text-white" : "bg-[#CCF381]"}`}
+            onClick={() => handleFilterChange("service_option", "선수/대회전문")}
           >
             선수/대회전문
           </button>
         </div>
 
-        {/* 구, 동, 성별 필터 버튼들 */}
-        <div className="flex justify-around mb-4">
+        {/* 주소 검색 및 성별 필터 */}
+        <div className="flex items-center mb-4">
+          <input
+            type="text"
+            placeholder="주소를 입력하세요 (예: 홍대)"
+            value={filters.searchTerm}
+            onChange={(e) => handleFilterChange("searchTerm", e.target.value)}
+            className="flex-1 px-4 py-2 border rounded bg-white text-[#081f5c] border-[#d0e3ff] focus:outline-none mr-2"
+          />
           <button
-            onClick={handleToggleAreaDropdown}
-            className={`px-4 py-2 rounded ${
-              filters.area ? "bg-[#081f5c] text-white" : "bg-[#d0e3ff]"
-            }`}
-          >
-            구
-          </button>
-          <button
-            onClick={handleToggleNeighborhoodDropdown}
-            className={`px-4 py-2 rounded ${
-              filters.neighborhood ? "bg-[#081f5c] text-white" : "bg-[#d0e3ff]"
-            }`}
-          >
-            동
-          </button>
-          <button
-            className={`px-4 py-2 rounded ${
-              filters.gender === "male"
-                ? "bg-[#081f5c] text-white"
-                : "bg-[#d0e3ff]"
-            }`}
+            className={`px-4 py-2 rounded ${filters.gender === "male" ? "bg-[#4831D4] text-white" : "bg-[#CCF381]"}`}
             onClick={() => handleFilterChange("gender", "male")}
           >
             남성
           </button>
           <button
-            className={`px-4 py-2 rounded ${
-              filters.gender === "female"
-                ? "bg-[#081f5c] text-white"
-                : "bg-[#d0e3ff]"
-            }`}
+            className={`px-4 py-2 rounded ml-2 ${filters.gender === "female" ? "bg-[#4831D4] text-white" : "bg-[#CCF381]"}`}
             onClick={() => handleFilterChange("gender", "female")}
           >
             여성
           </button>
-          {/* 검색 버튼 */}
-          <Buttons size="middle" onClick={handleSearch}>
-            검색
-          </Buttons>
         </div>
 
-        {/* 구 검색 드롭다운 */}
-        {showAreaDropdown && (
-          <div className="relative mb-4">
-            <input
-              type="text"
-              placeholder="구 검색"
-              value={areaSearch}
-              onChange={(e) => setAreaSearch(e.target.value)}
-              className="w-full px-3 py-2 border rounded mb-2"
-            />
-            <div className="absolute w-full bg-white border rounded shadow-lg max-h-40 overflow-y-auto">
-              {areaList
-                .filter((area) => area.includes(areaSearch))
-                .map((area) => (
-                  <button
-                    key={area}
-                    onClick={() => {
-                      handleFilterChange("area", area);
-                      setShowAreaDropdown(false);
-                    }}
-                    className={`block w-full text-left px-3 py-2 ${
-                      filters.area === area
-                        ? "bg-[#081f5c] text-white"
-                        : "hover:bg-[#edf1f6]"
-                    }`}
-                  >
-                    {area}
-                  </button>
-                ))}
-            </div>
-          </div>
-        )}
+        {/* 검색 버튼 */}
+        <button
+          onClick={handleSearch}
+          className={`px-4 py-2 rounded w-full ${isSearching ? "bg-[#4831D4] text-[#CCF381]" : "bg-[#4831D4] text-white"}`}
+        >
+          검색
+        </button>
 
-        {/* 동 검색 드롭다운 */}
-        {showNeighborhoodDropdown && (
-          <div className="relative mb-4">
-            <input
-              type="text"
-              placeholder="동 검색"
-              value={neighborhoodSearch}
-              onChange={(e) => setNeighborhoodSearch(e.target.value)}
-              className="w-full px-3 py-2 border rounded mb-2"
-            />
-            <div className="absolute w-full bg-white border rounded shadow-lg max-h-40 overflow-y-auto">
-              {neighborhoodList
-                .filter((neighborhood) =>
-                  neighborhood.includes(neighborhoodSearch)
-                )
-                .map((neighborhood) => (
-                  <button
-                    key={neighborhood}
-                    onClick={() => {
-                      handleFilterChange("neighborhood", neighborhood);
-                      setShowNeighborhoodDropdown(false);
-                    }}
-                    className={`block w-full text-left px-3 py-2 ${
-                      filters.neighborhood === neighborhood
-                        ? "bg-[#081f5c] text-white"
-                        : "hover:bg-[#edf1f6]"
-                    }`}
-                  >
-                    {neighborhood}
-                  </button>
-                ))}
-            </div>
-          </div>
-        )}
-
-        {/* 선택된 구와 동 필터 표시 */}
-        <div className="flex flex-wrap mb-4">
-          {filters.area && (
-            <div className="flex items-center bg-[#d0e3ff] px-3 py-1 rounded mr-2 mb-2">
-              <span>{filters.area}</span>
-              <button
-                onClick={() => handleClearFilter("area")}
-                className="ml-2 text-lg font-semibold text-[#081f5c]"
-              >
-                ×
-              </button>
-            </div>
+       {/* Trainer List or No Results Message */}
+       <div className="grid grid-cols-2 gap-4 mt-4">
+          {filteredTrainers.length > 0 ? (
+            filteredTrainers.map((trainer) => (
+              <div key={trainer.trainer_number} className="p-4 border rounded-lg bg-white text-center">
+                <button onClick={() => handleShowTrainerInfo(trainer)}>
+                  <div className="h-24 mb-4">
+                    <img 
+                      src={`http://localhost:8000/trainers/${trainer.trainer_id}/image`} 
+                      alt={`${trainer.name} 사진`}
+                      aria-hidden="true"
+                      className="w-full h-full object-cover rounded-lg"
+                    />
+                  </div>
+                </button>
+                <p>{trainer.name}</p>
+                <p>{trainer.trainer_address} {trainer.trainer_detail_address}</p>
+                <div className="flex justify-center mt-4">
+                <Buttons size="small" onClick={() => handleConsult(trainer)}>
+                  1:1 상담 받기
+                </Buttons>
+                </div>
+              </div>
+            ))
+          ) : (
+            <p className="text-center text-[#081f5c] mt-6">
+              검색된 트레이너가 없습니다.
+            </p>
           )}
-          {filters.neighborhood && (
-            <div className="flex items-center bg-[#d0e3ff] px-3 py-1 rounded mr-2 mb-2">
-              <span>{filters.neighborhood}</span>
-              <button
-                onClick={() => handleClearFilter("neighborhood")}
-                className="ml-2 text-lg font-semibold text-[#081f5c]"
-              >
-                ×
-              </button>
-            </div>
-          )}
-        </div>
-
-        {/* 트레이너 리스트 */}
-        <div className="grid grid-cols-2 gap-4">
-          <div className="p-4 border rounded-lg bg-white text-center">
-            {/* 트레이너 자세히 보기    */}
-            <button
-              onClick={() => openModal(<TrainerInfoModal />)}
-              calssName="bg-gray-200 w-30 h-24 mb-4"
-            >
-              <div className="bg-gray-200 h-24 mb-6">트레이너 사진</div>
-            </button>
-            <p></p>
-            <Buttons size="small" onClick={() => handleConsult()}>
-              1:1 상담 받기
-            </Buttons>
-          </div>
         </div>
       </div>
     </div>

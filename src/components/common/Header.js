@@ -34,9 +34,9 @@ function Header() {
       <div className="w-8"></div>
 
       {/* 가운데 로고 */}
-      <Link to="/" className="flex justify-center flex-grow">
+      <div to="/" className="flex justify-center flex-grow">
         <img src={logo} alt="로고" className="w-12 sm:w-16 h-auto" />
-      </Link>
+      </div>
 
       {/* 오른쪽 메뉴 버튼 */}
       {!hideMenuBar && (
