@@ -35,7 +35,7 @@ const Success = () => {
       )
         .unwrap()
         .then((result) => {
-          console.log('Payment complete response:', result);
+          alert('결제가 완료되었습니다!');
           navigate('/UserMypage');
         })
         .catch((error) => {
@@ -48,9 +48,15 @@ const Success = () => {
   }, [dispatch, location.search, navigate]);
 
   return (
-    <div className="success-message">
-      <h2>결제가 완료되었습니다!</h2>
-      <p>잠시만 기다려 주세요. 결제 완료 처리가 진행 중입니다.</p>
+    <div className="relative flex flex-col justify-center items-center p-4 bg-[#edf1f6] shadow-md max-w-[390px] mx-auto h-[100vh] text-center">
+      <div className="animate-spin rounded-full h-12 w-12 border-t-4 border-blue-500 border-solid mb-4"></div>
+      <p className="text-gray-700 text-lg font-semibold mb-2">
+        잠시만 기다려 주세요
+      </p>
+      <p className="text-gray-600">결제 완료 처리가 진행 중입니다.</p>
+      <p className="text-sm text-gray-500 mt-4">
+        창을 닫지 말고 잠시만 기다려 주세요.
+      </p>
     </div>
   );
 };
