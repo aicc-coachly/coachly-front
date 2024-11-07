@@ -13,10 +13,14 @@ const ChatRoom = ({ roomId }) => {
   const dispatch = useDispatch();
   const [menuOpen, setMenuOpen] = useState(false);
   const [input, setInput] = useState('');
+  const [isTrainer, setIsTrainer] = useState(false); // 트레이너 여부에 따라 변경
   const messages = useSelector((state) => state.chat.messages); // Redux에서 메시지 가져오기
-  const isTrainer = false; // 트레이너 여부에 따라 변경
 
   useEffect(() => {
+    // 로컬 스토리지에서 유저 타입 확인
+    const userType = localStorage.getItem("userType");
+    setIsTrainer(userType === "trainer"); // 트레이너인 경우 isTrainer를 true로 설정
+
     // 채팅방 참가
     socket.emit('joinRoom', roomId);
 
