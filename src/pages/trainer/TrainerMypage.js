@@ -82,7 +82,7 @@ const TrainerMypage = () => {
             <p>(fulldoping12)</p>
           </button>
           <button
-            onClick={() => navigate("/trainerChat")}
+            onClick={() => navigate("/chatRoom")}
             className="px-3 py-1 bg-pink-300 text-sm rounded-md"
           >
             1:1 채팅하기

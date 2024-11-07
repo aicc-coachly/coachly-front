@@ -84,7 +84,7 @@ function UserMypage() {
         <div className="flex items-center justify-between bg-gray-300 p-1">
           <p className="text-base text-sm">이건 트레이너</p>
           <button 
-            onClick={() => navigate('/ChatRoom')}  // 페이지 이동 설정
+            onClick={() => navigate('/chatRoom')}  // 페이지 이동 설정
             className="px-3 py-1 bg-pink-300 text-sm  rounded-md"
           >
             1:1 채팅하기
