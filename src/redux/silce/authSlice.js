@@ -27,9 +27,7 @@ export const userSignup = createAsyncThunk("user/signup", async (userData, { rej
 
 export const userLogin = createAsyncThunk("user/login", async (loginData, { rejectWithValue }) => {
   try {
-    const response = await postRequest(USER_LOGIN_URL, {
-      body: JSON.stringify(loginData),
-    });
+    const response = await postRequest(USER_LOGIN_URL, loginData); // loginData를 그대로 전달
     return response;
   } catch (error) {
     return rejectWithValue(error.message || "로그인 실패");
