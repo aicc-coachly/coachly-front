@@ -1,11 +1,11 @@
 import { configureStore } from "@reduxjs/toolkit";
-import authReducer from "./silce/authSlice";
-import chatReducer from "./silce/chatSlice";
-import paymentReducer from "./silce/paymentSlice";
-import refundReducer from "./silce/refundSlice";
-import scheduleReducer from "./silce/scheduleSlice";
-import trainerReducer from "./silce/trainerSlice";
-import userReducer from "./silce/userSlice";
+import authReducer from "./slice/authSlice";
+import chatReducer from "./slice/chatSlice";
+import paymentReducer from "./slice/paymentSlice";
+import refundReducer from "./slice/refundSlice";
+import scheduleReducer from "./slice/scheduleSlice";
+import trainerReducer from "./slice/trainerSlice";
+import userReducer from "./slice/userSlice";
 
 const store = configureStore({
   reducer: {

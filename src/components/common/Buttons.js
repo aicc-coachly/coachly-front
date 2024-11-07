@@ -6,7 +6,7 @@ import { PaymentListModal } from "../trainer/PaymentListModal";
 import { RefundPTModal } from "../user/RefundPTModal";
 import { useModal } from "../../components/common/ModalProvider";
 import { useDispatch, useSelector } from "react-redux";
-import { logout } from "../../redux/silce/authSlice";
+import { logout } from "../../redux/slice/authSlice";
 
 function Buttons({ size, color = '#4831D4', children, onClick }) {
   // 버튼 크기에 따라 클래스 지정

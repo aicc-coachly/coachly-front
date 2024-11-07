@@ -2,7 +2,7 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import { userSignup } from "../../redux/silce/authSlice";
+import { userSignup } from "../../redux/slice/authSlice";
 
 function UserSignup() {
   const navigate = useNavigate();
@@ -227,7 +227,7 @@ function UserSignup() {
               value={formData.user_detail_address}
               onChange={handleChange}
               className="w-full px-3 py-2 border rounded"
-              placeholder="상세 주소"
+              placeholder="구 / 동"
             />
           </div>
         </div>

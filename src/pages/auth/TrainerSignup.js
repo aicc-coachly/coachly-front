@@ -5,7 +5,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 
 import axios from "axios";
-import { trainerSignup } from "../../redux/silce/authSlice";
+import { trainerSignup } from "../../redux/slice/authSlice";
 
 function TrainerSignup() {
   const navigate = useNavigate();
@@ -217,6 +217,7 @@ function TrainerSignup() {
     if (selectedImage) {
       data.append("trainer_image", selectedImage);
     }
+    console.log(formData)
 
     dispatch(trainerSignup(data));
   };

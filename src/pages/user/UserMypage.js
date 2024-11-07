@@ -6,8 +6,8 @@ import { BodyCompositionModal } from "../../components/user/BodyCompositionModal
 import { EditBodyCompositionModal } from "../../components/user/EditBodyCompositionModal";
 
 import { useDispatch, useSelector } from "react-redux";
-import { getUser } from "../../redux/silce/userSlice";
-import { setUser } from "../../redux/silce/authSlice";
+import { getUser } from "../../redux/slice/userSlice";
+import { setUser } from "../../redux/slice/authSlice";
 
 function UserMypage() {
   const dispatch = useDispatch();
