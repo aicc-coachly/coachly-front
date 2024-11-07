@@ -38,7 +38,7 @@ const TrainerMypage = () => {
       <div className="bg-white rounded-lg shadow-md p-4 mb-4 relative">
         <h2 className="text-lg font-semibold mb-2">내 정보</h2>
         <button
-          onClick={() => navigate("/trainerProfile")}
+          onClick={() => navigate("/traineroprofile")}
           className="absolute top-4 right-4 px-3 py-1 bg-gray-300 text-sm rounded-full"
         >
           수정하기
