@@ -17,9 +17,7 @@ import TrainerSearch from './pages/user/TrainerSearch';
 import UserProfile from './pages/user/UserProfile';
 
 // chat
-import UserChat from './pages/chat/UserChat';
 import ChatList from './pages/chat/ChatList';
-import TrainerChat from './pages/chat/TrainerChat';
 import AIChat from './pages/chat/AIChat';
 import Success from './components/common/Success';
 import ChatRoom from './pages/chat/ChatRoom';
@@ -41,8 +39,6 @@ function App() {
             <Route path="/trainersignup" element={<TrainerSignup />} />
             {/* chat */}
             <Route path="/chatlist" element={<ChatList />} />
-            <Route path="/userchat" element={<UserChat />} />
-            <Route path="/trainerchat" element={<TrainerChat />} />
             <Route path="/aichat" element={<AIChat />} />
             <Route path="/Success" element={<Success />} />
             <Route path="/chatroom" element={<ChatRoom />} />
