@@ -6,9 +6,9 @@ import { UserChatButtons, TrainerChatButtons } from '../../components/common/But
 import { addMessage } from '../../redux/silce/chatSlice';
 import { fetchChatMessages } from '../../redux/thunks/chatThunks';
 
-const socket = io(process.env.REACT_APP_API_URL || 'http://localhost:8000'); // 서버 주소를 env로 관리
+const socket = io(process.env.REACT_APP_API_URL || 'http://localhost:8000');
 
-const ChatRoom = ({ roomId, userId }) => { // userId를 추가로 전달받음
+const ChatRoom = ({ roomId, userId }) => {
   const { openModal } = useModal();
   const dispatch = useDispatch();
   const [menuOpen, setMenuOpen] = useState(false);
@@ -38,12 +38,26 @@ const ChatRoom = ({ roomId, userId }) => { // userId를 추가로 전달받음
     };
   }, [roomId, dispatch]);
 
+  useEffect(() => {
+    // 외부 클릭 시 메뉴 닫기
+    const handleClickOutside = (event) => {
+      if (menuOpen && !event.target.closest('.menu-container')) {
+        setMenuOpen(false);
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, [menuOpen]);
+
   const sendMessage = () => {
     if (input.trim()) {
       const message = { 
         roomId, 
         content: input, 
-        senderId: userId, // 현재 사용자 ID 추가
+        senderId: userId, 
         senderName: isTrainer ? "Trainer" : "User" 
       };
       socket.emit('sendMessage', message); 
@@ -89,7 +103,7 @@ const ChatRoom = ({ roomId, userId }) => { // userId를 추가로 전달받음
         </button>
 
         {menuOpen && (
-          <div className="absolute bottom-16 left-4 z-50 bg-white shadow-md rounded-lg p-4 flex flex-col space-y-2 max-w-[350px] w-full">
+          <div className="absolute bottom-16 left-4 z-50 bg-white shadow-md rounded-lg p-4 flex flex-col space-y-2 max-w-[350px] w-full menu-container">
             {isTrainer ? <TrainerChatButtons onClick={() => setMenuOpen(false)} /> : <UserChatButtons onClick={() => setMenuOpen(false)} />}
           </div>
         )}
