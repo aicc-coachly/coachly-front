@@ -8,11 +8,16 @@ import { postRequest } from '../../utils/requestMethod';
 // PT 결제 생성
 export const createPtPayment = createAsyncThunk(
   'payment/createPtPayment',
-  async (paymentData, { rejectWithValue }) => {
+  async (
+    { user_number, trainer_number, payment_option },
+    { rejectWithValue }
+  ) => {
     try {
       // 함수 호출로 URL 생성
       const response = await postRequest(CREATE_PT_PAYMENT_URL(), {
-        body: JSON.stringify(paymentData),
+        user_number,
+        trainer_number,
+        payment_option,
       });
       return response;
     } catch (error) {

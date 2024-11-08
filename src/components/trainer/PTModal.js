@@ -36,7 +36,7 @@ export const PTModal = () => {
         createPtPayment({
           user_number,
           trainer_number,
-          payment_option: selectedOption,
+          payment_option: 1,
         })
       ).unwrap();
 
@@ -140,3 +140,4 @@ export const PTModal = () => {
     </div>
   );
 };
+export default PTModal;
