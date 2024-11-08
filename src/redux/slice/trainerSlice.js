@@ -23,6 +23,9 @@ import {
   postRequest,
 } from "../../utils/requestMethod";
 
+import axios from "axios";
+
+
 // 모든 트레이너 조회
 export const getAllTrainers = createAsyncThunk(
   "trainer/getAllTrainers",
@@ -387,7 +390,8 @@ const trainerSlice = createSlice({
     })
     .addCase(updateTrainerImage.rejected, (state, action) => {
       state.error = action.payload;
-    }),
+    })
+  },
 });
 
 export const { clearTrainerData } = trainerSlice.actions;
