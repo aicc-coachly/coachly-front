@@ -11,9 +11,12 @@ function TrainerSearch() {
     gender: "",
     service_option: ""
   });
+
+  const path = "http://localhost:8000"
   const [trainers, setTrainers] = useState([]);
   const [filteredTrainers, setFilteredTrainers] = useState([]);
   const [isSearching, setIsSearching] = useState(false);
+console.log(trainers)
 
   // 모든 트레이너 데이터 가져오기
   useEffect(() => {
@@ -76,25 +79,25 @@ function TrainerSearch() {
         {/* 서비스 옵션 필터 버튼들 */}
         <div className="flex justify-around mb-4">
           <button
-            className={`px-4 py-2 rounded ${filters.service_option === "여성전문" ? "bg-[#4831D4] text-white" : "bg-[#CCF381]"}`}
+            className={`px-4 py-2 rounded ${filters.service_option === "여성전문" ? "bg-[#081f5c] text-white" : "bg-[#d0e3ff]"}`}
             onClick={() => handleFilterChange("service_option", "여성전문")}
           >
             여성전문
           </button>
           <button
-            className={`px-4 py-2 rounded ${filters.service_option === "재활전문" ? "bg-[#4831D4] text-white" : "bg-[#CCF381]"}`}
+            className={`px-4 py-2 rounded ${filters.service_option === "재활전문" ? "bg-[#081f5c] text-white" : "bg-[#d0e3ff]"}`}
             onClick={() => handleFilterChange("service_option", "재활전문")}
           >
             재활전문
           </button>
           <button
-            className={`px-4 py-2 rounded ${filters.service_option === "실버전문" ? "bg-[#4831D4] text-white" : "bg-[#CCF381]"}`}
+            className={`px-4 py-2 rounded ${filters.service_option === "실버전문" ? "bg-[#081f5c] text-white" : "bg-[#d0e3ff]"}`}
             onClick={() => handleFilterChange("service_option", "실버전문")}
           >
             실버전문
           </button>
           <button
-            className={`px-4 py-2 rounded ${filters.service_option === "선수/대회전문" ? "bg-[#4831D4] text-white" : "bg-[#CCF381]"}`}
+            className={`px-4 py-2 rounded ${filters.service_option === "선수/대회전문" ? "bg-[#081f5c] text-white" : "bg-[#d0e3ff]"}`}
             onClick={() => handleFilterChange("service_option", "선수/대회전문")}
           >
             선수/대회전문
@@ -111,13 +114,13 @@ function TrainerSearch() {
             className="flex-1 px-4 py-2 border rounded bg-white text-[#081f5c] border-[#d0e3ff] focus:outline-none mr-2"
           />
           <button
-            className={`px-4 py-2 rounded ${filters.gender === "male" ? "bg-[#4831D4] text-white" : "bg-[#CCF381]"}`}
+            className={`px-4 py-2 rounded ${filters.gender === "male" ? "bg-[#081f5c] text-white" : "bg-[#d0e3ff]"}`}
             onClick={() => handleFilterChange("gender", "male")}
           >
             남성
           </button>
           <button
-            className={`px-4 py-2 rounded ml-2 ${filters.gender === "female" ? "bg-[#4831D4] text-white" : "bg-[#CCF381]"}`}
+            className={`px-4 py-2 rounded ml-2 ${filters.gender === "female" ? "bg-[#081f5c] text-white" : "bg-[#d0e3ff]"}`}
             onClick={() => handleFilterChange("gender", "female")}
           >
             여성
@@ -127,7 +130,7 @@ function TrainerSearch() {
         {/* 검색 버튼 */}
         <button
           onClick={handleSearch}
-          className={`px-4 py-2 rounded w-full ${isSearching ? "bg-[#4831D4] text-[#CCF381]" : "bg-[#4831D4] text-white"}`}
+          className={`px-4 py-2 rounded w-full ${isSearching ? "bg-[#4831D4] text-[#CCF381]" : "bg-[#081f5c] text-white"}`}
         >
           검색
         </button>
@@ -140,7 +143,7 @@ function TrainerSearch() {
                 <button onClick={() => handleShowTrainerInfo(trainer)}>
                   <div className="h-24 mb-4">
                     <img 
-                      src={`http://localhost:8000/trainers/${trainer.trainer_id}/image`} 
+                      src={`${path}/${trainer.image}`} 
                       alt={`${trainer.name} 사진`}
                       aria-hidden="true"
                       className="w-full h-full object-cover rounded-lg"
@@ -149,11 +152,10 @@ function TrainerSearch() {
                 </button>
                 <p>{trainer.name}</p>
                 <p>{trainer.trainer_address} {trainer.trainer_detail_address}</p>
-                <div className="flex justify-center mt-4">
+                <div></div>
                 <Buttons size="small" onClick={() => handleConsult(trainer)}>
                   1:1 상담 받기
                 </Buttons>
-                </div>
               </div>
             ))
           ) : (
