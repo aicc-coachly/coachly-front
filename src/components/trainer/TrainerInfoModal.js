@@ -4,9 +4,8 @@ import Buttons from '../common/Buttons';
 import { useModal } from '../common/ModalProvider';
 import {PTModal} from './PTModal'; // PTModal을 import
 
-export const TrainerInfoModal = ({ trainer }{ trainer }) => {
-  const { closeModal, closeModal, openModal } = useModal();
-  const [image, setImage] = useState(null);
+export const TrainerInfoModal = ({ trainer }) => {
+  const { closeModal, openModal } = useModal();
   const path = "http://localhost:8000";
 
   // trainer_id로 트레이너 이미지를 가져오기
@@ -40,16 +39,8 @@ export const TrainerInfoModal = ({ trainer }{ trainer }) => {
       .catch((error) => console.error("Error fetching trainer image:", error));
   }, [trainer.trainer_id]);
 
-  const handleOverlayClick = (e) => {
-    if (e.target === e.currentTarget) {
-      closeModal();
-    }
-  };
 
-  // PT 신청하기 버튼 클릭 시 PTModal 열기
-  const handlePTRequest = () => {
-    openModal(<PTModal trainer_id={trainer.trainer_id} />);
-  };
+ 
 
   return (
     <div

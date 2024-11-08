@@ -47,18 +47,6 @@ function TrainerSignup() {
     }
   }, [data, error, navigate]);
 
-  // 회원가입 상태 확인
-  const { data, error } = useSelector((state) => state.auth);
-
-  useEffect(() => {
-    if (data) {
-      alert("회원가입이 완료되었습니다!");
-      navigate("/"); // 로그인 페이지로 이동
-    }
-    if (error) {
-      alert("회원가입에 실패했습니다.");
-    }
-  }, [data, error, navigate]);
 
   const [selectedImage, setSelectedImage] = useState(null); // 이미지 선택 상태
   const optionMap = {

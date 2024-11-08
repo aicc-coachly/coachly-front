@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
 import { useDispatch } from 'react-redux';
 import { useNavigate, useLocation } from 'react-router-dom';
-import { completePtPayment } from '../../redux/silce/paymentSlice';
+import { completePtPayment } from '../../redux/slice/paymentSlice';
 
 const Success = () => {
   const dispatch = useDispatch();

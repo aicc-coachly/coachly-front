@@ -3,7 +3,7 @@ import React, { useState } from 'react';
 import { useDispatch } from 'react-redux';
 import Buttons from '../common/Buttons';
 import { loadTossPayments } from '@tosspayments/tosspayments-sdk';
-import { createPtPayment } from '../../redux/silce/paymentSlice';
+import { createPtPayment } from '../../redux/slice/paymentSlice';
 
 export const PTModal = () => {
   const dispatch = useDispatch();

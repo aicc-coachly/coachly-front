@@ -3,7 +3,7 @@ import io from 'socket.io-client';
 import { useDispatch, useSelector } from 'react-redux';
 import { useModal } from '../../components/common/ModalProvider';
 import { UserChatButtons, TrainerChatButtons } from '../../components/common/Buttons';
-import { addMessage } from '../../redux/silce/chatSlice';
+import { addMessage } from '../../redux/slice/chatSlice';
 import { fetchChatMessages } from '../../redux/thunks/chatThunks';
 
 const socket = io(process.env.REACT_APP_API_URL || 'http://localhost:8000');
