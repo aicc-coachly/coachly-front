@@ -9,6 +9,12 @@ export const TrainerInfoModal = ({ trainer }) => {
   const { closeModal, openModal } = useModal();
   const path = "http://localhost:8000";
 
+  //props로 PTModal에 데이터 전달
+  const handlePTRequest = () => {
+    openModal(<PTModal trainer={trainer} />);
+  };
+  
+
   // trainer_id로 트레이너 이미지를 가져오기
   useEffect(() => {
     // 서버의 uploads 폴더에서 이미지를 가져오는 경로
@@ -25,9 +31,9 @@ export const TrainerInfoModal = ({ trainer }) => {
   };
 
   // PT 신청하기 버튼 클릭 시 PTModal 열기
-  const handlePTRequest = () => {
-    openModal(<PTModal trainer_id={trainer.trainer_id} />);
-  };
+  // const handlePTRequest = () => {
+  //   openModal(<PTModal trainer_id={trainer.trainer_id} />);
+  // };
   const [image, setImage] = useState(null);
 
   // trainer_id로 트레이너 이미지를 가져오기

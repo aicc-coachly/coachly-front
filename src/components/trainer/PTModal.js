@@ -1,18 +1,20 @@
-// PTModal.js
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useDispatch } from 'react-redux';
 import Buttons from '../common/Buttons';
 import { loadTossPayments } from '@tosspayments/tosspayments-sdk';
 import { createPtPayment } from '../../redux/slice/paymentSlice';
 
-export const PTModal = () => {
+export const PTModal = ({ trainer }) => {
   const dispatch = useDispatch();
   const [selectedOption, setSelectedOption] = useState('');
   const [widgets, setWidgets] = useState(null);
-  const user_number = 28; // 실제 사용자 ID로 교체
-  const trainer_number = 12; // 실제 트레이너 ID로 교체
+  const [isPaymentReady, setIsPaymentReady] = useState(false);
+  const user_number = 28;
   const widgetClientKey = 'test_gck_docs_Ovk5rk1EwkEbP0W43n07xlzm';
-  const [isPaymentReady, setIsPaymentReady] = useState(false); // 결제 준비 상태 추가
+  const trainerProfile = trainer || {}; // trainer 데이터를 InfoModal에서 props로 받아옴
+  const trainerImage = trainerProfile.image;
+  const path = 'http://localhost:8000';
+
   const generateRandomString = () => window.btoa(Math.random()).slice(0, 20);
 
   const handleCheckboxChange = (option) => {
@@ -35,12 +37,12 @@ export const PTModal = () => {
       const result = await dispatch(
         createPtPayment({
           user_number,
-          trainer_number,
+          trainer_number: trainerProfile.trainer_id,
           payment_option: 1,
         })
       ).unwrap();
 
-      const { pt_number, payment_number } = result; // createPtPayment에서 payment_number도 가져옴
+      const { pt_number, payment_number } = result;
 
       const paymentWidgets = tossPayments.widgets({ customerKey: 'ANONYMOUS' });
       console.log('widgets 객체:', paymentWidgets);
@@ -54,7 +56,7 @@ export const PTModal = () => {
       });
 
       console.log('위젯 렌더링 완료');
-      setWidgets({ paymentWidgets, pt_number, payment_number }); // payment_number 저장
+      setWidgets({ paymentWidgets, pt_number, payment_number });
       setIsPaymentReady(true);
     } catch (error) {
       console.error('위젯 렌더링 중 오류 발생:', error);
@@ -68,10 +70,9 @@ export const PTModal = () => {
       return;
     }
 
-    const { paymentWidgets, payment_number, pt_number } = widgets; // payment_number 가져오기
-    const amount = selectedOption === 'oneday' ? 50000 : 800000; // 선택한 결제 옵션에 따라 amount 값 설정
-    const order_id = generateRandomString(); // orderId로 사용될 값 생성
-    const payment_key = payment_number; // payment_number를 payment_key로 설정
+    const { paymentWidgets, payment_number, pt_number } = widgets;
+    const amount = selectedOption === 'oneday' ? 50000 : 800000;
+    const order_id = generateRandomString();
 
     try {
       await paymentWidgets.requestPayment({
@@ -80,7 +81,7 @@ export const PTModal = () => {
           selectedOption === 'oneday' ? '원데이 클래스' : '20회 클래스',
         successUrl: `${window.location.origin}/Success?status=completed&paymentNumber=${payment_number}&ptNumber=${pt_number}`,
         failUrl: `${window.location.origin}/payment-fail`,
-        customerName: '이건트레이너',
+        customerName: trainerProfile.name || '이건트레이너',
       });
     } catch (error) {
       console.error('결제 생성 중 오류 발생:', error);
@@ -93,16 +94,20 @@ export const PTModal = () => {
       {/* 트레이너 정보 섹션 */}
       <div className="flex gap-4 mb-6">
         <picture className="w-32 h-32 bg-gray-200 rounded-lg">
-          <img
-            src="/path-to-image.jpg"
-            alt="트레이너 프로필"
-            className="w-full h-full object-cover rounded-lg"
-          />
+          {trainerImage ? (
+            <img
+              src={`${path}/${trainerImage}`}
+              alt="트레이너 프로필"
+              className="w-full h-full object-cover rounded-lg"
+            />
+          ) : (
+            <p className="text-center text-gray-400">이미지 없음</p>
+          )}
         </picture>
 
         <div className="flex flex-col gap-2">
-          <p className="font-bold text-lg">이건트레이너</p>
-          <p className="text-gray-600">동대문구 회기동</p>
+          <p className="font-bold text-lg">{trainerProfile.name || '이건트레이너'}</p>
+          <p className="text-gray-600">{trainerProfile.trainer_detail_address || '동대문구 회기동'}</p>
           <div className="flex gap-2">
             <span className="bg-gray-100 px-3 py-1 rounded-full text-sm">
               교정/재활
@@ -165,4 +170,5 @@ export const PTModal = () => {
     </div>
   );
 };
+
 export default PTModal;
