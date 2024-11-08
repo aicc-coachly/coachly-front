@@ -7,14 +7,17 @@ export async function getRequest(url) {
     return response.json();
   });
 }
-
 /* ====== Common Post Request Function ====== */
 export async function postRequest(url, options) {
+  const isFormData = options.body instanceof FormData;
+
   const defaultOptions = {
     method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
+    ...(!isFormData && {
+      headers: {
+        "Content-Type": "application/json",
+      },
+    }),
     ...options,
   };
 
