@@ -7,6 +7,8 @@ import {
 } from "../../utils/authApiUrl";
 import { postRequest } from "../../utils/requestMethod";
 
+// 커밋주석
+
 // 초기 상태 설정
 const initialState = {
   user: JSON.parse(localStorage.getItem("user")) || null,
