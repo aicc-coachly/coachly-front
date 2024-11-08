@@ -1,85 +1,171 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { useDispatch } from 'react-redux';
 import Buttons from '../common/Buttons';
-import axios from 'axios';
-import { useModal } from '../common/ModalProvider';
+import { loadTossPayments } from '@tosspayments/tosspayments-sdk';
+import { createPtPayment } from '../../redux/slice/paymentSlice';
 
-export const PTModal = ({ trainer_id }) => {
-  const { closeModal } = useModal();
-  const [trainerImage, setTrainerImage] = useState(null);
+export const PTModal = ({ trainer }) => {
+  const dispatch = useDispatch();
+  const [selectedOption, setSelectedOption] = useState('');
+  const [widgets, setWidgets] = useState(null);
+  const [isPaymentReady, setIsPaymentReady] = useState(false);
+  const user_number = 28;
+  const widgetClientKey = 'test_gck_docs_Ovk5rk1EwkEbP0W43n07xlzm';
+  const trainerProfile = trainer || {}; // trainer 데이터를 InfoModal에서 props로 받아옴
+  const trainerImage = trainerProfile.image;
+  const path = 'http://localhost:8000';
 
-  useEffect(() => {
-    // Fetch the trainer image based on trainer_id
-    axios
-      .get(`http://localhost:8000/trainers/${trainer_id}/image`)
-      .then((response) => {
-        setTrainerImage(response.data.image); // Assuming the API returns an image URL
-      })
-      .catch((error) => console.error('Error fetching trainer image:', error));
-  }, [trainer_id]);
+  const generateRandomString = () => window.btoa(Math.random()).slice(0, 20);
 
-  const handleOverlayClick = (e) => {
-    if (e.target === e.currentTarget) {
-      closeModal();
+  const handleCheckboxChange = (option) => {
+    setSelectedOption((prevOption) => (prevOption === option ? '' : option));
+  };
+
+  const handleWidgetRender = async () => {
+    if (!selectedOption) {
+      alert('결제 옵션을 선택해 주세요.');
+      return;
+    }
+
+    const amount = selectedOption === 'oneday' ? 50000 : 800000;
+
+    try {
+      const tossPayments = await loadTossPayments(widgetClientKey);
+      console.log('tossPayments 객체:', tossPayments);
+
+      console.log('createPtPayment 호출 시작');
+      const result = await dispatch(
+        createPtPayment({
+          user_number,
+          trainer_number: trainerProfile.trainer_id,
+          payment_option: 1,
+        })
+      ).unwrap();
+
+      const { pt_number, payment_number } = result;
+
+      const paymentWidgets = tossPayments.widgets({ customerKey: 'ANONYMOUS' });
+      console.log('widgets 객체:', paymentWidgets);
+
+      await paymentWidgets.setAmount({ currency: 'KRW', value: amount });
+      await paymentWidgets.renderPaymentMethods({
+        selector: '#payment-method',
+      });
+      await paymentWidgets.renderAgreement({
+        selector: '#agreement',
+      });
+
+      console.log('위젯 렌더링 완료');
+      setWidgets({ paymentWidgets, pt_number, payment_number });
+      setIsPaymentReady(true);
+    } catch (error) {
+      console.error('위젯 렌더링 중 오류 발생:', error);
+      alert('위젯 렌더링에 실패했습니다.');
+    }
+  };
+
+  const handlePaymentRequest = async () => {
+    if (!widgets) {
+      alert('결제 정보를 선택한 후에 시도해 주세요.');
+      return;
+    }
+
+    const { paymentWidgets, payment_number, pt_number } = widgets;
+    const amount = selectedOption === 'oneday' ? 50000 : 800000;
+    const order_id = generateRandomString();
+
+    try {
+      await paymentWidgets.requestPayment({
+        orderId: order_id,
+        orderName:
+          selectedOption === 'oneday' ? '원데이 클래스' : '20회 클래스',
+        successUrl: `${window.location.origin}/Success?status=completed&paymentNumber=${payment_number}&ptNumber=${pt_number}`,
+        failUrl: `${window.location.origin}/payment-fail`,
+        customerName: trainerProfile.name || '이건트레이너',
+      });
+    } catch (error) {
+      console.error('결제 생성 중 오류 발생:', error);
+      alert('결제 요청에 실패했습니다.');
     }
   };
 
   return (
-    <div
-      className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center"
-      onClick={handleOverlayClick}
-    >
-      <div className="max-w-sm w-full bg-white p-6 rounded-lg shadow-lg relative">
-        {/* 트레이너 정보 섹션 */}
-        <div className="flex gap-4 mb-6">
-          <picture className="w-32 h-32 bg-gray-200 rounded-lg overflow-hidden">
+    <div className="max-w-sm p-6 rounded-lg relative">
+      {/* 트레이너 정보 섹션 */}
+      <div className="flex gap-4 mb-6">
+        <picture className="w-32 h-32 bg-gray-200 rounded-lg">
+          {trainerImage ? (
             <img
-              src={trainerImage || '/path-to-placeholder.jpg'} // Placeholder if no image is available
+              src={`${path}/${trainerImage}`}
               alt="트레이너 프로필"
-              
               className="w-full h-full object-cover rounded-lg"
             />
-          </picture>
-          
-          <div className="flex flex-col gap-2">
-            <p className="font-bold text-lg">이건 트레이너</p>
-            <p className="text-gray-600">동대문구 회기동</p>
-            <div className="flex gap-2">
-              <span className="bg-gray-100 px-3 py-1 rounded-full text-sm">교정/재활</span>
-              <span className="bg-gray-100 px-3 py-1 rounded-full text-sm">여성전문</span>
-            </div>
+          ) : (
+            <p className="text-center text-gray-400">이미지 없음</p>
+          )}
+        </picture>
+
+        <div className="flex flex-col gap-2">
+          <p className="font-bold text-lg">{trainerProfile.name || '이건트레이너'}</p>
+          <p className="text-gray-600">{trainerProfile.trainer_detail_address || '동대문구 회기동'}</p>
+          <div className="flex gap-2">
+            <span className="bg-gray-100 px-3 py-1 rounded-full text-sm">
+              교정/재활
+            </span>
+            <span className="bg-gray-100 px-3 py-1 rounded-full text-sm">
+              여성전문
+            </span>
           </div>
         </div>
+      </div>
 
-        {/* 가격 선택 섹션 */}
-        <div className="flex flex-col gap-4 mb-6">
-          <div className="border rounded-lg p-4 flex items-center justify-between">
-            <div className="flex items-center gap-3">
-              <input type="checkbox" id="oneday" className="w-5 h-5" />
-              <label htmlFor="oneday" className="font-medium">원데이 클래스</label>
-            </div>
-            <p className="text-gray-600">50분 5만원</p>
-          </div>
-
-          <div className="border rounded-lg p-4 flex items-center justify-between">
-            <div className="flex items-center gap-3">
-              <input type="checkbox" id="perprice" className="w-5 h-5" />
-              <label htmlFor="perprice" className="font-medium">회당 가격</label>
-            </div>
-            <p className="text-gray-600">20회 시간당 4만원</p>
-          </div>
-
-          <p className="text-red-400 text-sm">회차/시간을 선택하세요.</p>
+      {/* 가격 선택 섹션 */}
+      <div className="flex flex-col gap-4 mb-6">
+        <div className="border rounded-lg p-4 flex items-center justify-between">
+          <input
+            type="checkbox"
+            id="oneday"
+            className="w-5 h-5"
+            checked={selectedOption === 'oneday'}
+            onChange={() => handleCheckboxChange('oneday')}
+          />
+          <label htmlFor="oneday">원데이 클래스 - 50분 5만원</label>
         </div>
 
-        {/* 버튼 섹션 */}
-        <div className="flex flex-col gap-3  mt-auto">
-          <Buttons size="middle" color="#4831D4">
-            1:1 채팅하기
-          </Buttons>
-          <Buttons size="middle" color="#4831D4">
+        <div className="border rounded-lg p-4 flex items-center justify-between">
+          <input
+            type="checkbox"
+            id="ferprice"
+            className="w-5 h-5"
+            checked={selectedOption === 'ferprice'}
+            onChange={() => handleCheckboxChange('ferprice')}
+          />
+          <label htmlFor="ferprice">20회 - 시간당 4만원</label>
+        </div>
+
+        <p className="text-red-400 text-sm">
+          회원님은 선택하신 회차/시간대 선택을 하셔야 합니다
+        </p>
+      </div>
+
+      {/* 결제 위젯 및 결제 요청 버튼 */}
+      <div id="payment-method" />
+      <div id="agreement" />
+
+      <div className="flex gap-4 mt-4 justify-center items-center">
+        {/* 위젯 렌더링 버튼 */}
+        {!isPaymentReady && (
+          <Buttons size="middle" color="#3282f6" onClick={handleWidgetRender}>
             결제 요청하기
           </Buttons>
-        </div>
+        )}
+
+        {/* 결제 요청 버튼 */}
+        {isPaymentReady && (
+          <Buttons size="middle" color="#ff4b4b" onClick={handlePaymentRequest}>
+            결제 하기
+          </Buttons>
+        )}
       </div>
     </div>
   );

@@ -1,14 +1,20 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
+import { useNavigate } from 'react-router-dom'; // useNavigate 추가
 import Buttons from '../common/Buttons';
 import { useModal } from '../common/ModalProvider';
-import PTModal from './PTModal'; // PTModal을 import
+import {PTModal} from './PTModal'; // PTModal을 import
 
 export const TrainerInfoModal = ({ trainer }) => {
 
   const { closeModal, openModal } = useModal();
-  const [image, setImage] = useState(null);
   const path = "http://localhost:8000";
+
+  //props로 PTModal에 데이터 전달
+  const handlePTRequest = () => {
+    openModal(<PTModal trainer={trainer} />);
+  };
+  
 
   // trainer_id로 트레이너 이미지를 가져오기
   useEffect(() => {
@@ -26,9 +32,23 @@ export const TrainerInfoModal = ({ trainer }) => {
   };
 
   // PT 신청하기 버튼 클릭 시 PTModal 열기
-  const handlePTRequest = () => {
-    openModal(<PTModal trainer_id={trainer.trainer_id} />);
-  };
+  // const handlePTRequest = () => {
+  //   openModal(<PTModal trainer_id={trainer.trainer_id} />);
+  // };
+  const [image, setImage] = useState(null);
+  const path = "http://localhost:8000";
+
+  // trainer_id로 트레이너 이미지를 가져오기
+  useEffect(() => {
+    // 서버의 uploads 폴더에서 이미지를 가져오는 경로
+    if (trainer.image) {
+      const imagePath = `${path}/${trainer.image}`; // 트레이너의 이미지 경로 설정
+      setImage(imagePath);
+    }
+  }, [trainer.image]);
+
+
+  const navigate = useNavigate();
 
   return (
     <div
@@ -69,7 +89,8 @@ export const TrainerInfoModal = ({ trainer }) => {
           </div>
           <p className="text-sm mt-2">20회 4만원/회</p> /
           <p className="text-sm mb-4">
-            안녕하세요. 회원님과 오래 건강하고 싶은 {trainer.name} 트레이너입니다.
+            안녕하세요. 회원님과 오래 건강하고 싶은 {trainer.name}{" "}
+            트레이너입니다.
           </p>
 
           {/* PT 신청 및 상담 버튼 */}
@@ -80,7 +101,9 @@ export const TrainerInfoModal = ({ trainer }) => {
             >
               PT 신청하기
             </button>
-            <button className="bg-blue-200 text-black rounded-md py-2 text-sm">
+            <button 
+            onClick={() => navigate('/chatRoom')}
+            className="bg-blue-200 text-black rounded-md py-2 text-sm">
               1:1 상담 받기
             </button>
           </div>

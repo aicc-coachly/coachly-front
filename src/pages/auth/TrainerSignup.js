@@ -47,6 +47,7 @@ function TrainerSignup() {
     }
   }, [data, error, navigate]);
 
+
   const [selectedImage, setSelectedImage] = useState(null); // 이미지 선택 상태
   const optionMap = {
     여성전문: 1,

@@ -6,3 +6,6 @@ export const CREATE_PT_PAYMENT_URL = () => `${url}/pt-payments`;
 // PT 결제 완료 처리
 export const COMPLETE_PT_PAYMENT_URL = (payment_number) =>
   `${url}/pt-payments/${payment_number}/completed`;
+
+export const GET_PT_SCHEDULE_URL = (pt_number) =>
+  `${url}/pt-payments/${pt_number}`;
