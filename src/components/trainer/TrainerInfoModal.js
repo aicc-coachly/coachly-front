@@ -36,7 +36,6 @@ export const TrainerInfoModal = ({ trainer }) => {
   //   openModal(<PTModal trainer_id={trainer.trainer_id} />);
   // };
   const [image, setImage] = useState(null);
-  const path = "http://localhost:8000";
 
   // trainer_id로 트레이너 이미지를 가져오기
   useEffect(() => {
