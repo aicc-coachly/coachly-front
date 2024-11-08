@@ -1,3 +1,13 @@
+/* ====== Helper Function for Response Check ====== */
+async function handleResponse(response) {
+  if (!response.ok) {
+    const errorMessage = `Network response was not ok (Status: ${response.status})`;
+    throw new Error(errorMessage);
+  }
+  // `204 No Content` 상태인 경우 JSON 변환을 건너뜁니다.
+  return response.status !== 204 ? await response.json() : response;
+}
+
 /* ====== Common GET Request Function ====== */
 export async function getRequest(url) {
   const response = await fetch(url, {
@@ -35,13 +45,8 @@ export async function postRequest(url, options) {
     }),
     ...options,
   };
-
-  return await fetch(url, defaultOptions).then((response) => {
-    if (!response.ok) {
-      throw new Error("Network response was not ok");
-    }
-    return response.json();
-  });
+  const response = await fetch(url, defaultOptions);
+  return handleResponse(response);
 }
 
 /* ====== Common Patch Request Function ====== */

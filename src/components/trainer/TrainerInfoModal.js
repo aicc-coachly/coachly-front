@@ -1,12 +1,11 @@
-import React, { useEffect, useState } from "react";
-import axios from "axios";
-import Buttons from "../common/Buttons";
-import { useModal } from "../common/ModalProvider";
-import PTModal from "./PTModal"; // PTModal을 import
+import React, { useEffect, useState } from 'react';
+import axios from 'axios';
+import Buttons from '../common/Buttons';
+import { useModal } from '../common/ModalProvider';
+import {PTModal} from './PTModal'; // PTModal을 import
 
 export const TrainerInfoModal = ({ trainer }) => {
   const { closeModal, openModal } = useModal();
-  const [image, setImage] = useState(null);
   const path = "http://localhost:8000";
 
   // trainer_id로 트레이너 이미지를 가져오기
@@ -28,6 +27,20 @@ export const TrainerInfoModal = ({ trainer }) => {
   const handlePTRequest = () => {
     openModal(<PTModal trainer_id={trainer.trainer_id} />);
   };
+  const [image, setImage] = useState(null);
+
+  // trainer_id로 트레이너 이미지를 가져오기
+  useEffect(() => {
+    axios
+      .get(`http://localhost:8000/trainers/${trainer.trainer_id}/image`)
+      .then((response) => {
+        setImage(response.data.image); // API가 { image: "imageURL" } 형태로 반환한다고 가정
+      })
+      .catch((error) => console.error("Error fetching trainer image:", error));
+  }, [trainer.trainer_id]);
+
+
+ 
 
   return (
     <div
