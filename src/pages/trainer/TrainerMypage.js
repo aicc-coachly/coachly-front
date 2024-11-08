@@ -14,7 +14,7 @@ import { setTrainer } from "../../redux/slice/authSlice";
 
 const TrainerMypage = () => {
   const { openModal } = useModal();
-  const navigate = useNavigate(); // navigate 함수 생성
+  const navigate = useNavigate();
   const dispatch = useDispatch();
   // 유저 프로필 정보와 상태 관리
   const trainerNumber = useSelector(
@@ -71,7 +71,6 @@ const TrainerMypage = () => {
           수정하기
         </button>
         <div className="flex items-start mt-4 space-x-4">
-          {/* 프로필 사진 */}
           <div className="w-[8rem] h-[8rem] bg-gray-200 overflow-hidden">
             {profile?.image ? (
               <img
@@ -83,10 +82,7 @@ const TrainerMypage = () => {
               <p className="text-center text-gray-400">이미지 없음</p>
             )}
           </div>
-
-          {/* 텍스트 정보와 체크박스 */}
           <div className="flex-1">
-            {/* 체크박스 */}
             <div className="flex justify-end">
               <label className="inline-flex items-center">
                 <input
@@ -118,15 +114,12 @@ const TrainerMypage = () => {
       <div className="bg-white rounded-lg shadow-md p-4 mb-4">
         <h2 className="text-lg font-semibold mb-2">내 회원 관리</h2>
         <div className="flex items-center justify-between">
-          <button
-            onClick={() => openModal(<UserModal />)}
-            className="px-1 py-1 text-sm text-base"
-          >
+          <button onClick={() => openModal(<UserModal />)} className="px-1 py-1 text-sm text-base">
             <p>풀도핑 회원님</p>
             <p>(fulldoping12)</p>
           </button>
           <button
-            onClick={() => navigate("/trainerChat")} // 페이지 이동 설정
+            onClick={() => navigate("/chatRoom")}
             className="px-3 py-1 bg-pink-300 text-sm rounded-md"
           >
             1:1 채팅하기

@@ -1,9 +1,9 @@
-import React, { useEffect, useState } from "react";
-import { useModal } from "../../components/common/ModalProvider";
-import { useNavigate } from "react-router-dom"; // useNavigate 추가
-import { CheckScheduleModal } from "../../components/trainer/CheckScheduleModal";
-import { BodyCompositionModal } from "../../components/user/BodyCompositionModal";
-import { EditBodyCompositionModal } from "../../components/user/EditBodyCompositionModal";
+import React, { useEffect, useState } from 'react';
+import { useModal } from '../../components/common/ModalProvider';
+import { useLocation, useNavigate } from 'react-router-dom'; // useNavigate 추가
+import { CheckScheduleModal } from '../../components/trainer/CheckScheduleModal';
+import { BodyCompositionModal } from '../../components/user/BodyCompositionModal';
+import { EditBodyCompositionModal } from '../../components/user/EditBodyCompositionModal';
 
 import { useDispatch, useSelector } from "react-redux";
 import { getUser, getUserInbody } from "../../redux/slice/userSlice";
@@ -30,7 +30,7 @@ function UserMypage() {
       dispatch(getUser(userId));
       dispatch(getUserInbody(userId)); // 유저의 인바디 데이터 불러오기
     } else {
-      const storedUser = JSON.parse(localStorage.getItem("user"));
+      const storedUser = JSON.parse(localStorage.getItem('user'));
       if (storedUser) {
         dispatch(setUser(storedUser));
       }
@@ -57,7 +57,7 @@ function UserMypage() {
       <div className="bg-white rounded-lg shadow-md p-4 mb-4 relative">
         <h2 className="text-lg font-semibold mb-2">내 정보</h2>
         <button
-          onClick={() => navigate("/userprofile")} // 페이지 이동 설정
+          onClick={() => navigate('/userprofile')} // 페이지 이동 설정
           className="absolute top-4 right-4 px-3 py-1 bg-gray-300 text-sm rounded-full"
         >
           수정하기
@@ -95,9 +95,9 @@ function UserMypage() {
         <h2 className="text-lg font-semibold p-2">담당 트레이너</h2>
         <div className="flex items-center justify-between bg-gray-300 p-1">
           <p className="text-base text-sm">이건 트레이너</p>
-          <button
-            onClick={() => navigate("/UserChat")} // 페이지 이동 설정
-            className="px-3 py-1 bg-pink-300 text-sm rounded-md"
+          <button 
+            onClick={() => navigate('/chatRoom')}  // 페이지 이동 설정
+            className="px-3 py-1 bg-pink-300 text-sm  rounded-md"
           >
             1:1 채팅하기
           </button>
@@ -118,6 +118,7 @@ function UserMypage() {
           </button>
         </div>
       </div>
+
       {/* 인바디 세션*/}
       <div className="bg-white rounded-lg shadow-md p-2 mb-4">
         <div className="flex justify-between p-2">
