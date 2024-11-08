@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
+import { useNavigate } from 'react-router-dom'; // useNavigate 추가
 import Buttons from '../common/Buttons';
 import { useModal } from '../common/ModalProvider';
 import {PTModal} from './PTModal'; // PTModal을 import
@@ -40,7 +41,7 @@ export const TrainerInfoModal = ({ trainer }) => {
   }, [trainer.trainer_id]);
 
 
- 
+  const navigate = useNavigate();
 
   return (
     <div
@@ -93,7 +94,9 @@ export const TrainerInfoModal = ({ trainer }) => {
             >
               PT 신청하기
             </button>
-            <button className="bg-blue-200 text-black rounded-md py-2 text-sm">
+            <button 
+            onClick={() => navigate('/chatRoom')}
+            className="bg-blue-200 text-black rounded-md py-2 text-sm">
               1:1 상담 받기
             </button>
           </div>

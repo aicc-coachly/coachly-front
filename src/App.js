@@ -15,17 +15,15 @@ import TrainerMypage from './pages/trainer/TrainerMypage';
 import UserMypage from './pages/user/UserMypage';
 import TrainerSearch from './pages/user/TrainerSearch';
 import UserProfile from './pages/user/UserProfile';
-
 // chat
 import ChatList from './pages/chat/ChatList';
 import Success from './components/common/Success';
 import ChatRoom from './pages/chat/ChatRoom';
 
-
 function App() {
   return (
-    <ModalProvider>
-      <Router>
+    <Router>
+      <ModalProvider>
         <div className="App">
           <Header />
           <Routes>
@@ -43,7 +41,7 @@ function App() {
 
             {/* 트레이너 메인 페이지 */}
             <Route path="/trainerprofile" element={<TrainerProfile />} />
-            <Route path="/trainermypage" element={<TrainerMypage />} /> ?
+            <Route path="/trainermypage" element={<TrainerMypage />} />
             {/* 트레이너의 PT 가격관리 페이지 */}
             <Route path="/pricelist" element={<PriceList />} />
             {/* 회원 메인 페이지 */}
@@ -52,8 +50,8 @@ function App() {
             <Route path="/userprofile" element={<UserProfile />} />
           </Routes>
         </div>
-      </Router>
-    </ModalProvider>
+      </ModalProvider>
+    </Router>
   );
 }
 

@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useModal } from '../../components/common/ModalProvider';
-import { useLocation, useNavigate } from 'react-router-dom'; // useNavigate 추가
+import { useNavigate } from 'react-router-dom'; // useNavigate 추가
 import { CheckScheduleModal } from '../../components/trainer/CheckScheduleModal';
 import { BodyCompositionModal } from '../../components/user/BodyCompositionModal';
 import { EditBodyCompositionModal } from '../../components/user/EditBodyCompositionModal';
