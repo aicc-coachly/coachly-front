@@ -5,7 +5,11 @@ import { CreateScheduleModal } from "../../components/trainer/CreateScheduleModa
 import { UserModal } from "../../components/user/UserModal";
 import { useNavigate } from "react-router-dom"; // useNavigate 추가
 import { useDispatch, useSelector } from "react-redux";
-import { getTrainer } from "../../redux/slice/trainerSlice";
+import {
+  getAllTrainers,
+  getTrainer,
+  updateTrainerStatus,
+} from "../../redux/slice/trainerSlice";
 import { setTrainer } from "../../redux/slice/authSlice";
 
 const TrainerMypage = () => {
@@ -17,6 +21,9 @@ const TrainerMypage = () => {
     (state) => state.auth?.trainer?.trainer_number
   );
   const profile = useSelector((state) => state.trainer?.data);
+  const [isChecked, setIsChecked] = useState(false);
+  const path = "http://localhost:8000";
+
   console.log(profile);
 
   useEffect(() => {
@@ -30,6 +37,25 @@ const TrainerMypage = () => {
     }
   }, [dispatch, trainerNumber]);
 
+  useEffect(() => {
+    if (profile) {
+      // 트레이너 상태에 따라 체크박스 초기 상태 설정
+      setIsChecked(profile.status === "inactive");
+    }
+  }, [profile]);
+
+  const handleCheckboxChange = async (e) => {
+    const newStatus = e.target.checked ? "inactive" : "active";
+    setIsChecked(e.target.checked); // 로컬 상태 업데이트
+
+    // 서버에 새로운 상태 업데이트
+    await dispatch(
+      updateTrainerStatus({ trainer_number: trainerNumber, status: newStatus })
+    );
+
+    // 상태 업데이트 후 최신 트레이너 정보 가져오기
+    dispatch(getTrainer(trainerNumber));
+  };
   // console.log(trainerNumber);
   // console.log(profile);
 
@@ -39,7 +65,7 @@ const TrainerMypage = () => {
       <div className="bg-white rounded-lg shadow-md p-4 mb-4 relative">
         <h2 className="text-lg font-semibold mb-2">내 정보</h2>
         <button
-          onClick={() => navigate("/trainerProfile")} // 페이지 이동 설정
+          onClick={() => navigate("/trainerprofile")} // 페이지 이동 설정
           className="absolute top-4 right-4 px-3 py-1 bg-gray-300 text-sm rounded-full"
         >
           수정하기
@@ -47,11 +73,15 @@ const TrainerMypage = () => {
         <div className="flex items-start mt-4 space-x-4">
           {/* 프로필 사진 */}
           <div className="w-[8rem] h-[8rem] bg-gray-200 overflow-hidden">
-            {/* <img 
-                    // src="https://via.placeholder.com/64" // 프로필 사진 URL 또는 경로로 대체
-                    alt="프로필 사진" 
-                    className="object-cover w-full h-full"
-                  /> */}
+            {profile?.image ? (
+              <img
+                src={`${path}/${profile.image}`} // 이미지 경로 설정
+                alt="트레이너 프로필 사진"
+                className="object-cover w-full h-full"
+              />
+            ) : (
+              <p className="text-center text-gray-400">이미지 없음</p>
+            )}
           </div>
 
           {/* 텍스트 정보와 체크박스 */}
@@ -62,6 +92,8 @@ const TrainerMypage = () => {
                 <input
                   type="checkbox"
                   className="form-checkbox text-gray-300 rounded-md"
+                  checked={isChecked}
+                  onChange={handleCheckboxChange}
                 />
                 <span className="ml-2 text-sm">수업 그만 받기</span>
               </label>

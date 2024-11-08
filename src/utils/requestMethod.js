@@ -1,11 +1,25 @@
 /* ====== Common GET Request Function ====== */
 export async function getRequest(url) {
-  return await fetch(url).then((response) => {
-    if (!response.ok) {
-      throw new Error("Network response was not ok");
-    }
-    return response.json();
+  const response = await fetch(url, {
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json",
+    },
   });
+
+  if (!response.ok) {
+    throw new Error(
+      `Network response was not ok: ${response.status} ${response.statusText}`
+    );
+  }
+
+  // JSON 응답 확인 후 파싱
+  const contentType = response.headers.get("content-type");
+  if (contentType && contentType.includes("application/json")) {
+    return response.json();
+  } else {
+    throw new Error("Expected JSON response but received something else");
+  }
 }
 
 /* ====== Common Post Request Function ====== */

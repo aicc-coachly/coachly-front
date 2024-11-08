@@ -37,6 +37,11 @@ function UserMypage() {
     }
   }, [dispatch, userId]);
 
+  useEffect(() => {
+    if (inbodyData) {
+    }
+  }, [inbodyData]);
+
   // useEffect(() => {
   //   if (profile) {
   //     setIsLoading(false);

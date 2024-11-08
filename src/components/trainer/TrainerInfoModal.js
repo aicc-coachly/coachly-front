@@ -7,16 +7,16 @@ import PTModal from "./PTModal"; // PTModal을 import
 export const TrainerInfoModal = ({ trainer }) => {
   const { closeModal, openModal } = useModal();
   const [image, setImage] = useState(null);
+  const path = "http://localhost:8000";
 
   // trainer_id로 트레이너 이미지를 가져오기
   useEffect(() => {
-    axios
-      .get(`http://localhost:8000/trainers/${trainer.trainer_id}/image`)
-      .then((response) => {
-        setImage(response.data.image); // API가 { image: "imageURL" } 형태로 반환한다고 가정
-      })
-      .catch((error) => console.error("Error fetching trainer image:", error));
-  }, [trainer.trainer_id]);
+    // 서버의 uploads 폴더에서 이미지를 가져오는 경로
+    if (trainer.image) {
+      const imagePath = `${path}/${trainer.image}`; // 트레이너의 이미지 경로 설정
+      setImage(imagePath);
+    }
+  }, [trainer.image]);
 
   const handleOverlayClick = (e) => {
     if (e.target === e.currentTarget) {
@@ -40,7 +40,7 @@ export const TrainerInfoModal = ({ trainer }) => {
           <div className="w-full h-48 mb-4 overflow-hidden rounded-lg">
             {image ? (
               <img
-                src={image}
+                src={`${path}/${trainer.image}`}
                 alt={`${trainer.name} 사진`}
                 className="w-full h-full object-cover"
               />

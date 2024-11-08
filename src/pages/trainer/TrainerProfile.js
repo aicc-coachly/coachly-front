@@ -6,13 +6,16 @@ import {
   updateTrainerInfo,
   updateTrainerGymAddress,
   updateTrainerAccount,
+  updateTrainerPtCost,
+  updateTrainerImage, // 새로 추가된 업데이트 함수
 } from "../../redux/slice/trainerSlice";
 
 const TrainerProfile = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
-
+  const path = "http://localhost:8000";
   const trainerInfo = useSelector((state) => state.trainer?.data);
+  // console.log(trainerInfo);
 
   const [name, setName] = useState("");
   const [phone, setPhone] = useState("");
@@ -21,9 +24,9 @@ const TrainerProfile = () => {
   const [newImage, setNewImage] = useState(null); // 새 이미지 파일
 
   const [addressSections, setAddressSections] = useState({
-    address: "",
-    detail_address: "",
-    zipcode: "",
+    trainer_address: "",
+    trainer_detail_address: "",
+    trainer_zipcode: "",
   });
 
   const [bankAccount, setBankAccount] = useState({
@@ -32,70 +35,114 @@ const TrainerProfile = () => {
     account_name: "",
   });
 
+  const [ptCostOptions, setPtCostOptions] = useState([]);
+
   useEffect(() => {
+    // Redux에 trainerInfo가 없으면 서버에서 데이터 가져오기
     if (!trainerInfo) {
       dispatch(getTrainer());
-    } else {
+    }
+  }, [dispatch, trainerInfo]);
+
+  useEffect(() => {
+    // trainerInfo가 있을 때만 로컬 상태 초기화
+    if (trainerInfo) {
       setName(trainerInfo.name || "");
       setPhone(trainerInfo.phone || "");
-      setResume(trainerInfo.trainer_resume || "");
-      setTrainerImage(trainerInfo.trainer_image || "");
+      setResume(trainerInfo.resume || "");
+      setTrainerImage(trainerInfo.image || "");
 
-      if (trainerInfo.trainer_address) {
-        setAddressSections({
-          address: trainerInfo.trainer_address,
-          detail_address: trainerInfo.trainer_detail_address,
-          zipcode: trainerInfo.trainer_zipcode || "",
-        });
-      }
+      setAddressSections({
+        trainer_address: trainerInfo.trainer_address || "",
+        trainer_detail_address: trainerInfo.trainer_detail_address || "",
+        trainer_zipcode: trainerInfo.trainer_zipcode || "",
+      });
 
       if (trainerInfo.bank_account) {
-        const bank_account = trainerInfo.bank_account;
         setBankAccount({
-          bank_name: bank_account.bank_name || "",
-          account: bank_account.account || "",
-          account_name: bank_account.account_name || "",
+          bank_name: trainerInfo.bank_account.bank_name || "",
+          account: trainerInfo.bank_account.account || "",
+          account_name: trainerInfo.bank_account.account_name || "",
         });
       }
+
+      if (trainerInfo.pt_cost_options) {
+        setPtCostOptions(trainerInfo.pt_cost_options);
+      }
     }
-  }, [trainerInfo, dispatch]);
+  }, [trainerInfo]); // trainerInfo가 업데이트될 때만 실행
 
   const handleImageChange = (e) => {
     setNewImage(e.target.files[0]);
   };
 
-  const handleSave = () => {
-    const trainerData = {
-      name,
-      phone,
-      resume,
-      trainer_image: newImage ? URL.createObjectURL(newImage) : trainerImage,
+  const handlePtCostChange = (index, field, value) => {
+    const updatedOptions = [...ptCostOptions];
+    updatedOptions[index] = {
+      ...updatedOptions[index],
+      [field]: value,
     };
+    setPtCostOptions(updatedOptions);
+  };
 
-    const addressData = addressSections;
-    const bankData = bankAccount;
-
-    dispatch(
+  const handleSave = async () => {
+    // 기본 정보 업데이트
+    const trainerData = { name, phone };
+    await dispatch(
       updateTrainerInfo({
         trainer_number: trainerInfo.trainer_number,
         updateData: trainerData,
       })
     );
 
-    dispatch(
+    // 다른 업데이트도 마찬가지로 await을 사용하여 순차적으로 실행
+    const addressData = addressSections;
+    await dispatch(
       updateTrainerGymAddress({
         trainer_number: trainerInfo.trainer_number,
         updateData: addressData,
       })
     );
 
-    dispatch(
+    const bankData = bankAccount;
+    await dispatch(
       updateTrainerAccount({
         trainer_number: trainerInfo.trainer_number,
         updateData: bankData,
       })
     );
 
+    for (const option of ptCostOptions) {
+      await dispatch(
+        updateTrainerPtCost({
+          trainer_number: trainerInfo.trainer_number,
+          updateData: {
+            amount: option.amount,
+            frequency: option.frequency,
+            option: option.option,
+          },
+        })
+      );
+    }
+
+    const resumeAndImageData = new FormData();
+    resumeAndImageData.append("resume", resume);
+    if (newImage) {
+      resumeAndImageData.append("trainer_image", newImage);
+    }
+
+    await dispatch(
+      updateTrainerImage({
+        trainer_number: trainerInfo.trainer_number,
+        resume: resume,
+        trainer_image: newImage,
+      })
+    );
+
+    // 업데이트 후 최신 데이터를 가져오기
+    await dispatch(getTrainer());
+
+    // 페이지 이동
     navigate("/TrainerMyPage");
   };
 
@@ -109,7 +156,7 @@ const TrainerProfile = () => {
       <div className="w-[16rem] h-[16rem] bg-gray-200 mx-auto mb-4 overflow-hidden">
         {trainerImage ? (
           <img
-            src={trainerImage}
+            src={`${path}/${trainerInfo.image}`}
             alt="프로필 사진"
             className="object-cover w-full h-full"
           />
@@ -153,36 +200,36 @@ const TrainerProfile = () => {
           <input
             type="text"
             placeholder="주소"
-            value={addressSections.address}
+            value={addressSections.trainer_address}
             onChange={(e) =>
-              setAddressSections({
-                ...addressSections,
-                address: e.target.value,
-              })
+              setAddressSections((prev) => ({
+                ...prev,
+                trainer_address: e.target.value,
+              }))
             }
             className="text-sm text-gray-500 border rounded px-2 py-1 mr-1 w-1/3"
           />
           <input
             type="text"
             placeholder="상세주소"
-            value={addressSections.detail_address}
+            value={addressSections.trainer_detail_address}
             onChange={(e) =>
-              setAddressSections({
-                ...addressSections,
-                detail_address: e.target.value,
-              })
+              setAddressSections((prev) => ({
+                ...prev,
+                trainer_detail_address: e.target.value,
+              }))
             }
             className="text-sm text-gray-500 border rounded px-2 py-1 mr-1 w-1/3"
           />
           <input
             type="text"
             placeholder="우편번호"
-            value={addressSections.zipcode}
+            value={addressSections.trainer_zipcode}
             onChange={(e) =>
-              setAddressSections({
-                ...addressSections,
-                zipcode: e.target.value,
-              })
+              setAddressSections((prev) => ({
+                ...prev,
+                trainer_zipcode: e.target.value,
+              }))
             }
             className="text-sm text-gray-500 border rounded px-2 py-1 w-1/3"
           />
@@ -221,6 +268,34 @@ const TrainerProfile = () => {
             className="text-sm text-gray-500 border rounded px-2 py-1 w-1/3"
           />
         </div>
+      </div>
+
+      {/* PT 비용 옵션 */}
+      <div className="mb-4">
+        <h2 className="text-lg font-semibold mb-2">PT 비용 옵션</h2>
+        {ptCostOptions.map((option, index) => (
+          <div key={index} className="mb-4">
+            <p className="font-medium">{option.option}</p>
+            <input
+              type="number"
+              placeholder="가격"
+              value={option.amount}
+              onChange={(e) =>
+                handlePtCostChange(index, "amount", e.target.value)
+              }
+              className="text-sm text-gray-500 border rounded px-2 py-1 mb-2 w-full"
+            />
+            <input
+              type="number"
+              placeholder="횟수"
+              value={option.frequency}
+              onChange={(e) =>
+                handlePtCostChange(index, "frequency", e.target.value)
+              }
+              className="text-sm text-gray-500 border rounded px-2 py-1 w-full"
+            />
+          </div>
+        ))}
       </div>
 
       {/* 저장하기 버튼 */}

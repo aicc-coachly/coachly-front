@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { postUserInbody } from "../../redux/slice/userSlice";
+import { getUserInbody, postUserInbody } from "../../redux/slice/userSlice";
 import { useModal } from "../common/ModalProvider";
 
 export const BodyCompositionModal = ({ onClose }) => {
@@ -41,6 +41,7 @@ export const BodyCompositionModal = ({ onClose }) => {
     dispatch(postUserInbody({ user_id: user.user_id, inbodyData }))
       .then(() => {
         alert("인바디 정보가 저장되었습니다.");
+        dispatch(getUserInbody(user.user_id));
         closeModal();
       })
       .catch((error) => {

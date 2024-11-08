@@ -11,9 +11,12 @@ function TrainerSearch() {
     gender: "",
     service_option: "",
   });
+
+  const path = "http://localhost:8000";
   const [trainers, setTrainers] = useState([]);
   const [filteredTrainers, setFilteredTrainers] = useState([]);
   const [isSearching, setIsSearching] = useState(false);
+  console.log(trainers);
 
   // 모든 트레이너 데이터 가져오기
   useEffect(() => {
@@ -173,7 +176,7 @@ function TrainerSearch() {
                 <button onClick={() => handleShowTrainerInfo(trainer)}>
                   <div className="h-24 mb-4">
                     <img
-                      src={`http://localhost:8000/trainers/${trainer.trainer_id}/image`}
+                      src={`${path}/${trainer.image}`}
                       alt={`${trainer.name} 사진`}
                       aria-hidden="true"
                       className="w-full h-full object-cover rounded-lg"
@@ -184,11 +187,10 @@ function TrainerSearch() {
                 <p>
                   {trainer.trainer_address} {trainer.trainer_detail_address}
                 </p>
-                <div className="flex justify-center mt-4">
-                  <Buttons size="small" onClick={() => handleConsult(trainer)}>
-                    1:1 상담 받기
-                  </Buttons>
-                </div>
+                <div></div>
+                <Buttons size="small" onClick={() => handleConsult(trainer)}>
+                  1:1 상담 받기
+                </Buttons>
               </div>
             ))
           ) : (
