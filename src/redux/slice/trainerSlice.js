@@ -13,8 +13,6 @@ import {
   PATCH_TRAINER_GYM_ADDRESS_URL,
   PATCH_TRAINER_PT_COST_URL,
   PATCH_TRAINER_ACCOUNT_URL,
-  PATCH_TRAINER_IMAGE_URL,
-  UPDATE_TRAINER_STATUS_URL,
 } from "../../utils/trainerApiUrl";
 import {
   deleteRequest,
@@ -22,7 +20,6 @@ import {
   patchRequest,
   postRequest,
 } from "../../utils/requestMethod";
-import axios from "axios";
 
 // 모든 트레이너 조회
 export const getAllTrainers = createAsyncThunk(
@@ -30,8 +27,7 @@ export const getAllTrainers = createAsyncThunk(
   async (_, { rejectWithValue }) => {
     try {
       const response = await getRequest(GET_ALL_TRAINERS_URL);
-      console.log("응답 데이터:", response); // 응답 확인
-      return response; // 데이터를 Redux 상태에 반환
+      return response;
     } catch (error) {
       return rejectWithValue(error.message || "트레이너 조회 실패");
     }
@@ -92,24 +88,6 @@ export const getTrainerAccount = createAsyncThunk(
       return response;
     } catch (error) {
       return rejectWithValue(error.message || "계좌 정보 조회 실패");
-    }
-  }
-);
-
-// 트레이너 비활성화 상태 변경
-export const updateTrainerStatus = createAsyncThunk(
-  "trainer/updateTrainerStatus",
-  async ({ trainer_number, status }, { rejectWithValue }) => {
-    try {
-      const response = await patchRequest(
-        UPDATE_TRAINER_STATUS_URL(trainer_number),
-        {
-          body: JSON.stringify({ status }), // JSON 문자열로 변환된 상태 전달
-        }
-      );
-      return response;
-    } catch (error) {
-      return rejectWithValue(error.message || "트레이너 상태 업데이트 실패");
     }
   }
 );
@@ -244,42 +222,17 @@ export const updateTrainerAccount = createAsyncThunk(
   }
 );
 
-export const updateTrainerImage = createAsyncThunk(
-  "trainer/updateTrainerImage",
-  async ({ trainer_number, resume, trainer_image }, { rejectWithValue }) => {
-    try {
-      const formData = new FormData();
-      formData.append("resume", resume);
-      if (trainer_image) {
-        formData.append("image", trainer_image); // 이미지 파일 추가
-      }
-
-      const response = await axios.patch(
-        PATCH_TRAINER_IMAGE_URL(trainer_number),
-        formData,
-        {
-          headers: {
-            // Content-Type을 설정하지 않음 (Axios가 자동으로 multipart/form-data로 설정)
-          },
-        }
-      );
-
-      return response.data;
-    } catch (error) {
-      return rejectWithValue(error.message || "이미지 정보 업데이트 실패");
-    }
-  }
-);
-
 const trainerSlice = createSlice({
   name: "trainer",
   initialState: {
-    data: [],
+    data: null,
+
     error: null,
   },
   reducers: {
     clearTrainerData: (state) => {
-      state.data = [];
+      state.data = null;
+  
     },
   },
   extraReducers: (builder) => {
@@ -317,13 +270,6 @@ const trainerSlice = createSlice({
         state.error = null;
       })
       .addCase(getTrainerAccount.rejected, (state, action) => {
-        state.error = action.payload;
-      })
-      .addCase(updateTrainerStatus.fulfilled, (state, action) => {
-        state.data = action.payload;
-        state.error = null;
-      })
-      .addCase(updateTrainerStatus.rejected, (state, action) => {
         state.error = action.payload;
       })
       .addCase(deleteTrainer.fulfilled, (state, action) => {
@@ -380,13 +326,6 @@ const trainerSlice = createSlice({
         state.error = null;
       })
       .addCase(updateTrainerAccount.rejected, (state, action) => {
-        state.error = action.payload;
-      })
-      .addCase(updateTrainerImage.fulfilled, (state, action) => {
-        state.data = action.payload;
-        state.error = null;
-      })
-      .addCase(updateTrainerImage.rejected, (state, action) => {
         state.error = action.payload;
       });
   },

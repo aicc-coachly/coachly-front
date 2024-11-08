@@ -6,6 +6,7 @@ import { useModal } from '../common/ModalProvider';
 import {PTModal} from './PTModal'; // PTModal을 import
 
 export const TrainerInfoModal = ({ trainer }) => {
+
   const { closeModal, openModal } = useModal();
   const path = "http://localhost:8000";
 
@@ -35,16 +36,16 @@ export const TrainerInfoModal = ({ trainer }) => {
   //   openModal(<PTModal trainer_id={trainer.trainer_id} />);
   // };
   const [image, setImage] = useState(null);
+  const path = "http://localhost:8000";
 
   // trainer_id로 트레이너 이미지를 가져오기
   useEffect(() => {
-    axios
-      .get(`http://localhost:8000/trainers/${trainer.trainer_id}/image`)
-      .then((response) => {
-        setImage(response.data.image); // API가 { image: "imageURL" } 형태로 반환한다고 가정
-      })
-      .catch((error) => console.error("Error fetching trainer image:", error));
-  }, [trainer.trainer_id]);
+    // 서버의 uploads 폴더에서 이미지를 가져오는 경로
+    if (trainer.image) {
+      const imagePath = `${path}/${trainer.image}`; // 트레이너의 이미지 경로 설정
+      setImage(imagePath);
+    }
+  }, [trainer.image]);
 
 
   const navigate = useNavigate();
@@ -86,7 +87,7 @@ export const TrainerInfoModal = ({ trainer }) => {
               </span>
             ))}
           </div>
-          <p className="text-sm mt-2">20회 4만원/회</p>
+          <p className="text-sm mt-2">20회 4만원/회</p> /
           <p className="text-sm mb-4">
             안녕하세요. 회원님과 오래 건강하고 싶은 {trainer.name}{" "}
             트레이너입니다.

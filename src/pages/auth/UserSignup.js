@@ -227,7 +227,7 @@ function UserSignup() {
               value={formData.user_detail_address}
               onChange={handleChange}
               className="w-full px-3 py-2 border rounded"
-              placeholder="상세 주소"
+              placeholder="구 / 동"
             />
           </div>
         </div>
