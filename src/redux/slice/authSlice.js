@@ -7,11 +7,7 @@ import {
 } from '../../utils/authApiUrl';
 import { postRequest } from '../../utils/requestMethod';
 
-
-// 커밋주석
-
 // 초기 상태 설정
-
 const initialState = {
   user: JSON.parse(localStorage.getItem('user')) || null,
   trainer: JSON.parse(localStorage.getItem('trainer')) || null,
@@ -19,6 +15,7 @@ const initialState = {
   userType: null,
 };
 
+// 사용자 회원가입
 export const userSignup = createAsyncThunk("user/signup", async (userData, { rejectWithValue }) => {
   try {
     const response = await postRequest(USER_SIGNUP_URL, {
@@ -30,15 +27,19 @@ export const userSignup = createAsyncThunk("user/signup", async (userData, { rej
   }
 });
 
+// 사용자 로그인
 export const userLogin = createAsyncThunk("user/login", async (loginData, { rejectWithValue }) => {
   try {
-    const response = await postRequest(USER_LOGIN_URL, loginData); // loginData를 그대로 전달
+    const response = await postRequest(USER_LOGIN_URL, {
+      body: JSON.stringify(loginData), // loginData를 JSON으로 변환
+    });
     return response;
   } catch (error) {
     return rejectWithValue(error.message || "로그인 실패");
   }
 });
 
+// 트레이너 회원가입
 export const trainerSignup = createAsyncThunk(
   'trainer/signup',
   async (trainerData, { rejectWithValue }) => {
@@ -53,11 +54,14 @@ export const trainerSignup = createAsyncThunk(
   }
 );
 
+// 트레이너 로그인
 export const trainerLogin = createAsyncThunk(
   'trainer/login',
   async (loginData, { rejectWithValue }) => {
     try {
-      const response = await postRequest(TRAINER_LOGIN_URL, loginData); // loginData를 data 파라미터로 전달
+      const response = await postRequest(TRAINER_LOGIN_URL, {
+        body: JSON.stringify(loginData), // loginData를 JSON으로 변환
+      });
       return response;
     } catch (error) {
       return rejectWithValue(error.message || '로그인 실패');
