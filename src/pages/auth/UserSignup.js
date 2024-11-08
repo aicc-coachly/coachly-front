@@ -2,7 +2,7 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import { userSignup } from "../../redux/silce/authSlice";
+import { userSignup } from "../../redux/slice/authSlice";
 
 function UserSignup() {
   const navigate = useNavigate();

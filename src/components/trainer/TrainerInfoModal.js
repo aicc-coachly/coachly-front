@@ -6,6 +6,27 @@ import {PTModal} from './PTModal'; // PTModal을 import
 
 export const TrainerInfoModal = ({ trainer }) => {
   const { closeModal, openModal } = useModal();
+  const path = "http://localhost:8000";
+
+  // trainer_id로 트레이너 이미지를 가져오기
+  useEffect(() => {
+    // 서버의 uploads 폴더에서 이미지를 가져오는 경로
+    if (trainer.image) {
+      const imagePath = `${path}/${trainer.image}`; // 트레이너의 이미지 경로 설정
+      setImage(imagePath);
+    }
+  }, [trainer.image]);
+
+  const handleOverlayClick = (e) => {
+    if (e.target === e.currentTarget) {
+      closeModal();
+    }
+  };
+
+  // PT 신청하기 버튼 클릭 시 PTModal 열기
+  const handlePTRequest = () => {
+    openModal(<PTModal trainer_id={trainer.trainer_id} />);
+  };
   const [image, setImage] = useState(null);
 
   // trainer_id로 트레이너 이미지를 가져오기
@@ -18,16 +39,8 @@ export const TrainerInfoModal = ({ trainer }) => {
       .catch((error) => console.error("Error fetching trainer image:", error));
   }, [trainer.trainer_id]);
 
-  const handleOverlayClick = (e) => {
-    if (e.target === e.currentTarget) {
-      closeModal();
-    }
-  };
 
-  // PT 신청하기 버튼 클릭 시 PTModal 열기
-  const handlePTRequest = () => {
-    openModal(<PTModal trainer_id={trainer.trainer_id} />);
-  };
+ 
 
   return (
     <div
@@ -40,7 +53,7 @@ export const TrainerInfoModal = ({ trainer }) => {
           <div className="w-full h-48 mb-4 overflow-hidden rounded-lg">
             {image ? (
               <img
-                src={image}
+                src={`${path}/${trainer.image}`}
                 alt={`${trainer.name} 사진`}
                 className="w-full h-full object-cover"
               />
@@ -68,7 +81,8 @@ export const TrainerInfoModal = ({ trainer }) => {
           </div>
           <p className="text-sm mt-2">20회 4만원/회</p>
           <p className="text-sm mb-4">
-            안녕하세요. 회원님과 오래 건강하고 싶은 {trainer.name} 트레이너입니다.
+            안녕하세요. 회원님과 오래 건강하고 싶은 {trainer.name}{" "}
+            트레이너입니다.
           </p>
 
           {/* PT 신청 및 상담 버튼 */}

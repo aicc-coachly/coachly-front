@@ -3,7 +3,7 @@ import { useNavigate, Link } from 'react-router-dom';
 import axios from 'axios';
 import Buttons from '../../components/common/Buttons';
 import { useDispatch, useSelector } from 'react-redux';
-import { trainerLogin, userLogin } from '../../redux/silce/authSlice';
+import { trainerLogin, userLogin } from '../../redux/slice/authSlice';
 
 function Login() {
   const navigate = useNavigate();
@@ -15,6 +15,7 @@ function Login() {
   const { data, error, userType: loggedInUserType } = useSelector((state) => state.auth);
 
   useEffect(() => {
+    // 로그인 상태가 설정되었고, 'data'가 유효할 때만 리디렉션 실행
     if (data && loggedInUserType) {
       if (loggedInUserType === "trainer") {
         navigate("/trainermypage");

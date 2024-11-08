@@ -2,8 +2,9 @@ import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import {
   CREATE_PT_PAYMENT_URL,
   COMPLETE_PT_PAYMENT_URL,
-} from '../../utils/paymentApiUrl';
-import { postRequest } from '../../utils/requestMethod';
+  GET_PT_SCHEDULE_URL,
+} from "../../utils/paymentApiUrl";
+import { getRequest, postRequest } from "../../utils/requestMethod";
 
 // PT 결제 생성
 export const createPtPayment = createAsyncThunk(
@@ -40,7 +41,19 @@ export const completePtPayment = createAsyncThunk(
       );
       return response;
     } catch (error) {
-      return rejectWithValue(error.message || '결제 완료 처리 실패');
+      return rejectWithValue(error.message || "결제 완료 처리 실패");
+    }
+  }
+);
+
+export const getPtschedule = createAsyncThunk(
+  "payment/getPayment",
+  async (pt_number, { rejectWithValue }) => {
+    try {
+      const response = await getRequest(GET_PT_SCHEDULE_URL(pt_number), {});
+      return response;
+    } catch (error) {
+      return rejectWithValue(error.message || "피티 스케쥴 조회 실패");
     }
   }
 );
@@ -70,6 +83,13 @@ const paymentSlice = createSlice({
         state.error = null;
       })
       .addCase(completePtPayment.rejected, (state, action) => {
+        state.error = action.payload;
+      })
+      .addCase(getPtschedule.fulfilled, (state, action) => {
+        state.data = action.payload;
+        state.error = null;
+      })
+      .addCase(getPtschedule.rejected, (state, action) => {
         state.error = action.payload;
       });
   },

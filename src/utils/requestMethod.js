@@ -9,45 +9,73 @@ async function handleResponse(response) {
 }
 
 /* ====== Common GET Request Function ====== */
-export async function getRequest(url, options = {}) {
-  const response = await fetch(url, { method: 'GET', ...options });
-  return handleResponse(response);
-}
-
-/* ====== Common POST Request Function ====== */
-export async function postRequest(url, data = {}, options = {}) {
-  const defaultOptions = {
-    method: 'POST',
+export async function getRequest(url) {
+  const response = await fetch(url, {
+    method: "GET",
     headers: {
-      'Content-Type': 'application/json',
+      "Content-Type": "application/json",
     },
-    body: JSON.stringify(data),
+  });
+
+  if (!response.ok) {
+    throw new Error(
+      `Network response was not ok: ${response.status} ${response.statusText}`
+    );
+  }
+
+  // JSON 응답 확인 후 파싱
+  const contentType = response.headers.get("content-type");
+  if (contentType && contentType.includes("application/json")) {
+    return response.json();
+  } else {
+    throw new Error("Expected JSON response but received something else");
+  }
+}
+
+/* ====== Common Post Request Function ====== */
+export async function postRequest(url, options) {
+  const isFormData = options.body instanceof FormData;
+
+  const defaultOptions = {
+    method: "POST",
+    ...(!isFormData && {
+      headers: {
+        "Content-Type": "application/json",
+      },
+    }),
     ...options,
   };
   const response = await fetch(url, defaultOptions);
   return handleResponse(response);
 }
 
-/* ====== Common PATCH Request Function ====== */
-export async function patchRequest(url, data = {}, options = {}) {
+/* ====== Common Patch Request Function ====== */
+export async function patchRequest(url, options) {
   const defaultOptions = {
-    method: 'PATCH',
+    method: "PATCH",
     headers: {
-      'Content-Type': 'application/json',
+      "Content-Type": "application/json",
     },
-    body: JSON.stringify(data),
     ...options,
   };
-  const response = await fetch(url, defaultOptions);
-  return handleResponse(response);
+
+  return await fetch(url, defaultOptions).then((response) => {
+    if (!response.ok) {
+      throw new Error("Network response was not ok");
+    }
+    return response.json();
+  });
 }
 
-/* ====== Common DELETE Request Function ====== */
-export async function deleteRequest(url, options = {}) {
-  const defaultOptions = {
-    method: 'DELETE',
-    ...options,
-  };
-  const response = await fetch(url, defaultOptions);
-  return handleResponse(response);
+/* ====== Common Delete Request Function ====== */
+export async function deleteRequest(url, options) {
+  return await fetch(url, options).then((response) => {
+    if (!response.ok) {
+      throw new Error("Network response was not ok");
+    }
+    if (response.status !== 204) {
+      return response.json();
+    }
+    return response;
+  });
 }

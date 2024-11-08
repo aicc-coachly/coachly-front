@@ -38,7 +38,9 @@ export const trainerSignup = createAsyncThunk(
   'trainer/signup',
   async (trainerData, { rejectWithValue }) => {
     try {
-      const response = await postRequest(TRAINER_SIGNUP_URL, trainerData); // trainerData를 data 파라미터로 전달
+      const response = await postRequest(TRAINER_SIGNUP_URL, {
+        body: trainerData,
+      });
       return response;
     } catch (error) {
       return rejectWithValue(error.message || '회원가입 실패');

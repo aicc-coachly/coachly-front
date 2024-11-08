@@ -19,6 +19,10 @@ export const GET_TRAINER_GYM_ADDRESS_URL = (trainer_number) =>
 export const GET_TRAINER_ACCOUNT_URL = (trainer_number) =>
   `${url}/trainer/${trainer_number}/account`;
 
+// 트레이너 비활성화 상태 변경
+export const UPDATE_TRAINER_STATUS_URL = (trainer_number) =>
+  `${url}/trainer/${trainer_number}/status`;
+
 // 트레이너 소프트 삭제
 export const DELETE_TRAINER_URL = (trainer_number) =>
   `${url}/trainer/${trainer_number}`;
@@ -50,3 +54,7 @@ export const PATCH_TRAINER_PT_COST_URL = (trainer_number, data) =>
 // 트레이너 계좌 정보 업데이트
 export const PATCH_TRAINER_ACCOUNT_URL = (trainer_number) =>
   `${url}/trainer/${trainer_number}/account`;
+
+// 트레이너 이미지 정보 업데이트
+export const PATCH_TRAINER_IMAGE_URL = (trainer_number) =>
+  `${url}/trainer/${trainer_number}/image`;

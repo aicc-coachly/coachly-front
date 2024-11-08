@@ -11,7 +11,7 @@ import {
   GET_MESSAGES_URL,
 } from '../../utils/chatApiUrl';
 import { deleteRequest, getRequest, patchRequest, postRequest } from '../../utils/requestMethod';
-import { addMessage, setMessages, clearChatData } from '../silce/chatSlice';
+import { addMessage, setMessages, clearChatData } from '../slice/chatSlice';
 
 // 채팅방 내 메시지 조회
 export const fetchChatMessages = createAsyncThunk(

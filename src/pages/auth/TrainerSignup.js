@@ -5,7 +5,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 
 import axios from "axios";
-import { trainerSignup } from "../../redux/silce/authSlice";
+import { trainerSignup } from "../../redux/slice/authSlice";
 
 function TrainerSignup() {
   const navigate = useNavigate();
@@ -46,6 +46,7 @@ function TrainerSignup() {
       alert("회원가입에 실패했습니다.");
     }
   }, [data, error, navigate]);
+
 
   const [selectedImage, setSelectedImage] = useState(null); // 이미지 선택 상태
   const optionMap = {

@@ -5,9 +5,11 @@ import {
   COMPLETE_PAYCHECK_URL,
   PATCH_PT_SCHEDULE_URL,
   DELETE_PT_SCHEDULE_URL,
+  GET_SCHEDULE_RECORD_URL,
 } from "../../utils/scheduleApiUrl";
 import {
   deleteRequest,
+  getRequest,
   patchRequest,
   postRequest,
 } from "../../utils/requestMethod";
@@ -92,6 +94,17 @@ export const deletePtSchedule = createAsyncThunk(
     }
   }
 );
+export const getScheduleRecord = createAsyncThunk(
+  "payment/getPayment",
+  async (pt_number, { rejectWithValue }) => {
+    try {
+      const response = await getRequest(GET_SCHEDULE_RECORD_URL(pt_number), {});
+      return response;
+    } catch (error) {
+      return rejectWithValue(error.message || "피티 일정 조회 실패");
+    }
+  }
+);
 
 const scheduleSlice = createSlice({
   name: "schedule",
@@ -139,6 +152,13 @@ const scheduleSlice = createSlice({
         state.error = null;
       })
       .addCase(deletePtSchedule.rejected, (state, action) => {
+        state.error = action.payload;
+      })
+      .addCase(getScheduleRecord.fulfilled, (state, action) => {
+        state.data = action.payload;
+        state.error = null;
+      })
+      .addCase(getScheduleRecord.rejected, (state, action) => {
         state.error = action.payload;
       });
   },
