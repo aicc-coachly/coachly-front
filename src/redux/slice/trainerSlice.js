@@ -13,6 +13,8 @@ import {
   PATCH_TRAINER_GYM_ADDRESS_URL,
   PATCH_TRAINER_PT_COST_URL,
   PATCH_TRAINER_ACCOUNT_URL,
+  PATCH_TRAINER_IMAGE_URL,
+  UPDATE_TRAINER_STATUS_URL,
 } from "../../utils/trainerApiUrl";
 import {
   deleteRequest,
@@ -88,6 +90,24 @@ export const getTrainerAccount = createAsyncThunk(
       return response;
     } catch (error) {
       return rejectWithValue(error.message || "계좌 정보 조회 실패");
+    }
+  }
+);
+
+// 트레이너 비활성화 상태 변경
+export const updateTrainerStatus = createAsyncThunk(
+  "trainer/updateTrainerStatus",
+  async ({ trainer_number, status }, { rejectWithValue }) => {
+    try {
+      const response = await patchRequest(
+        UPDATE_TRAINER_STATUS_URL(trainer_number),
+        {
+          body: JSON.stringify({ status }), // JSON 문자열로 변환된 상태 전달
+        }
+      );
+      return response;
+    } catch (error) {
+      return rejectWithValue(error.message || "트레이너 상태 업데이트 실패");
     }
   }
 );
@@ -221,12 +241,38 @@ export const updateTrainerAccount = createAsyncThunk(
     }
   }
 );
+export const updateTrainerImage = createAsyncThunk(
+  "trainer/updateTrainerImage",
+  async ({ trainer_number, resume, trainer_image }, { rejectWithValue }) => {
+    try {
+      const formData = new FormData();
+      formData.append("resume", resume);
+      if (trainer_image) {
+        formData.append("image", trainer_image); // 이미지 파일 추가
+      }
+
+      const response = await axios.patch(
+        PATCH_TRAINER_IMAGE_URL(trainer_number),
+        formData,
+        {
+          headers: {
+            // Content-Type을 설정하지 않음 (Axios가 자동으로 multipart/form-data로 설정)
+          },
+        }
+      );
+
+      return response.data;
+    } catch (error) {
+      return rejectWithValue(error.message || "이미지 정보 업데이트 실패");
+    }
+  }
+);
+
 
 const trainerSlice = createSlice({
   name: "trainer",
   initialState: {
     data: null,
-
     error: null,
   },
   reducers: {
@@ -237,98 +283,111 @@ const trainerSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder
-      .addCase(getAllTrainers.fulfilled, (state, action) => {
-        state.data = action.payload;
-        state.error = null;
-      })
-      .addCase(getAllTrainers.rejected, (state, action) => {
-        state.error = action.payload;
-      })
-      .addCase(getTrainer.fulfilled, (state, action) => {
-        state.data = action.payload;
-        state.error = null;
-      })
-      .addCase(getTrainer.rejected, (state, action) => {
-        state.error = action.payload;
-      })
-      .addCase(getTrainerPtCost.fulfilled, (state, action) => {
-        state.data = action.payload;
-        state.error = null;
-      })
-      .addCase(getTrainerPtCost.rejected, (state, action) => {
-        state.error = action.payload;
-      })
-      .addCase(getTrainerGymAddress.fulfilled, (state, action) => {
-        state.data = action.payload;
-        state.error = null;
-      })
-      .addCase(getTrainerGymAddress.rejected, (state, action) => {
-        state.error = action.payload;
-      })
-      .addCase(getTrainerAccount.fulfilled, (state, action) => {
-        state.data = action.payload;
-        state.error = null;
-      })
-      .addCase(getTrainerAccount.rejected, (state, action) => {
-        state.error = action.payload;
-      })
-      .addCase(deleteTrainer.fulfilled, (state, action) => {
-        state.data = action.payload;
-        state.error = null;
-      })
-      .addCase(deleteTrainer.rejected, (state, action) => {
-        state.error = action.payload;
-      })
-      .addCase(deleteTrainerPtCost.fulfilled, (state, action) => {
-        state.data = action.payload;
-        state.error = null;
-      })
-      .addCase(deleteTrainerPtCost.rejected, (state, action) => {
-        state.error = action.payload;
-      })
-      .addCase(deleteTrainerGymAddress.fulfilled, (state, action) => {
-        state.data = action.payload;
-        state.error = null;
-      })
-      .addCase(deleteTrainerGymAddress.rejected, (state, action) => {
-        state.error = action.payload;
-      })
-      .addCase(deleteTrainerAccount.fulfilled, (state, action) => {
-        state.data = action.payload;
-        state.error = null;
-      })
-      .addCase(deleteTrainerAccount.rejected, (state, action) => {
-        state.error = action.payload;
-      })
-      .addCase(updateTrainerInfo.fulfilled, (state, action) => {
-        state.data = action.payload;
-        state.error = null;
-      })
-      .addCase(updateTrainerInfo.rejected, (state, action) => {
-        state.error = action.payload;
-      })
-      .addCase(updateTrainerGymAddress.fulfilled, (state, action) => {
-        state.data = action.payload;
-        state.error = null;
-      })
-      .addCase(updateTrainerGymAddress.rejected, (state, action) => {
-        state.error = action.payload;
-      })
-      .addCase(updateTrainerPtCost.fulfilled, (state, action) => {
-        state.data = action.payload;
-        state.error = null;
-      })
-      .addCase(updateTrainerPtCost.rejected, (state, action) => {
-        state.error = action.payload;
-      })
-      .addCase(updateTrainerAccount.fulfilled, (state, action) => {
-        state.data = action.payload;
-        state.error = null;
-      })
-      .addCase(updateTrainerAccount.rejected, (state, action) => {
-        state.error = action.payload;
-      });
-  },
+    .addCase(getAllTrainers.fulfilled, (state, action) => {
+      state.data = action.payload;
+      state.error = null;
+    })
+    .addCase(getAllTrainers.rejected, (state, action) => {
+      state.error = action.payload;
+    })
+    .addCase(getTrainer.fulfilled, (state, action) => {
+      state.data = action.payload;
+      state.error = null;
+    })
+    .addCase(getTrainer.rejected, (state, action) => {
+      state.error = action.payload;
+    })
+    .addCase(getTrainerPtCost.fulfilled, (state, action) => {
+      state.data = action.payload;
+      state.error = null;
+    })
+    .addCase(getTrainerPtCost.rejected, (state, action) => {
+      state.error = action.payload;
+    })
+    .addCase(getTrainerGymAddress.fulfilled, (state, action) => {
+      state.data = action.payload;
+      state.error = null;
+    })
+    .addCase(getTrainerGymAddress.rejected, (state, action) => {
+      state.error = action.payload;
+    })
+    .addCase(getTrainerAccount.fulfilled, (state, action) => {
+      state.data = action.payload;
+      state.error = null;
+    })
+    .addCase(getTrainerAccount.rejected, (state, action) => {
+      state.error = action.payload;
+    })
+    .addCase(updateTrainerStatus.fulfilled, (state, action) => {
+      state.data = action.payload;
+      state.error = null;
+    })
+    .addCase(updateTrainerStatus.rejected, (state, action) => {
+      state.error = action.payload;
+    })
+    .addCase(deleteTrainer.fulfilled, (state, action) => {
+      state.data = action.payload;
+      state.error = null;
+    })
+    .addCase(deleteTrainer.rejected, (state, action) => {
+      state.error = action.payload;
+    })
+    .addCase(deleteTrainerPtCost.fulfilled, (state, action) => {
+      state.data = action.payload;
+      state.error = null;
+    })
+    .addCase(deleteTrainerPtCost.rejected, (state, action) => {
+      state.error = action.payload;
+    })
+    .addCase(deleteTrainerGymAddress.fulfilled, (state, action) => {
+      state.data = action.payload;
+      state.error = null;
+    })
+    .addCase(deleteTrainerGymAddress.rejected, (state, action) => {
+      state.error = action.payload;
+    })
+    .addCase(deleteTrainerAccount.fulfilled, (state, action) => {
+      state.data = action.payload;
+      state.error = null;
+    })
+    .addCase(deleteTrainerAccount.rejected, (state, action) => {
+      state.error = action.payload;
+    })
+    .addCase(updateTrainerInfo.fulfilled, (state, action) => {
+      state.data = action.payload;
+      state.error = null;
+    })
+    .addCase(updateTrainerInfo.rejected, (state, action) => {
+      state.error = action.payload;
+    })
+    .addCase(updateTrainerGymAddress.fulfilled, (state, action) => {
+      state.data = action.payload;
+      state.error = null;
+    })
+    .addCase(updateTrainerGymAddress.rejected, (state, action) => {
+      state.error = action.payload;
+    })
+    .addCase(updateTrainerPtCost.fulfilled, (state, action) => {
+      state.data = action.payload;
+      state.error = null;
+    })
+    .addCase(updateTrainerPtCost.rejected, (state, action) => {
+      state.error = action.payload;
+    })
+    .addCase(updateTrainerAccount.fulfilled, (state, action) => {
+      state.data = action.payload;
+      state.error = null;
+    })
+    .addCase(updateTrainerAccount.rejected, (state, action) => {
+      state.error = action.payload;
+    })
+    .addCase(updateTrainerImage.fulfilled, (state, action) => {
+      state.data = action.payload;
+      state.error = null;
+    })
+    .addCase(updateTrainerImage.rejected, (state, action) => {
+      state.error = action.payload;
+    }),
 });
 
 export const { clearTrainerData } = trainerSlice.actions;
