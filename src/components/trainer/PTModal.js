@@ -3,15 +3,17 @@ import { useDispatch } from 'react-redux';
 import Buttons from '../common/Buttons';
 import { loadTossPayments } from '@tosspayments/tosspayments-sdk';
 import { createPtPayment } from '../../redux/slice/paymentSlice';
+import { useModal } from '../common/ModalProvider';
 
 export const PTModal = ({ trainer }) => {
+  const { openModal, closeModal } = useModal();
   const dispatch = useDispatch();
   const [selectedOption, setSelectedOption] = useState('');
   const [widgets, setWidgets] = useState(null);
   const [isPaymentReady, setIsPaymentReady] = useState(false);
   const user_number = 28;
   const widgetClientKey = 'test_gck_docs_Ovk5rk1EwkEbP0W43n07xlzm';
-  const trainerProfile = trainer || {}; // trainer 데이터를 InfoModal에서 props로 받아옴
+  const trainerProfile = trainer || {};
   const trainerImage = trainerProfile.image;
   const path = 'http://localhost:8000';
 
@@ -48,16 +50,40 @@ export const PTModal = ({ trainer }) => {
       console.log('widgets 객체:', paymentWidgets);
 
       await paymentWidgets.setAmount({ currency: 'KRW', value: amount });
-      await paymentWidgets.renderPaymentMethods({
-        selector: '#payment-method',
-      });
-      await paymentWidgets.renderAgreement({
-        selector: '#agreement',
-      });
-
-      console.log('위젯 렌더링 완료');
       setWidgets({ paymentWidgets, pt_number, payment_number });
       setIsPaymentReady(true);
+
+      // 결제 모달 열기
+      openModal(
+        <div className="p-6 bg-white rounded-lg shadow-lg w-full max-w-sm">
+          <h2 className="text-xl font-bold mb-4">
+            {trainerProfile.name} 트레이너 결제
+          </h2>
+          <div id="payment-method-container">
+            <div id="payment-method" />
+            <div id="agreement" />
+          </div>
+          <Buttons
+            size="middle"
+            color="#4831D4"
+            onClick={handlePaymentRequest}
+            className="mt-4"
+          >
+            결제 하기
+          </Buttons>
+        </div>
+      );
+
+      // 결제 위젯 렌더링
+      setTimeout(() => {
+        paymentWidgets.renderPaymentMethods({
+          selector: '#payment-method',
+        });
+        paymentWidgets.renderAgreement({
+          selector: '#agreement',
+        });
+      }, 0);
+      console.log('위젯 렌더링 완료');
     } catch (error) {
       console.error('위젯 렌더링 중 오류 발생:', error);
       alert('위젯 렌더링에 실패했습니다.');
@@ -77,11 +103,10 @@ export const PTModal = ({ trainer }) => {
     try {
       await paymentWidgets.requestPayment({
         orderId: order_id,
-        orderName:
-          selectedOption === 'oneday' ? '원데이 클래스' : '20회 클래스',
+        orderName: selectedOption === 'oneday' ? '원데이 클래스' : '20회 클래스',
         successUrl: `${window.location.origin}/Success?status=completed&paymentNumber=${payment_number}&ptNumber=${pt_number}`,
         failUrl: `${window.location.origin}/payment-fail`,
-        customerName: trainerProfile.name || '이건트레이너',
+        customerName: trainerProfile.name,
       });
     } catch (error) {
       console.error('결제 생성 중 오류 발생:', error);
@@ -90,14 +115,14 @@ export const PTModal = ({ trainer }) => {
   };
 
   return (
-    <div className="max-w-sm p-6 rounded-lg relative">
+    <div className="max-w-sm p-6 w-full rounded-lg relative bg-white">
       {/* 트레이너 정보 섹션 */}
       <div className="flex gap-4 mb-6">
-        <picture className="w-32 h-32 bg-gray-200 rounded-lg">
+        <picture className="w-32 h-32 bg-gray-200 rounded-lg flex items-center justify-center">
           {trainerImage ? (
             <img
               src={`${path}/${trainerImage}`}
-              alt="트레이너 프로필"
+              alt="프로필"
               className="w-full h-full object-cover rounded-lg"
             />
           ) : (
@@ -105,16 +130,20 @@ export const PTModal = ({ trainer }) => {
           )}
         </picture>
 
-        <div className="flex flex-col gap-2">
-          <p className="font-bold text-lg">{trainerProfile.name || '이건트레이너'}</p>
-          <p className="text-gray-600">{trainerProfile.trainer_detail_address || '동대문구 회기동'}</p>
+        <div className="flex flex-col gap-4">
+          <p className="font-bold text-lg">{trainerProfile.name}</p>
+          <p className="text-[#4831D4]">
+            {trainerProfile.trainer_address} {trainerProfile.trainer_detail_address}
+          </p>
           <div className="flex gap-2">
-            <span className="bg-gray-100 px-3 py-1 rounded-full text-sm">
-              교정/재활
-            </span>
-            <span className="bg-gray-100 px-3 py-1 rounded-full text-sm">
-              여성전문
-            </span>
+            {trainer.service_options.map((option, index) => (
+              <span
+                key={index}
+                className="text-xs bg-[#CCF381] text-[#4831D4] px-3 py-1 rounded-full"
+              >
+                {option}
+              </span>
+            ))}
           </div>
         </div>
       </div>
@@ -144,26 +173,14 @@ export const PTModal = ({ trainer }) => {
         </div>
 
         <p className="text-red-400 text-sm">
-          회원님은 선택하신 회차/시간대 선택을 하셔야 합니다
+          회원님은 회차/시간대 선택을 선택해주세요
         </p>
       </div>
 
-      {/* 결제 위젯 및 결제 요청 버튼 */}
-      <div id="payment-method" />
-      <div id="agreement" />
-
       <div className="flex gap-4 mt-4 justify-center items-center">
-        {/* 위젯 렌더링 버튼 */}
         {!isPaymentReady && (
-          <Buttons size="middle" color="#3282f6" onClick={handleWidgetRender}>
+          <Buttons size="middle" color="#4831D4" onClick={handleWidgetRender}>
             결제 요청하기
-          </Buttons>
-        )}
-
-        {/* 결제 요청 버튼 */}
-        {isPaymentReady && (
-          <Buttons size="middle" color="#ff4b4b" onClick={handlePaymentRequest}>
-            결제 하기
           </Buttons>
         )}
       </div>
