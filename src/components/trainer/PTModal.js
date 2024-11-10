@@ -55,22 +55,24 @@ export const PTModal = ({ trainer }) => {
 
       // 결제 모달 열기
       openModal(
-        <div className="p-6 bg-white rounded-lg shadow-lg w-full max-w-sm">
-          <h2 className="text-xl font-bold mb-4">
+        <div className="p-6 bg-white rounded-lg  w-full max-w-sm">
+          <h2 className="text-xl font-bold mb-4 felx justify-center text-center">
             {trainerProfile.name} 트레이너 결제
           </h2>
           <div id="payment-method-container">
             <div id="payment-method" />
             <div id="agreement" />
           </div>
+          <div className='flex gap-4 mt-4 justify-center items-center'>
           <Buttons
             size="middle"
             color="#4831D4"
             onClick={handlePaymentRequest}
-            className="mt-4"
+            className="mt-4 "
           >
             결제 하기
           </Buttons>
+          </div>
         </div>
       );
 
