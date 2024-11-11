@@ -9,6 +9,7 @@ import { getTrainerPtCost } from '../../redux/slice/trainerSlice';
 
 
 export const TrainerInfoModal = ({ trainer }) => {
+
   const dispatch = useDispatch(); // Redux dispatch 훅
   const { closeModal, openModal } = useModal();
    const trainer_number = trainer?.trainer_id;
@@ -73,8 +74,8 @@ console.log(trainer)
       .get(`http://localhost:8000/trainers/${trainer.trainer_id}/image`)
       .then((response) => {
         setImage(response.data.image); // API가 { image: "imageURL" } 형태로 반환한다고 가정
-        console.log('Is pt_cost_option an array?:', Array.isArray(trainer.pt_cost_option));
-        console.log('pt_cost_option value:', trainer.pt_cost_option);
+//         console.log('Is pt_cost_option an array?:', Array.isArray(trainer.pt_cost_option));
+//         console.log('pt_cost_option value:', trainer.pt_cost_option);
       })
       .catch((error) => console.error("Error fetching trainer image:", error));
   }, [trainer.trainer_id]);
@@ -141,6 +142,13 @@ console.log(trainer)
               <p className="text-sm text-gray-500">가격 정보 없음</p>
             )}
           </div>
+
+//           <p className="text-sm mt-2">20회 4만원/회</p> /
+//           <p className="text-sm mb-4">
+//             안녕하세요. 회원님과 오래 건강하고 싶은 {trainer.name}{" "}
+//             트레이너입니다.
+//           </p>
+
 
           {/* PT 신청 및 상담 버튼 */}
           <div className="flex flex-col gap-2 w-full mt-4">

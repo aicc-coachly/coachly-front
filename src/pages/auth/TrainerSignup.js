@@ -218,6 +218,7 @@ function TrainerSignup() {
     if (selectedImage) {
       data.append("trainer_image", selectedImage);
     }
+    console.log(formData)
 
     dispatch(trainerSignup(data));
   };
