@@ -44,6 +44,29 @@ export async function postRequest(url, options) {
   });
 }
 
+export async function postRequestTwo(url, options) {
+  const isFormData = options.body instanceof FormData;
+
+  const defaultOptions = {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json", // JSON 형식으로 요청 보내기
+    },
+    body: isFormData ? options.body : JSON.stringify(options.body), // 객체일 때 JSON.stringify로 직렬화
+  };
+
+  try {
+    const response = await fetch(url, defaultOptions);
+    if (!response.ok) {
+      throw new Error(`HTTP error! Status: ${response.status}`);
+    }
+    return await response.json(); // 응답을 JSON 형식으로 받기
+  } catch (error) {
+    console.error("Request failed:", error);
+    throw error;
+  }
+}
+
 /* ====== Common Patch Request Function ====== */
 export async function patchRequest(url, options) {
   const defaultOptions = {

@@ -7,6 +7,14 @@ import { RefundPTModal } from "../user/RefundPTModal";
 import { useModal } from "../../components/common/ModalProvider";
 import { useDispatch, useSelector } from "react-redux";
 import { logout } from "../../redux/slice/authSlice";
+import { persistor } from "../../redux/store";
+import { logout as authLogout } from "../../redux/slice/authSlice";
+import { logout as chatLogout } from "../../redux/slice/chatSlice";
+import { logout as paymentLogout } from "../../redux/slice/paymentSlice";
+import { logout as refundLogout } from "../../redux/slice/refundSlice";
+import { logout as scheduleLogout } from "../../redux/slice/scheduleSlice";
+import { logout as trainerLogout } from "../../redux/slice/trainerSlice";
+import { logout as userLogout } from "../../redux/slice/userSlice";
 
 function Buttons({ size, color = "#4831D4", children, onClick }) {
   // 버튼 크기에 따라 클래스 지정
@@ -47,6 +55,10 @@ export function UserMenuButtons({ onClick }) {
 
   const handleLogout = () => {
     dispatch(logout());
+    persistor.purge(); // persisted 상태 초기화
+    localStorage.removeItem("user"); // 추가적으로 localStorage에서 제거
+    localStorage.removeItem("trainer");
+    localStorage.removeItem("persist:root"); // 추가적으로 localStorage에서 제거
     navigate("/");
   };
 
@@ -65,8 +77,16 @@ export function TrainerMenuButtons({ onClick }) {
   const navigate = useNavigate();
 
   const handleLogout = () => {
-    dispatch(logout());
-    navigate("/");
+    dispatch(authLogout());
+    dispatch(chatLogout());
+    dispatch(paymentLogout());
+    dispatch(refundLogout());
+    dispatch(scheduleLogout());
+    dispatch(trainerLogout());
+    dispatch(userLogout());
+    persistor.purge(); // persisted 상태 초기화
+    localStorage.removeItem("persist:root"); // 추가적으로 localStorage에서 제거
+    navigate("/"); // 로그인 페이지로 리디렉션
   };
 
   return (

@@ -281,6 +281,10 @@ const trainerSlice = createSlice({
     clearTrainerData: (state) => {
       state.data = [];
     },
+    logout: (state) => {
+      state.data = null;
+      state.error = null;
+    },
   },
   extraReducers: (builder) => {
     builder
@@ -392,5 +396,5 @@ const trainerSlice = createSlice({
   },
 });
 
-export const { clearTrainerData } = trainerSlice.actions;
+export const { clearTrainerData, logout } = trainerSlice.actions;
 export default trainerSlice.reducer;

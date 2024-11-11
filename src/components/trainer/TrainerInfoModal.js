@@ -4,10 +4,11 @@ import Buttons from "../common/Buttons";
 import { useModal } from "../common/ModalProvider";
 import PTModal from "./PTModal"; // PTModal을 import
 
-export const TrainerInfoModal = ({ trainer }) => {
+export const TrainerInfoModal = ({ trainer, user_number, user_name }) => {
   const { closeModal, openModal } = useModal();
   const [image, setImage] = useState(null);
   const path = "http://localhost:8000";
+  // console.log(trainer);
 
   // trainer_id로 트레이너 이미지를 가져오기
   useEffect(() => {
@@ -17,6 +18,8 @@ export const TrainerInfoModal = ({ trainer }) => {
       setImage(imagePath);
     }
   }, [trainer.image]);
+  // console.log(user_number);
+  // console.log(user_name);
 
   const handleOverlayClick = (e) => {
     if (e.target === e.currentTarget) {
@@ -26,8 +29,17 @@ export const TrainerInfoModal = ({ trainer }) => {
 
   // PT 신청하기 버튼 클릭 시 PTModal 열기
   const handlePTRequest = () => {
-    openModal(<PTModal trainer_id={trainer.trainer_id} />);
+    openModal(
+      <PTModal
+        pt_cost_option={trainer.pt_cost_options}
+        trainer_number={trainer.trainer_number}
+        trainer_name={trainer.name}
+        user_number={user_number}
+        user_name={user_name}
+      />
+    );
   };
+  // console.log(trainer.trainer_number);
 
   return (
     <div
@@ -66,7 +78,22 @@ export const TrainerInfoModal = ({ trainer }) => {
               </span>
             ))}
           </div>
-          <p className="text-sm mt-2">20회 4만원/회</p>
+          <p className="text-sm mt-2">{}</p>
+          <div className="flex flex-col gap-2 mt-2">
+            {trainer.pt_cost_options && trainer.pt_cost_options.length > 0 ? (
+              trainer.pt_cost_options.map((option, index) => (
+                <p key={index} className="text-sm">
+                  {option.option === "원데이 클래스"
+                    ? "원데이 클래스"
+                    : "패키지"}{" "}
+                  -{option.frequency}회 {option.amount}원
+                </p>
+              ))
+            ) : (
+              <p className="text-sm">가격 정보가 없습니다.</p>
+            )}
+          </div>
+
           <p className="text-sm mb-4">
             안녕하세요. 회원님과 오래 건강하고 싶은 {trainer.name}{" "}
             트레이너입니다.

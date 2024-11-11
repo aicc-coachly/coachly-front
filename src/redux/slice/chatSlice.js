@@ -128,6 +128,10 @@ const chatSlice = createSlice({
     clearChatData: (state) => {
       state.data = null;
     },
+    logout: (state) => {
+      state.data = null;
+      state.error = null;
+    },
   },
   extraReducers: (builder) => {
     builder
@@ -183,5 +187,5 @@ const chatSlice = createSlice({
   },
 });
 
-export const { clearChatData } = chatSlice.actions;
+export const { clearChatData, logout } = chatSlice.actions;
 export default chatSlice.reducer;

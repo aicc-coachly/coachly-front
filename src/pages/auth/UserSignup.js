@@ -24,6 +24,7 @@ function UserSignup() {
 
   // 회원가입 상태 확인
   const { data, error } = useSelector((state) => state.auth);
+  console.log(data);
 
   useEffect(() => {
     if (data) {

@@ -7,8 +7,6 @@ import {
 } from "../../utils/authApiUrl";
 import { postRequest } from "../../utils/requestMethod";
 
-// 커밋주석
-
 // 초기 상태 설정
 const initialState = {
   user: JSON.parse(localStorage.getItem("user")) || null,
@@ -90,6 +88,8 @@ const authSlice = createSlice({
       state.userType = "trainer";
     },
     logout: (state) => {
+      state.data = null;
+      state.auth = null;
       state.user = null;
       state.trainer = null;
       state.userType = null;
