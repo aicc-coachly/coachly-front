@@ -42,8 +42,8 @@ const Modal = ({ isOpen, modalContent, closeModal }) => {
 
   return (
     <div className="modal-overlay fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
-      <div className="w-[85%] max-w-sm bg-gray-300 p-6 rounded-lg relative">
-        <button className="absolute top-4 right-4 text-lg font-bold" onClick={closeModal}>X</button>
+      <div className="w-[85%] max-w-sm bg-white p-6 rounded-lg relative">
+        <button className="absolute top-2 right-3 text-lg font-bold" onClick={closeModal}>X</button>
         {modalContent}
       </div>
     </div>
