@@ -15,6 +15,7 @@ import TrainerMypage from './pages/trainer/TrainerMypage';
 import UserMypage from './pages/user/UserMypage';
 import TrainerSearch from './pages/user/TrainerSearch';
 import UserProfile from './pages/user/UserProfile';
+import RefoundListPage from './components/user/RefoundListPage';
 // chat
 import ChatList from './pages/chat/ChatList';
 import Success from './components/common/Success';
@@ -48,6 +49,7 @@ function App() {
             <Route path="/usermypage" element={<UserMypage />} />
             <Route path="/trainersearch" element={<TrainerSearch />} />
             <Route path="/userprofile" element={<UserProfile />} />
+            <Route path="/userrefund" element={<RefoundListPage />} />
           </Routes>
         </div>
       </ModalProvider>

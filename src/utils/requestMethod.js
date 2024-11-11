@@ -11,9 +11,9 @@ async function handleResponse(response) {
 /* ====== Common GET Request Function ====== */
 export async function getRequest(url) {
   const response = await fetch(url, {
-    method: "GET",
+    method: 'GET',
     headers: {
-      "Content-Type": "application/json",
+      'Content-Type': 'application/json',
     },
   });
 
@@ -24,11 +24,11 @@ export async function getRequest(url) {
   }
 
   // JSON 응답 확인 후 파싱
-  const contentType = response.headers.get("content-type");
-  if (contentType && contentType.includes("application/json")) {
+  const contentType = response.headers.get('content-type');
+  if (contentType && contentType.includes('application/json')) {
     return response.json();
   } else {
-    throw new Error("Expected JSON response but received something else");
+    throw new Error('Expected JSON response but received something else');
   }
 }
 /* ====== Common Post Request Function ====== */
@@ -36,10 +36,10 @@ export async function postRequest(url, options) {
   const isFormData = options.body instanceof FormData;
 
   const defaultOptions = {
-    method: "POST",
+    method: 'POST',
     ...(!isFormData && {
       headers: {
-        "Content-Type": "application/json",
+        'Content-Type': 'application/json',
       },
     }),
     ...options,
@@ -51,16 +51,16 @@ export async function postRequest(url, options) {
 /* ====== Common Patch Request Function ====== */
 export async function patchRequest(url, options) {
   const defaultOptions = {
-    method: "PATCH",
+    method: 'PATCH',
     headers: {
-      "Content-Type": "application/json",
+      'Content-Type': 'application/json',
     },
     ...options,
   };
 
   return await fetch(url, defaultOptions).then((response) => {
     if (!response.ok) {
-      throw new Error("Network response was not ok");
+      throw new Error('Network response was not ok');
     }
     return response.json();
   });
@@ -68,9 +68,17 @@ export async function patchRequest(url, options) {
 
 /* ====== Common Delete Request Function ====== */
 export async function deleteRequest(url, options) {
-  return await fetch(url, options).then((response) => {
+  const requestOptions = {
+    method: 'POST', // DELETE 메서드로 명시
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    ...options,
+  };
+
+  return await fetch(url, requestOptions).then((response) => {
     if (!response.ok) {
-      throw new Error("Network response was not ok");
+      throw new Error('Network response was not ok');
     }
     if (response.status !== 204) {
       return response.json();
