@@ -4,11 +4,15 @@ import { useNavigate } from 'react-router-dom'; // useNavigate 추가
 import Buttons from '../common/Buttons';
 import { useModal } from '../common/ModalProvider';
 import {PTModal} from './PTModal'; // PTModal을 import
+import { useDispatch, useSelector } from 'react-redux';
+import { getTrainerPtCost } from '../../redux/slice/trainerSlice'; 
 
 
 export const TrainerInfoModal = ({ trainer }) => {
-  
+  const dispatch = useDispatch(); // Redux dispatch 훅
   const { closeModal, openModal } = useModal();
+   const trainer_number = trainer?.trainer_id;
+  
   const path = "http://localhost:8000";
 
   //props로 PTModal에 데이터 전달
@@ -16,6 +20,31 @@ export const TrainerInfoModal = ({ trainer }) => {
     openModal(<PTModal trainer={trainer} />);
   };
   
+  // Redux에서 PT 비용 데이터 선택
+  const { data: trainerPtCostData, loading, error } = useSelector((state) => state.trainer);
+  console.log('현재 Redux의 trainerPtCostData:', trainerPtCostData);
+
+  // PT 비용 정보 가져오기
+  useEffect(() => {
+    if (trainer && trainer.trainer_number) {
+      dispatch(getTrainerPtCost(trainer.trainer_number));
+      console.log('데이터 가져오기 :', trainer.trainer_number);
+    }
+  }, [trainer, dispatch]);
+
+  // 데이터 필터링
+  const filteredPtCostData = trainerPtCostData && Array.isArray(trainerPtCostData)
+    ? trainerPtCostData.map(({ amount_number, option, amount, frequency }) => ({
+        amount_number,
+        option,
+        amount,
+        frequency,
+      }))
+    : [];
+
+  console.log('트레이너 PT 비용 정보:', filteredPtCostData);
+  console.log('trainerPtCostData:', trainerPtCostData);
+
 
   // trainer_id로 트레이너 이미지를 가져오기
   useEffect(() => {
@@ -93,22 +122,25 @@ console.log(trainer)
             ))}
               
           </div>
-          {/* Array.isArray 넣어서 배열이 아니여도 에러 방지 */}
-          <p className="text-sm mt-2">
-            {trainer.pt_cost_option && Array.isArray(trainer.pt_cost_option) && trainer.pt_cost_option.length > 0
-              ? trainer.pt_cost_option.map((option, index) => (
-               <span key={index}>{option}</span>
-             ))
-   
-               : '가격 정보 없음 문의 필요'}
-          </p>
-         <  br/>
-
-         <p className="text-sm mb-4">
-          {trainer.resume
-             ? trainer.resume
-             : `안녕하세요. 회원님과 오래 건강하고 싶은 ${trainer.name} 트레이너입니다.`}
-         </p>
+          
+              {/* 가격 옵션 표시 */}
+          <div className="mt-4 text-center">
+            <h4 className="text-xl font-semibold">가격 옵션</h4>
+            {loading ? (
+              <p>불러오는 중...</p>
+            ) : error ? (
+              <p className="text-red-500">가격 정보 가져오기 실패</p>
+            ) : filteredPtCostData.length > 0 ? (
+              filteredPtCostData.map((option) => (
+                <div key={option.amount_number} className="text-sm">
+                  {option.option}: {option.amount}원
+                  {option.frequency && `, ${option.frequency}회`}
+                </div>
+              ))
+            ) : (
+              <p className="text-sm text-gray-500">가격 정보 없음</p>
+            )}
+          </div>
 
           {/* PT 신청 및 상담 버튼 */}
           <div className="flex flex-col gap-2 w-full mt-4">

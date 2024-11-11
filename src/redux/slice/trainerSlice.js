@@ -53,12 +53,11 @@ export const getTrainer = createAsyncThunk(
 
 // 특정 트레이너의 PT 가격 정보 조회
 export const getTrainerPtCost = createAsyncThunk(
-  "trainer/getTrainerPtCost",
+  'trainer/getTrainerPtCost',
   async (trainer_number, { rejectWithValue }) => {
     try {
-      const response = await getRequest(
-        GET_TRAINER_PT_COST_URL(trainer_number)
-      );
+      console.log('호츌 트레이너 번호:',trainer_number)
+      const response = await getRequest(GET_TRAINER_PT_COST_URL(trainer_number));
       return response;
     } catch (error) {
       return rejectWithValue(error.message || "PT 가격 정보 조회 실패");

@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from 'react';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector} from 'react-redux';
 import Buttons from '../common/Buttons';
 import { loadTossPayments } from '@tosspayments/tosspayments-sdk';
 import { createPtPayment } from '../../redux/slice/paymentSlice';
 import { useModal } from '../common/ModalProvider';
+import { getTrainerPtCost } from '../../redux/slice/trainerSlice';
 
 export const PTModal = ({ trainer }) => {
   const { openModal, closeModal } = useModal();
@@ -17,6 +18,24 @@ export const PTModal = ({ trainer }) => {
   const trainerImage = trainerProfile.image;
   const path = 'http://localhost:8000';
 
+  // PT 가격 정보 가져오기
+  useEffect(() => {
+    if (trainer && trainer.trainer_number) {
+      dispatch(getTrainerPtCost(trainer.trainer_number));
+    }
+  }, [trainer, dispatch]);
+
+  // Redux에서 가격 옵션 데이터 가져오기
+  const { data: trainerPtCostData } = useSelector((state) => state.trainer);
+  const filteredPtCostData = trainerPtCostData && Array.isArray(trainerPtCostData)
+    ? trainerPtCostData.map(({ amount_number, option, amount, frequency }) => ({
+        amount_number,
+        option,
+        amount,
+        frequency,
+      }))
+    : [];
+    
   const generateRandomString = () => window.btoa(Math.random()).slice(0, 20);
 
   const handleCheckboxChange = (option) => {
@@ -152,31 +171,20 @@ export const PTModal = ({ trainer }) => {
 
       {/* 가격 선택 섹션 */}
       <div className="flex flex-col gap-4 mb-6">
-        <div className="border rounded-lg p-4 flex items-center justify-between">
-          <input
-            type="checkbox"
-            id="oneday"
-            className="w-5 h-5"
-            checked={selectedOption === 'oneday'}
-            onChange={() => handleCheckboxChange('oneday')}
-          />
-          <label htmlFor="oneday">원데이 클래스 - 50분 5만원</label>
-        </div>
-
-        <div className="border rounded-lg p-4 flex items-center justify-between">
-          <input
-            type="checkbox"
-            id="ferprice"
-            className="w-5 h-5"
-            checked={selectedOption === 'ferprice'}
-            onChange={() => handleCheckboxChange('ferprice')}
-          />
-          <label htmlFor="ferprice">20회 - 시간당 4만원</label>
-        </div>
-
-        <p className="text-red-400 text-sm">
-          회원님은 회차/시간대 선택을 선택해주세요
-        </p>
+        {filteredPtCostData.map((option) => (
+          <div key={option.amount_number} className="border rounded-lg p-4 flex items-center gap-3 justify-start">
+            <input
+              type="checkbox"
+              id={option.option}
+              className="w-5 h-5"
+              checked={selectedOption === option.option}
+              onChange={() => handleCheckboxChange(option.option)}
+            />
+            <label htmlFor={option.option}>
+              {option.option} - {option.amount}원 {option.frequency && `(${option.frequency}회)`}
+            </label>
+          </div>
+        ))}
       </div>
 
       <div className="flex gap-4 mt-4 justify-center items-center">
