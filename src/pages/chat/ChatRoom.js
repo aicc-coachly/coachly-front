@@ -1,20 +1,22 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import io from 'socket.io-client';
 import { useDispatch, useSelector } from 'react-redux';
-import { useModal } from '../../components/common/ModalProvider';
 import { UserChatButtons, TrainerChatButtons } from '../../components/common/Buttons';
 import { addMessage } from '../../redux/slice/chatSlice';
 import { fetchChatMessages } from '../../redux/thunks/chatThunks';
+import { useParams } from 'react-router-dom';
 
 const socket = io(process.env.REACT_APP_API_URL || 'http://localhost:8000');
 
-const ChatRoom = ({ roomId, userId }) => {
-  const { openModal } = useModal();
+const ChatRoom = ({ userId }) => {
+  const { roomId } = useParams();
   const dispatch = useDispatch();
   const [menuOpen, setMenuOpen] = useState(false);
   const [input, setInput] = useState('');
   const [isTrainer, setIsTrainer] = useState(false); 
   const messages = useSelector((state) => state.chat.messages); 
+
+  console.log("userId:", userId); // userId 유효성 확인
 
   useEffect(() => {
     // 로컬 스토리지에서 유저 타입 확인
@@ -25,15 +27,18 @@ const ChatRoom = ({ roomId, userId }) => {
     socket.emit('joinRoom', roomId);
 
     // 메시지 수신 이벤트 설정
-    socket.on('messageReceived', (message) => {
+    const handleReceivedMessage = (message) => {
       dispatch(addMessage(message));
-    });
+    };
+
+    socket.on('messageReceived', handleReceivedMessage);
 
     // 기존 메시지 로딩
     dispatch(fetchChatMessages(roomId));
 
-    // 컴포넌트 언마운트 시 방을 떠나기
+    // 컴포넌트 언마운트 시 이벤트 해제와 방 나가기
     return () => {
+      socket.off('messageReceived', handleReceivedMessage);
       socket.emit('leaveRoom', roomId);
     };
   }, [roomId, dispatch]);
@@ -52,7 +57,7 @@ const ChatRoom = ({ roomId, userId }) => {
     };
   }, [menuOpen]);
 
-  const sendMessage = () => {
+  const sendMessage = useCallback(() => {
     if (input.trim()) {
       const message = { 
         roomId, 
@@ -64,7 +69,7 @@ const ChatRoom = ({ roomId, userId }) => {
       dispatch(addMessage(message)); 
       setInput('');
     }
-  };
+  }, [input, roomId, userId, isTrainer, dispatch]);
 
   const toggleMenu = () => {
     setMenuOpen(!menuOpen);
