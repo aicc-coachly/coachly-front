@@ -116,6 +116,10 @@ const scheduleSlice = createSlice({
     clearScheduleData: (state) => {
       state.data = null;
     },
+    logout: (state) => {
+      state.data = null;
+      state.error = null;
+    },
   },
   extraReducers: (builder) => {
     builder
@@ -164,5 +168,5 @@ const scheduleSlice = createSlice({
   },
 });
 
-export const { clearScheduleData } = scheduleSlice.actions;
+export const { clearScheduleData, logout } = scheduleSlice.actions;
 export default scheduleSlice.reducer;

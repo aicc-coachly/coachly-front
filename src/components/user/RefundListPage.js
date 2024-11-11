@@ -2,47 +2,44 @@
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { deleteRefund, getAllRefunds } from '../../redux/slice/refundSlice';
-import { getScheduleRecord } from '../../redux/slice/scheduleSlice';
 import { useModal } from '../common/ModalProvider';
-import { RefundPTModal } from '../user/RefundPTModal';
+import { RefundPTModal } from './RefundPTModal';
+import { getPtschedule } from '../../redux/slice/paymentSlice';
 
 const RefundListPage = () => {
   const dispatch = useDispatch();
   const { openModal } = useModal();
   const error = useSelector((state) => state.refund.error);
-  const userNumber = useSelector((state) => state.user.userInfo?.user_number);
+  const user_number = useSelector((state) => state.user.userInfo?.user_number);
   const [localRefunds, setLocalRefunds] = useState([]);
   const [ptScheduleNumbers, setPtScheduleNumbers] = useState([]);
 
   useEffect(() => {
-    dispatch(getScheduleRecord())
+    // getPtschedule에 { user_number } 객체 형태로 전달
+    dispatch(getPtschedule({ user_number }))
       .unwrap()
       .then((schedules) => {
         const userSchedules = schedules
-          .filter((schedule) => schedule.user_number === userNumber)
+          .filter((schedule) => schedule.user_number === user_number)
           .map((schedule) => schedule.pt_number);
         setPtScheduleNumbers(userSchedules);
-      })
-      .catch((error) => {
-        console.error(
-          'PT 스케줄 목록을 불러오는 중 오류가 발생했습니다:',
-          error
-        );
-      });
 
-    dispatch(getAllRefunds())
-      .unwrap()
+        // ptScheduleNumbers를 기반으로 getAllRefunds 호출
+        return dispatch(getAllRefunds()).unwrap();
+      })
       .then((fetchedRefunds) => {
-        // 'delete' 상태가 아닌 환불 항목만 저장
+        // 'delete' 상태가 아니며 사용자의 스케줄에 해당하는 환불 항목만 저장
         const activeRefunds = fetchedRefunds.filter(
-          (refund) => refund.status !== 'delete'
+          (refund) =>
+            refund.status !== 'delete' &&
+            ptScheduleNumbers.includes(refund.pt_number)
         );
         setLocalRefunds(activeRefunds);
       })
       .catch((error) => {
-        console.error('환불 목록을 불러오는 중 오류가 발생했습니다:', error);
+        console.error('목록을 불러오는 중 오류가 발생했습니다:', error);
       });
-  }, [dispatch, userNumber]);
+  }, [dispatch, user_number]);
 
   const handleCancelRefund = (refund_number) => {
     dispatch(deleteRefund(refund_number))
