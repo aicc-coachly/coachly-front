@@ -8,7 +8,7 @@ import { useParams } from 'react-router-dom';
 
 const socket = io(process.env.REACT_APP_API_URL || 'http://localhost:8000');
 
-const ChatRoom = ({ userId }) => {
+const ChatRoom = ({ userNumber, trainerNumber }) => {
   const { roomId } = useParams();
   const dispatch = useDispatch();
   const [menuOpen, setMenuOpen] = useState(false);
@@ -16,7 +16,7 @@ const ChatRoom = ({ userId }) => {
   const [isTrainer, setIsTrainer] = useState(false); 
   const messages = useSelector((state) => state.chat.messages); 
 
-  console.log("userId:", userId); // userId 유효성 확인
+  console.log("userNumber:", userNumber, "trainerNumber:", trainerNumber, "roomId:", roomId);
 
   useEffect(() => {
     // 로컬 스토리지에서 유저 타입 확인
@@ -60,16 +60,18 @@ const ChatRoom = ({ userId }) => {
   const sendMessage = useCallback(() => {
     if (input.trim()) {
       const message = { 
-        roomId, 
+        roomId,  // roomId를 메시지와 함께 전송
+        userNumber, 
+        trainerNumber,
         content: input, 
-        senderId: userId, 
+        senderId: userNumber, 
         senderName: isTrainer ? "Trainer" : "User" 
       };
       socket.emit('sendMessage', message); 
       dispatch(addMessage(message)); 
       setInput('');
     }
-  }, [input, roomId, userId, isTrainer, dispatch]);
+  }, [input, roomId, userNumber, trainerNumber, isTrainer, dispatch]);
 
   const toggleMenu = () => {
     setMenuOpen(!menuOpen);
@@ -86,15 +88,15 @@ const ChatRoom = ({ userId }) => {
         {messages.map((msg, index) => (
           <div 
             key={index} 
-            className={`flex ${msg.senderId === userId ? "justify-end" : "justify-start"}`}
+            className={`flex ${msg.senderId === userNumber ? "justify-end" : "justify-start"}`}
           >
             <div
-              className={`relative ${msg.senderId === userId ? "bg-blue-500 text-white" : "bg-gray-300 text-black"} 
-                p-4 rounded-lg w-2/3 ${msg.senderId === userId ? "mr-2" : "ml-2"}`}
+              className={`relative ${msg.senderId === userNumber ? "bg-blue-500 text-white" : "bg-gray-300 text-black"} 
+                p-4 rounded-lg w-2/3 ${msg.senderId === userNumber ? "mr-2" : "ml-2"}`}
             >
               <p>{msg.content}</p>
-              <div className={`absolute ${msg.senderId === userId ? "right-0 bottom-0 transform translate-x-full translate-y-1/2" : "left-0 bottom-0 transform -translate-x-full translate-y-1/2"}`}>
-                <div className={`w-0 h-0 ${msg.senderId === userId ? "border-t-[10px] border-t-blue-500 border-l-[10px] border-l-transparent" : "border-t-[10px] border-t-gray-300 border-r-[10px] border-r-transparent"}`}></div>
+              <div className={`absolute ${msg.senderId === userNumber ? "right-0 bottom-0 transform translate-x-full translate-y-1/2" : "left-0 bottom-0 transform -translate-x-full translate-y-1/2"}`}>
+                <div className={`w-0 h-0 ${msg.senderId === userNumber ? "border-t-[10px] border-t-blue-500 border-l-[10px] border-l-transparent" : "border-t-[10px] border-t-gray-300 border-r-[10px] border-r-transparent"}`}></div>
               </div>
             </div>
           </div>
