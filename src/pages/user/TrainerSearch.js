@@ -2,21 +2,48 @@ import React, { useEffect, useState } from "react";
 import Buttons from "../../components/common/Buttons";
 import { useModal } from "../../components/common/ModalProvider";
 import { TrainerInfoModal } from "../../components/trainer/TrainerInfoModal";
+import { useNavigate } from 'react-router-dom';
 import axios from "axios";
+import { CREATE_CHAT_ROOM_URL } from "../../utils/chatApiUrl"; 
+import { useSelector } from 'react-redux';
 
-function TrainerSearch() {
+const TrainerSearch = () => {
+  const navigate = useNavigate();
   const { openModal } = useModal();
+
+  // Redux에서 userNumber 가져오기
+  const userNumber = useSelector((state) => state.user.userInfo.user_number);
+  console.log("Redux에서 가져온 userNumber:", userNumber);
+
+  const handleCreateChatRoom = async (trainerNumber) => {
+    try {
+      console.log("Creating chat room with:", { userNumber, trainerNumber });
+      const response = await axios.post(CREATE_CHAT_ROOM_URL, {
+        user_number: userNumber,
+        trainer_number: trainerNumber,
+        type: "trainer", // 트레이너와의 채팅방 생성
+      });
+
+      if (response.status === 201) {
+        const { room_id } = response.data;
+        console.log("채팅방이 생성되었습니다. 방 ID:", room_id);
+        // 생성된 채팅방 페이지로 이동
+        navigate(`/chatroom/${room_id}`);
+      }
+    } catch (error) {
+      console.error("채팅방 생성 중 오류가 발생했습니다:", error);
+    }
+  };
+
   const [filters, setFilters] = useState({
     searchTerm: "",
     gender: "",
     service_option: "",
   });
-
   const path = "http://localhost:8000";
   const [trainers, setTrainers] = useState([]);
   const [filteredTrainers, setFilteredTrainers] = useState([]);
   const [isSearching, setIsSearching] = useState(false);
-  console.log(trainers);
 
   // 모든 트레이너 데이터 가져오기
   useEffect(() => {
@@ -35,7 +62,7 @@ function TrainerSearch() {
 
   // 필터 적용
   const applyFilters = () => {
-    const searchAddress = filters.searchTerm.trim(); // 검색어에서 공백 제거
+    const searchAddress = filters.searchTerm.trim();
     const filtered = trainers.filter((trainer) => {
       const matchesService = filters.service_option
         ? trainer.service_options.includes(filters.service_option)
@@ -67,10 +94,6 @@ function TrainerSearch() {
   // Show trainer info in a modal with the trainer's image
   const handleShowTrainerInfo = (trainer) => {
     openModal(<TrainerInfoModal trainer={trainer} />);
-  };
-
-  const handleConsult = (trainer) => {
-    alert(`${trainer.name}님과의 상담을 요청하였습니다.`);
   };
 
   return (
@@ -187,11 +210,13 @@ function TrainerSearch() {
                 <p>
                   {trainer.trainer_address} {trainer.trainer_detail_address}
                 </p>
-                <div className="flex gap-4 mt-4 justify-center items-center">
-                <Buttons size="small" onClick={() => handleConsult(trainer)}>
-                  1:1 상담 받기
-                </Buttons>
-                </div>
+                
+                  <Buttons 
+                    size="small" 
+                    onClick={() => handleCreateChatRoom(trainer.trainer_number)}
+                  >
+                    1:1 상담 받기
+                  </Buttons>
               </div>
             ))
           ) : (
