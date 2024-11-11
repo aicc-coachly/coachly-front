@@ -20,6 +20,7 @@ import ChatList from './pages/chat/ChatList';
 import Success from './components/common/Success';
 import ChatRoom from './pages/chat/ChatRoom';
 import RefundListPage from './components/user/RefundListPage';
+import PtScheduleList from './components/user/PtScheduleList';
 
 function App() {
   return (
@@ -39,7 +40,6 @@ function App() {
             <Route path="/chatlist" element={<ChatList />} />
             <Route path="/Success" element={<Success />} />
             <Route path="/chatroom" element={<ChatRoom />} />
-
             {/* 트레이너 메인 페이지 */}
             <Route path="/trainerprofile" element={<TrainerProfile />} />
             <Route path="/trainermypage" element={<TrainerMypage />} />
@@ -50,6 +50,7 @@ function App() {
             <Route path="/trainersearch" element={<TrainerSearch />} />
             <Route path="/userprofile" element={<UserProfile />} />
             <Route path="/userrefund" element={<RefundListPage />} />
+            <Route path="/userptschedule" element={<PtScheduleList />} />
           </Routes>
         </div>
       </ModalProvider>

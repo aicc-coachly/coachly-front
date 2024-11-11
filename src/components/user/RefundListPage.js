@@ -10,42 +10,50 @@ const RefundListPage = () => {
   const dispatch = useDispatch();
   const { openModal } = useModal();
   const error = useSelector((state) => state.refund.error);
-  const user_number = useSelector((state) => state.user.userInfo?.user_number);
+  // 로컬스토리지에서 유저 또는 트레이너 정보 가져오기
+  const user_type = localStorage.getItem('userType');
+  const storedUserData = JSON.parse(localStorage.getItem(user_type)); // 'user' 또는 'trainer'에 따라 가져옴
+  const user_number = storedUserData?.user_number;
+  const trainer_number = storedUserData?.trainer_number;
   const [localRefunds, setLocalRefunds] = useState([]);
   const [ptScheduleNumbers, setPtScheduleNumbers] = useState([]);
+  console.log(user_type);
+  console.log(user_number);
 
   useEffect(() => {
-    // getPtschedule에 { user_number } 객체 형태로 전달
     dispatch(getPtschedule({ user_number }))
       .unwrap()
       .then((schedules) => {
         const userSchedules = schedules
-          .filter((schedule) => schedule.user_number === user_number)
+          .filter((schedule) => {
+            // user_type이 'user'이면 user_number로, 'trainer'이면 trainer_number로 필터링
+            return user_type === 'user'
+              ? schedule.user_number === user_number
+              : schedule.trainer_number === trainer_number;
+          })
           .map((schedule) => schedule.pt_number);
         setPtScheduleNumbers(userSchedules);
-
-        // ptScheduleNumbers를 기반으로 getAllRefunds 호출
+        console.log(userSchedules);
         return dispatch(getAllRefunds()).unwrap();
       })
       .then((fetchedRefunds) => {
-        // 'delete' 상태가 아니며 사용자의 스케줄에 해당하는 환불 항목만 저장
         const activeRefunds = fetchedRefunds.filter(
           (refund) =>
             refund.status !== 'delete' &&
             ptScheduleNumbers.includes(refund.pt_number)
         );
+        console.log(activeRefunds);
         setLocalRefunds(activeRefunds);
       })
       .catch((error) => {
         console.error('목록을 불러오는 중 오류가 발생했습니다:', error);
       });
-  }, [dispatch, user_number]);
+  }, [dispatch, user_number, user_type]);
 
   const handleCancelRefund = (refund_number) => {
     dispatch(deleteRefund(refund_number))
       .unwrap()
       .then(() => {
-        console.log('Refund canceled successfully');
         setLocalRefunds((prevRefunds) =>
           prevRefunds.filter((refund) => refund.refund_number !== refund_number)
         );
@@ -69,7 +77,7 @@ const RefundListPage = () => {
     openModal(
       <RefundPTModal
         refundData={refund}
-        isEditMode={true}
+        isEditMode={user_type === 'user'} // 유저일 때만 수정 모드로
         onEditSuccess={onEditSuccess}
       />
     );
@@ -108,7 +116,7 @@ const RefundListPage = () => {
                     {refund.status === 'completed' ? '완료' : '진행 중'}
                   </span>
                 </p>
-                {refund.status !== 'completed' && (
+                {user_type === 'user' && refund.status !== 'completed' && (
                   <div className="flex mt-4 space-x-2">
                     <button
                       className="px-4 py-2 w-1/2 bg-[#081f5c] text-white rounded hover:bg-[#4831D4]"

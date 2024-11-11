@@ -4,11 +4,14 @@ import { useDispatch, useSelector } from 'react-redux';
 import { createRefund, updateRefund } from '../../redux/slice/refundSlice';
 import { useModal } from '../common/ModalProvider';
 
-export const RefundPTModal = ({ refundData = {}, isEditMode = false }) => {
+export const RefundPTModal = ({
+  pt_number,
+  refundData = {},
+  isEditMode = false,
+}) => {
   const dispatch = useDispatch();
   const { closeModal } = useModal();
   const userNumber = useSelector((state) => state.user.userInfo.user_number);
-  const ptNumber = useSelector((state) => state.schedule.data?.pt_number);
 
   const [showOtherReason, setShowOtherReason] = useState(false);
   const [selectedReason, setSelectedReason] = useState('');
@@ -22,7 +25,6 @@ export const RefundPTModal = ({ refundData = {}, isEditMode = false }) => {
     ptSessions: false,
   });
 
-  // 수정 모드일 경우 기존 데이터를 초기화
   useEffect(() => {
     if (isEditMode) {
       setSelectedReason(refundData.refund_reason || '');
@@ -41,8 +43,8 @@ export const RefundPTModal = ({ refundData = {}, isEditMode = false }) => {
   };
 
   const handleRefundRequest = async () => {
-    if (!userNumber) {
-      alert('사용자 정보가 없습니다. 다시 로그인해주세요.');
+    if (!userNumber || !pt_number) {
+      alert('필요한 정보가 없습니다. 다시 시도해 주세요.');
       return;
     }
 
@@ -58,7 +60,7 @@ export const RefundPTModal = ({ refundData = {}, isEditMode = false }) => {
     }
 
     const refundDataToSubmit = {
-      pt_number: isEditMode ? refundData.pt_number : ptNumber,
+      pt_number,
       refund_reason: selectedReason === '기타' ? otherReason : selectedReason,
       account: accountNumber,
       bank_name: bankName,
@@ -68,7 +70,6 @@ export const RefundPTModal = ({ refundData = {}, isEditMode = false }) => {
 
     try {
       if (isEditMode) {
-        // 수정 모드일 경우 updateRefund 호출
         await dispatch(
           updateRefund({
             refund_number: refundData.refund_number,
@@ -77,7 +78,6 @@ export const RefundPTModal = ({ refundData = {}, isEditMode = false }) => {
         ).unwrap();
         alert('환불 정보가 성공적으로 수정되었습니다.');
       } else {
-        // 생성 모드일 경우 createRefund 호출
         await dispatch(createRefund(refundDataToSubmit)).unwrap();
         alert('환불 요청이 성공적으로 접수되었습니다.');
       }

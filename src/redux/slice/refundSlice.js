@@ -18,7 +18,7 @@ export const createRefund = createAsyncThunk(
   'refund/createRefund',
   async (refundData, { rejectWithValue }) => {
     try {
-      const response = await postRequest(CREATE_REFUND_URL, {
+      const response = await postRequest(CREATE_REFUND_URL(), {
         body: JSON.stringify(refundData),
       });
       return response;

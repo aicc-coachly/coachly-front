@@ -19,6 +19,9 @@ function UserMypage() {
   const user_number = useSelector((state) => state.auth?.user?.user_number);
   const profile = useSelector((state) => state.user?.userInfo);
   const [isLoading, setIsLoading] = useState(true);
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 3;
+  const maxPageButtons = 5;
 
   const inbodyData = useSelector((state) => {
     const userInbodyData = Array.isArray(state.user?.inbodyData)
@@ -58,10 +61,48 @@ function UserMypage() {
     }
   }, [dispatch, user_number]);
 
+  const indexOfLastItem = currentPage * itemsPerPage;
+  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+  const currentItems = inbodyData.slice(indexOfFirstItem, indexOfLastItem);
+  const totalPages = Math.ceil(inbodyData.length / itemsPerPage);
+
+  const handlePageChange = (pageNumber) => {
+    setCurrentPage(pageNumber);
+  };
+
+  const handleNext = () => {
+    setCurrentPage((prev) => Math.min(prev + 1, totalPages));
+  };
+
+  const handlePrev = () => {
+    setCurrentPage((prev) => Math.max(prev - 1, 1));
+  };
+
+  const getPageNumbers = () => {
+    const pageNumbers = [];
+    let startPage = Math.max(1, currentPage - Math.floor(maxPageButtons / 2));
+    let endPage = Math.min(totalPages, startPage + maxPageButtons - 1);
+
+    if (endPage - startPage + 1 < maxPageButtons) {
+      startPage = Math.max(1, endPage - maxPageButtons + 1);
+    }
+
+    for (let i = startPage; i <= endPage; i++) {
+      pageNumbers.push(i);
+    }
+    return pageNumbers;
+  };
+
   return (
     <div className="max-w-[390px] mx-auto bg-gray-100 p-4">
       <div className="bg-white rounded-lg shadow-md p-4 mb-4 relative">
         <h2 className="text-lg font-semibold mb-2">내 정보</h2>
+        <button
+          onClick={() => navigate('/userrefund')}
+          className="absolute top-4 right-30 px-3 py-1 bg-gray-300 text-sm rounded-full"
+        >
+          환불내역
+        </button>
         <button
           onClick={() => navigate('/userprofile')}
           className="absolute top-4 right-4 px-3 py-1 bg-gray-300 text-sm rounded-full"
@@ -124,7 +165,7 @@ function UserMypage() {
           </button>
         </div>
 
-        {inbodyData.map((inbody, index) => (
+        {currentItems.map((inbody, index) => (
           <div
             key={index}
             className="flex items-center justify-between bg-gray-300 p-1 mb-2"
@@ -142,6 +183,36 @@ function UserMypage() {
             </button>
           </div>
         ))}
+
+        <div className="flex justify-center mt-4">
+          <button
+            onClick={handlePrev}
+            disabled={currentPage === 1}
+            className="mx-1 px-2 py-1 bg-gray-300 rounded-md"
+          >
+            이전
+          </button>
+          {getPageNumbers().map((pageNumber) => (
+            <button
+              key={pageNumber}
+              onClick={() => handlePageChange(pageNumber)}
+              className={`mx-1 px-2 py-1 ${
+                currentPage === pageNumber
+                  ? 'bg-blue-500 text-white'
+                  : 'bg-gray-300'
+              } rounded-md`}
+            >
+              {pageNumber}
+            </button>
+          ))}
+          <button
+            onClick={handleNext}
+            disabled={currentPage === totalPages}
+            className="mx-1 px-2 py-1 bg-gray-300 rounded-md"
+          >
+            다음
+          </button>
+        </div>
       </div>
     </div>
   );

@@ -17,16 +17,27 @@ function Header() {
     '/',
     '/sortsignup',
     '/trainersignup',
-    '/usersignup'
+    '/usersignup',
   ].includes(location.pathname);
 
   // 트레이너 페이지와 유저 페이지 확인
-  const trainerPages = ['/trainerprofile', '/trainermypage', '/pricelist', '/trainerchat'];
-  const userPages = ['/usermypage', '/trainersearch', '/userprofile','/userchat'];
-  
+  const trainerPages = [
+    '/trainerprofile',
+    '/trainermypage',
+    '/pricelist',
+    '/trainerchat',
+  ];
+  const userPages = [
+    '/usermypage',
+    '/trainersearch',
+    '/userprofile',
+    '/userchat',
+    '/userrefund',
+    '/UserChat',
+  ];
+
   const isTrainerPage = trainerPages.includes(location.pathname);
   const isUserPage = userPages.includes(location.pathname);
-
 
   return (
     <header className="relative flex justify-between items-center p-4 bg-[#edf1f6] shadow-md max-w-[390px] mx-auto">
@@ -46,8 +57,12 @@ function Header() {
           </button>
           {menuOpen && (
             <div className="absolute right-4 z-50 top-16 bg-white shadow-md rounded-lg p-4 flex flex-col space-y-2">
-              {isTrainerPage && <TrainerMenuButtons onClick={() => setMenuOpen(false)} />}
-              {isUserPage && <UserMenuButtons onClick={() => setMenuOpen(false)} />}
+              {isTrainerPage && (
+                <TrainerMenuButtons onClick={() => setMenuOpen(false)} />
+              )}
+              {isUserPage && (
+                <UserMenuButtons onClick={() => setMenuOpen(false)} />
+              )}
             </div>
           )}
         </>
