@@ -26,29 +26,35 @@ const RefundListPage = () => {
       .then((schedules) => {
         const userSchedules = schedules
           .filter((schedule) => {
-            // user_type이 'user'이면 user_number로, 'trainer'이면 trainer_number로 필터링
             return user_type === 'user'
               ? schedule.user_number === user_number
               : schedule.trainer_number === trainer_number;
           })
           .map((schedule) => schedule.pt_number);
         setPtScheduleNumbers(userSchedules);
-        console.log(userSchedules);
-        return dispatch(getAllRefunds()).unwrap();
-      })
-      .then((fetchedRefunds) => {
-        const activeRefunds = fetchedRefunds.filter(
-          (refund) =>
-            refund.status !== 'delete' &&
-            ptScheduleNumbers.includes(refund.pt_number)
-        );
-        console.log(activeRefunds);
-        setLocalRefunds(activeRefunds);
       })
       .catch((error) => {
-        console.error('목록을 불러오는 중 오류가 발생했습니다:', error);
+        console.error('PT 스케줄을 불러오는 중 오류가 발생했습니다:', error);
       });
-  }, [dispatch, user_number, user_type]);
+  }, [dispatch, user_number, user_type, trainer_number]);
+
+  useEffect(() => {
+    if (ptScheduleNumbers.length > 0) {
+      dispatch(getAllRefunds())
+        .unwrap()
+        .then((fetchedRefunds) => {
+          const activeRefunds = fetchedRefunds.filter(
+            (refund) =>
+              refund.status !== 'delete' &&
+              ptScheduleNumbers.includes(refund.pt_number)
+          );
+          setLocalRefunds(activeRefunds);
+        })
+        .catch((error) => {
+          console.error('환불 목록을 불러오는 중 오류가 발생했습니다:', error);
+        });
+    }
+  }, [dispatch, ptScheduleNumbers]);
 
   const handleCancelRefund = (refund_number) => {
     dispatch(deleteRefund(refund_number))
