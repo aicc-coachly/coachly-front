@@ -131,7 +131,7 @@ function UserMypage() {
           <div className="flex items-center justify-between bg-gray-300 p-1">
             <p className="text-base text-sm">{pt_schedule[0].trainer_name}</p>
             <button
-              onClick={() => navigate('/UserChat')}
+              onClick={() => navigate('/ChatList')}
               className="px-3 py-1 bg-pink-300 text-sm rounded-md"
             >
               1:1 채팅하기
