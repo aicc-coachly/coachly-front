@@ -187,7 +187,7 @@ function TrainerSearch() {
                 <p>
                   {trainer.trainer_address} {trainer.trainer_detail_address}
                 </p>
-                <div>
+                <div className="flex gap-4 mt-4 justify-center items-center">
                 <Buttons size="small" onClick={() => handleConsult(trainer)}>
                   1:1 상담 받기
                 </Buttons>

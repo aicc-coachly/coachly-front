@@ -99,6 +99,7 @@ console.log(trainer)
               ? trainer.pt_cost_option.map((option, index) => (
                <span key={index}>{option}</span>
              ))
+   
                : '가격 정보 없음 문의 필요'}
           </p>
          <  br/>
