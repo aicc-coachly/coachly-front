@@ -82,11 +82,13 @@ export const patchPtSchedule = createAsyncThunk(
 // PT 일정 삭제
 export const deletePtSchedule = createAsyncThunk(
   "schedule/deletePtSchedule",
-  async (schedule_number, { rejectWithValue }) => {
+  async ({ schedule_number, updateData }, { rejectWithValue }) => {
     try {
-      const response = await deleteRequest(
+      const response = await patchRequest(
         DELETE_PT_SCHEDULE_URL(schedule_number),
-        {}
+        {
+          body: JSON.stringify(updateData),
+        }
       );
       return response;
     } catch (error) {
@@ -94,6 +96,7 @@ export const deletePtSchedule = createAsyncThunk(
     }
   }
 );
+
 export const getScheduleRecord = createAsyncThunk(
   "payment/getPayment",
   async (pt_number, { rejectWithValue }) => {
@@ -115,6 +118,10 @@ const scheduleSlice = createSlice({
   reducers: {
     clearScheduleData: (state) => {
       state.data = null;
+    },
+    logout: (state) => {
+      state.data = null;
+      state.error = null;
     },
   },
   extraReducers: (builder) => {
@@ -164,5 +171,5 @@ const scheduleSlice = createSlice({
   },
 });
 
-export const { clearScheduleData } = scheduleSlice.actions;
+export const { clearScheduleData, logout } = scheduleSlice.actions;
 export default scheduleSlice.reducer;

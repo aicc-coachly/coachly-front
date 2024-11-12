@@ -9,7 +9,6 @@ function UserSignup() {
   const [formData, setFormData] = useState({
     user_id: "",
     pass: "",
-    confirmPassword: "",
     email: "",
     name: "",
     phone: "",
@@ -18,13 +17,13 @@ function UserSignup() {
     user_zipcode: "",
     user_address: "",
     user_detail_address: "",
-    agreeTerms: false,
   });
 
   const dispatch = useDispatch();
 
   // 회원가입 상태 확인
   const { data, error } = useSelector((state) => state.auth);
+  console.log(data);
 
   useEffect(() => {
     if (data) {
@@ -46,6 +45,12 @@ function UserSignup() {
 
   const handleSubmit = (e) => {
     e.preventDefault();
+
+    // 비밀번호 확인
+    if (formData.pass !== formData.confirmPassword) {
+      alert("비밀번호가 일치하지 않습니다.");
+      return;
+    }
 
     // 필수 값이 입력되었는지 확인하는 검증
     const requiredFields = [
@@ -83,7 +88,9 @@ function UserSignup() {
       <form onSubmit={handleSubmit}>
         {/* 이름 */}
         <div className="mb-4">
-          <label htmlFor="name" className="block mb-2">이름</label>
+          <label htmlFor="name" className="block mb-2">
+            이름
+          </label>
           <input
             type="text"
             id="name"
@@ -97,7 +104,9 @@ function UserSignup() {
 
         {/* 아이디 */}
         <div className="mb-4">
-          <label htmlFor="user_id" className="block mb-2">아이디</label>
+          <label htmlFor="user_id" className="block mb-2">
+            아이디
+          </label>
           <input
             type="text"
             id="user_id"
@@ -111,7 +120,9 @@ function UserSignup() {
 
         {/* 비밀번호 */}
         <div className="mb-4">
-          <label htmlFor="pass" className="block mb-2">비밀번호</label>
+          <label htmlFor="pass" className="block mb-2">
+            비밀번호
+          </label>
           <input
             type="password"
             id="pass"
@@ -125,7 +136,9 @@ function UserSignup() {
 
         {/* 비밀번호 확인 */}
         <div className="mb-4">
-          <label htmlFor="confirmPassword" className="block mb-2">비밀번호 확인</label>
+          <label htmlFor="confirmPassword" className="block mb-2">
+            비밀번호 확인
+          </label>
           <input
             type="password"
             id="confirmPassword"
@@ -139,7 +152,9 @@ function UserSignup() {
 
         {/* 핸드폰 번호 */}
         <div className="mb-4">
-          <label htmlFor="phone" className="block mb-2">핸드폰 번호</label>
+          <label htmlFor="phone" className="block mb-2">
+            핸드폰 번호
+          </label>
           <input
             type="tel"
             id="phone"
@@ -153,7 +168,9 @@ function UserSignup() {
 
         {/* 이메일 주소 */}
         <div className="mb-4">
-          <label htmlFor="email" className="block mb-2">이메일 주소</label>
+          <label htmlFor="email" className="block mb-2">
+            이메일 주소
+          </label>
           <input
             type="email"
             id="email"
@@ -196,7 +213,9 @@ function UserSignup() {
 
         {/* 생년월일 */}
         <div className="mb-4">
-          <label htmlFor="birth" className="block mb-2">생년월일</label>
+          <label htmlFor="birth" className="block mb-2">
+            생년월일
+          </label>
           <input
             type="date"
             id="birth"
@@ -210,7 +229,9 @@ function UserSignup() {
 
         {/* 주소 */}
         <div className="mb-4">
-          <label htmlFor="user_address" className="block mb-2">주소</label>
+          <label htmlFor="user_address" className="block mb-2">
+            주소
+          </label>
           <div className="flex space-x-2 mb-2">
             <input
               type="text"
@@ -248,7 +269,10 @@ function UserSignup() {
         </div>
 
         {/* 회원가입 버튼 */}
-        <button type="submit" className="w-full bg-[#4831D4] text-white py-2 rounded hover:bg-[#3824ae]">
+        <button
+          type="submit"
+          className="w-full bg-[#4831D4] text-white py-2 rounded hover:bg-[#3824ae]"
+        >
           회원가입 하기
         </button>
 

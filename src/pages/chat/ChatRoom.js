@@ -9,15 +9,15 @@ import { leaveChatRoom } from '../../redux/thunks/chatThunks';
 import { addMessage } from '../../redux/slice/chatSlice';
 import { fetchChatMessages } from '../../redux/thunks/chatThunks';
 
-const socket = io(process.env.REACT_APP_API_URL || 'http://localhost:8000');
+const socket = io(process.env.REACT_APP_API_URL || "http://localhost:8000");
 
 const ChatRoom = ({ userNumber, trainerNumber }) => {
   const { roomId } = useParams();
   const dispatch = useDispatch();
   const [menuOpen, setMenuOpen] = useState(false);
-  const [input, setInput] = useState('');
-  const [isTrainer, setIsTrainer] = useState(false); 
-  const messages = useSelector((state) => state.chat.messages); 
+  const [input, setInput] = useState("");
+  const [isTrainer, setIsTrainer] = useState(false);
+  const messages = useSelector((state) => state.chat.messages);
 
   console.log("userNumber:", userNumber, "trainerNumber:", trainerNumber, "roomId:", roomId);
 
@@ -38,7 +38,7 @@ const ChatRoom = ({ userNumber, trainerNumber }) => {
     setIsTrainer(userType === "trainer");
 
     // 채팅방 참가
-    socket.emit('joinRoom', roomId);
+    socket.emit("joinRoom", roomId);
 
     // 메시지 수신 이벤트 설정
     const handleReceivedMessage = (message) => {
@@ -60,14 +60,14 @@ const ChatRoom = ({ userNumber, trainerNumber }) => {
   useEffect(() => {
     // 외부 클릭 시 메뉴 닫기
     const handleClickOutside = (event) => {
-      if (menuOpen && !event.target.closest('.menu-container')) {
+      if (menuOpen && !event.target.closest(".menu-container")) {
         setMenuOpen(false);
       }
     };
 
-    document.addEventListener('mousedown', handleClickOutside);
+    document.addEventListener("mousedown", handleClickOutside);
     return () => {
-      document.removeEventListener('mousedown', handleClickOutside);
+      document.removeEventListener("mousedown", handleClickOutside);
     };
   }, [menuOpen]);
 
@@ -81,9 +81,9 @@ const ChatRoom = ({ userNumber, trainerNumber }) => {
         senderId: userNumber, 
         senderName: isTrainer ? "Trainer" : "User" 
       };
-      socket.emit('sendMessage', message); 
-      dispatch(addMessage(message)); 
-      setInput('');
+      socket.emit("sendMessage", message);
+      dispatch(addMessage(message));
+      setInput("");
     }
   }, [input, roomId, userNumber, trainerNumber, isTrainer, dispatch]);
 
@@ -120,18 +120,22 @@ const ChatRoom = ({ userNumber, trainerNumber }) => {
       {/* Bottom Input Bar */}
       <div className="bg-gray-200 p-4 flex items-center justify-between fixed bottom-0 left-1/2 transform -translate-x-1/2 w-full max-w-[390px]">
         <button onClick={toggleMenu} className="text-2xl">
-          {menuOpen ? '✕' : '+'}
+          {menuOpen ? "✕" : "+"}
         </button>
 
         {menuOpen && (
           <div className="absolute bottom-16 left-4 z-50 bg-white shadow-md rounded-lg p-4 flex flex-col space-y-2 max-w-[350px] w-full menu-container">
-            {isTrainer ? <TrainerChatButtons onClick={() => setMenuOpen(false)} /> : <UserChatButtons onClick={() => setMenuOpen(false)} />}
+            {isTrainer ? (
+              <TrainerChatButtons onClick={() => setMenuOpen(false)} />
+            ) : (
+              <UserChatButtons onClick={() => setMenuOpen(false)} />
+            )}
           </div>
         )}
 
-        <input 
-          type="text" 
-          placeholder="메시지를 입력하세요..." 
+        <input
+          type="text"
+          placeholder="메시지를 입력하세요..."
           className="flex-1 mx-2 p-2 rounded-full bg-white outline-none"
           value={input}
           onChange={(e) => setInput(e.target.value)}

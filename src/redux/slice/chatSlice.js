@@ -12,7 +12,7 @@ import {
 } from '../thunks/chatThunks';
 
 const chatSlice = createSlice({
-  name: 'chat',
+  name: "chat",
   initialState: {
     data: null,
     messages: [],

@@ -73,7 +73,7 @@ export const EditBodyCompositionModal = ({ inbodyData }) => {
   };
 
   const handleDelete = () => {
-    dispatch(deleteUserInbody(inbodyData.user_number))
+    dispatch(deleteUserInbody(inbodyData.user_inbody_number))
       .then(() => {
         alert("삭제되었습니다.");
         closeModal();

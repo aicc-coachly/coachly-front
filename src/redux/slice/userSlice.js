@@ -34,10 +34,10 @@ export const getAllUsers = createAsyncThunk(
 // 인바디 정보 저장
 export const postUserInbody = createAsyncThunk(
   "user/postUserInbody",
-  async ({ user_id, inbodyData }, { rejectWithValue }) => {
+  async ({ user_number, inbodyData }, { rejectWithValue }) => {
     try {
       const response = await postRequest(
-        POST_INBODY_URL(user_id), // user_id를 URL에 포함
+        POST_INBODY_URL(user_number), // user_id를 URL에 포함
         {
           body: JSON.stringify(inbodyData),
         }
@@ -52,9 +52,9 @@ export const postUserInbody = createAsyncThunk(
 // 특정 사용자 페이지 정보 조회
 export const getUser = createAsyncThunk(
   "user/getUser",
-  async (user_id, { rejectWithValue }) => {
+  async (user_number, { rejectWithValue }) => {
     try {
-      const response = await getRequest(GET_USER_URL(user_id));
+      const response = await getRequest(GET_USER_URL(user_number));
       return response;
     } catch (error) {
       return rejectWithValue(error.message || "사용자 조회 실패");
@@ -65,9 +65,9 @@ export const getUser = createAsyncThunk(
 // 특정 사용자의 인바디 정보 조회
 export const getUserInbody = createAsyncThunk(
   "user/getUserInbody",
-  async (user_id, { rejectWithValue }) => {
+  async (user_number, { rejectWithValue }) => {
     try {
-      const response = await getRequest(GET_USER_INBODY_URL(user_id));
+      const response = await getRequest(GET_USER_INBODY_URL(user_number));
       return response;
     } catch (error) {
       return rejectWithValue(error.message || "인바디 정보 조회 실패");
@@ -91,9 +91,11 @@ export const deleteUser = createAsyncThunk(
 // 사용자 인바디 정보 소프트 삭제
 export const deleteUserInbody = createAsyncThunk(
   "user/deleteUserInbody",
-  async (user_number, { rejectWithValue }) => {
+  async (user_inbody_number, { rejectWithValue }) => {
     try {
-      const response = await deleteRequest(DELETE_USER_INBODY_URL(user_number));
+      const response = await patchRequest(
+        DELETE_USER_INBODY_URL(user_inbody_number)
+      );
       return response;
     } catch (error) {
       return rejectWithValue(error.message || "인바디 정보 삭제 실패");
@@ -180,6 +182,12 @@ const userSlice = createSlice({
       state.userInfo = null;
       state.inbodyData = null;
       state.addressData = null;
+    },
+    logout: (state) => {
+      state.userInfo = null;
+      state.inbodyData = null;
+      state.addressData = null;
+      state.error = null;
     },
   },
   extraReducers: (builder) => {
@@ -268,5 +276,5 @@ const userSlice = createSlice({
   },
 });
 
-export const { clearUserData } = userSlice.actions;
+export const { clearUserData, logout } = userSlice.actions;
 export default userSlice.reducer;
