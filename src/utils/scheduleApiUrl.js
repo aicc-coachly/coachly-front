@@ -17,7 +17,7 @@ export const PATCH_PT_SCHEDULE_URL = (schedule_number) =>
 
 // PT 일정 삭제
 export const DELETE_PT_SCHEDULE_URL = (schedule_number) =>
-  `${url}/pt-schedules/${schedule_number}`;
+  `${url}/pt-schedules/${schedule_number}/status`;
 
 export const GET_SCHEDULE_RECORD_URL = (pt_number) =>
   `${url}/pt-schedules/${pt_number}`;

@@ -17,8 +17,8 @@ export const GET_USER_INBODY_URL = (user_number) =>
 export const DELETE_USER_URL = (user_number) => `${url}/${user_number}`;
 
 // 사용자 인바디 정보 소프트 삭제
-export const DELETE_USER_INBODY_URL = (user_number) =>
-  `${url}/inbody/${user_number}`;
+export const DELETE_USER_INBODY_URL = (user_inbody_number) =>
+  `${url}/inbody/${user_inbody_number}`;
 
 // 사용자 주소 소프트 삭제
 export const DELETE_USER_ADDRESS_URL = (user_number) =>

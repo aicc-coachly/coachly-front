@@ -18,6 +18,7 @@ import {
   patchPtSchedule,
 } from "../../redux/slice/scheduleSlice";
 import { getUser } from "../../redux/slice/userSlice";
+import { CheckScheduleModal } from "../../components/trainer/CheckScheduleModal";
 
 const TrainerMypage = () => {
   const { openModal } = useModal();
@@ -40,8 +41,7 @@ const TrainerMypage = () => {
   const schedule_record = useSelector(
     (state) => state.schedule?.data?.schedule_records
   );
-
-  // console.log(schedule_record);
+  // console.log(scheduleData);
 
   useEffect(() => {
     if (trainer_number) {
@@ -84,30 +84,42 @@ const TrainerMypage = () => {
   }, [dispatch, trainer_number]);
 
   const ptNumbers = pt_schedule.map((item) => item.pt_number); // pt_number 배열로 가져오기
-
+  // console.log(ptNumbers);
   // fetchScheduleRecords 함수
   const fetchScheduleRecords = async () => {
     try {
-      // pt_number 배열을 순차적으로 처리
-      await Promise.all(
-        ptNumbers.map((pt_number) => dispatch(getScheduleRecord(pt_number)))
+      // 여러 pt_number로부터 schedule record를 받아와 하나의 배열로 합침
+      const allRecords = await Promise.all(
+        ptNumbers.map(async (pt_number) => {
+          const result = await dispatch(getScheduleRecord(pt_number));
+          return result.payload; // 각 요청의 결과를 반환
+        })
       );
-      setIsFetched(true); // 데이터 fetch가 완료된 후 상태 업데이트
+
+      // `allRecords`는 여러 객체들을 포함하며, 각 객체에는 `schedule_records`가 배열로 포함됨
+      // `schedule_records`만 추출하여 하나의 배열로 결합
+      const mergedRecords = allRecords
+        .map((record) => record.schedule_records) // 각 객체에서 schedule_records 추출
+        .flat(); // 다차원 배열을 1차원 배열로 합침
+
+      // console.log("Merged Schedule Records:", mergedRecords); // 확인용 로그
+      setScheduleRecords(mergedRecords); // 하나의 배열로 상태 업데이트
+      setIsFetched(true); // 데이터 fetch 완료 상태 업데이트
     } catch (error) {
       console.error("Error fetching schedule records:", error);
     }
   };
+  console.log(scheduleRecords);
 
   useEffect(() => {
-    // ptNumbers가 비어있지 않고, isFetched가 false일 때만 데이터 fetch
-    if (ptNumbers.length > 0 && !isFetched) {
+    if (!isFetched) {
       fetchScheduleRecords();
     }
-  }, [dispatch, ptNumbers, isFetched]); // ptNumbers나 isFetched 상태가 변경될 때만 호출
+  }, [isFetched, ptNumbers]);
 
   useEffect(() => {
     if (schedule_record) {
-      console.log("Schedule Record:", schedule_record);
+      // console.log("Schedule Record:", schedule_record);
     }
   }, [schedule_record]); // schedule_record가 변경될 때만 호출
 
@@ -151,10 +163,10 @@ const TrainerMypage = () => {
     );
   };
 
-  const handleOpenEditModal = (schedule) => {
+  const handleOpenPtScheduleModal = (schedule) => {
     setSelectedSchedule(schedule); // 선택된 예약 정보 저장
     openModal(
-      <EditScheduleModal
+      <CheckScheduleModal
         schedule={schedule}
         onUpdate={handleUpdateSchedule}
         onDelete={handleDeleteSchedule}
@@ -266,34 +278,31 @@ const TrainerMypage = () => {
         : null}
 
       {/* 예약된 수업 섹션 */}
-      {Array.isArray(schedule_record) && schedule_record.length > 0 ? (
-        schedule_record.map((schedule) => (
-          <div
-            key={schedule.schedule_number}
-            className="bg-white rounded-lg shadow-md p-4 mb-4"
-          >
-            <div className="flex items-center justify-between">
-              <h2 className="text-lg font-semibold">예약된 수업</h2>
-              <span className="text-sm text-gray-500">
-                {new Date(schedule.class_date).toLocaleDateString()}
-              </span>
-              <span className="ml-2 text-sm text-gray-500">
-                {schedule.address}
-              </span>
-              <button
-                onClick={() =>
-                  handleOpenScheduleModal(
-                    schedule.pt_number,
-                    schedule.user_number
-                  )
-                } // 예약 수정 모달 호출
-                className="text-center px-3 py-1 bg-blue-300 text-sm rounded-md"
-              >
-                수업 예약하기
-              </button>
+      {scheduleRecords.length > 0 ? (
+        scheduleRecords
+          .filter((schedule) => schedule.status !== "deleted") // deleted 상태 제외
+          .map((schedule) => (
+            <div
+              key={schedule.schedule_number}
+              className="bg-white rounded-lg shadow-md p-4 mb-4"
+            >
+              <div className="flex items-center justify-between">
+                <h2 className="text-lg font-semibold">예약된 수업</h2>
+                <span className="text-sm text-gray-500">
+                  {new Date(schedule.class_date).toLocaleDateString()}
+                </span>
+                <span className="ml-2 text-sm text-gray-500">
+                  {schedule.address}
+                </span>
+                <button
+                  onClick={() => handleOpenPtScheduleModal(schedule)}
+                  className="text-center px-3 py-1 bg-blue-300 text-sm rounded-md"
+                >
+                  수업 확인
+                </button>
+              </div>
             </div>
-          </div>
-        ))
+          ))
       ) : (
         <p>예약된 수업이 없습니다.</p>
       )}

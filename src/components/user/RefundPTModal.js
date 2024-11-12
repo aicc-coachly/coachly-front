@@ -1,22 +1,115 @@
-import React, { useState } from 'react';
+// src/components/user/RefundPTModal.js
+import React, { useState, useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { createRefund, updateRefund } from "../../redux/slice/refundSlice";
+import { useModal } from "../common/ModalProvider";
 
-export const RefundPTModal = () => {
+export const RefundPTModal = ({
+  pt_schedule,
+  refundData = {},
+  isEditMode = false,
+}) => {
+  const dispatch = useDispatch();
+  const { closeModal } = useModal();
+  const userNumber = useSelector((state) => state.user.userInfo.user_number);
+
   const [showOtherReason, setShowOtherReason] = useState(false);
-  const [selectedReason, setSelectedReason] = useState('');
+  const [selectedReason, setSelectedReason] = useState("");
+  const [accountNumber, setAccountNumber] = useState("");
+  const [bankName, setBankName] = useState("");
+  const [accountHolder, setAccountHolder] = useState("");
+  const [otherReason, setOtherReason] = useState("");
+  const [agreeTerms, setAgreeTerms] = useState(false);
+  const [selectedItems, setSelectedItems] = useState({
+    oneDayClass: false,
+    ptSessions: false,
+  });
+  console.log(pt_schedule);
+
+  useEffect(() => {
+    if (isEditMode) {
+      setSelectedReason(refundData.refund_reason || "");
+      setAccountNumber(refundData.account || "");
+      setBankName(refundData.bank_name || "");
+      setAccountHolder(refundData.account_name || "");
+      setSelectedItems(
+        refundData.refund_items || { oneDayClass: false, ptSessions: false }
+      );
+      setShowOtherReason(refundData.refund_reason === "기타");
+    }
+  }, [isEditMode, refundData]);
+
+  const toggleSelectedItem = (item) => {
+    setSelectedItems((prev) => ({ ...prev, [item]: !prev[item] }));
+  };
+
+  const handleRefundRequest = async () => {
+    if (!userNumber || !pt_schedule) {
+      alert("필요한 정보가 없습니다. 다시 시도해 주세요.");
+      return;
+    }
+
+    if (
+      !agreeTerms ||
+      !selectedReason ||
+      !accountNumber ||
+      !bankName ||
+      !accountHolder
+    ) {
+      alert("모든 항목을 입력하고 약관에 동의해주세요.");
+      return;
+    }
+
+    const refundDataToSubmit = {
+      pt_schedule,
+      refund_reason: selectedReason === "기타" ? otherReason : selectedReason,
+      account: accountNumber,
+      bank_name: bankName,
+      account_name: accountHolder,
+      refund_items: selectedItems,
+    };
+
+    try {
+      if (isEditMode) {
+        await dispatch(
+          updateRefund({
+            refund_number: refundData.refund_number,
+            updateData: refundDataToSubmit,
+          })
+        ).unwrap();
+        alert("환불 정보가 성공적으로 수정되었습니다.");
+      } else {
+        await dispatch(createRefund(refundDataToSubmit)).unwrap();
+        alert("환불 요청이 성공적으로 접수되었습니다.");
+      }
+      closeModal();
+    } catch (error) {
+      alert(
+        isEditMode ? "환불 수정에 실패했습니다." : "환불 요청에 실패했습니다."
+      );
+    }
+  };
 
   const handleReasonChange = (reason) => {
     setSelectedReason(reason);
-    setShowOtherReason(reason === '기타');
+    setShowOtherReason(reason === "기타");
   };
 
   return (
     <div className="max-w-sm p-6 rounded-lg relative">
-      <h2 className="text-lg font-bold text-center mb-6">결제 취소 및 환불</h2>
+      <h2 className="text-lg font-bold text-center mb-6">
+        {isEditMode ? "환불 정보 수정" : "결제 취소 및 환불"}
+      </h2>
 
       {/* 환불할 항목 선택 */}
       <div className="flex items-center justify-between mb-4">
         <label className="flex items-center">
-          <input type="checkbox" className="mr-2" />
+          <input
+            type="checkbox"
+            checked={selectedItems.oneDayClass}
+            onChange={() => toggleSelectedItem("oneDayClass")}
+            className="mr-2"
+          />
           <span>원데이 클래스</span>
         </label>
         <span>50000 원</span>
@@ -24,7 +117,12 @@ export const RefundPTModal = () => {
 
       <div className="flex items-center justify-between mb-4">
         <label className="flex items-center">
-          <input type="checkbox" className="mr-2" />
+          <input
+            type="checkbox"
+            checked={selectedItems.ptSessions}
+            onChange={() => toggleSelectedItem("ptSessions")}
+            className="mr-2"
+          />
           <span>총 20회 중 3회 수강</span>
         </label>
       </div>
@@ -37,17 +135,39 @@ export const RefundPTModal = () => {
         <p>4. 첫 수업 진행 후 환불 규정</p>
       </div>
 
-      {/* 환불 받을 계좌 입력 */}
+      {/* 환불 받을 계좌 정보 입력 */}
       <div className="mb-4">
-        <label className="block text-sm font-semibold mb-1">환불 받을 계좌 입력 (본인 명의 계좌만 가능)</label>
-        <input type="text" className="w-full bg-gray-200 p-2 rounded" />
+        <label className="block text-sm font-semibold mb-1">
+          환불 받을 계좌 입력 (본인 명의 계좌만 가능)
+        </label>
+        <input
+          type="text"
+          value={accountNumber}
+          onChange={(e) => setAccountNumber(e.target.value)}
+          className="w-full bg-gray-200 p-2 rounded mb-2"
+          placeholder="계좌번호 입력"
+        />
+        <input
+          type="text"
+          value={bankName}
+          onChange={(e) => setBankName(e.target.value)}
+          className="w-full bg-gray-200 p-2 rounded mb-2"
+          placeholder="은행명 입력"
+        />
+        <input
+          type="text"
+          value={accountHolder}
+          onChange={(e) => setAccountHolder(e.target.value)}
+          className="w-full bg-gray-200 p-2 rounded"
+          placeholder="예금주명 입력"
+        />
       </div>
 
       {/* 환불 사유 선택 */}
       <div className="mb-4">
         <label className="block text-sm font-semibold mb-2">환불사유</label>
         <div className="bg-gray-200 rounded p-2">
-          {['단순변심', '트레이너 문제', '기타'].map((reason) => (
+          {["단순변심", "트레이너 문제", "기타"].map((reason) => (
             <div key={reason} className="flex items-center mb-2">
               <input
                 type="radio"
@@ -68,6 +188,8 @@ export const RefundPTModal = () => {
         <div className="mb-4">
           <textarea
             placeholder="기타 사유를 입력해주세요."
+            value={otherReason}
+            onChange={(e) => setOtherReason(e.target.value)}
             className="w-full bg-gray-200 p-2 rounded h-24"
           />
         </div>
@@ -75,13 +197,21 @@ export const RefundPTModal = () => {
 
       {/* 환불 및 교환 약정 동의 */}
       <div className="flex items-center mb-4">
-        <input type="checkbox" className="mr-2" />
+        <input
+          type="checkbox"
+          checked={agreeTerms}
+          onChange={() => setAgreeTerms(!agreeTerms)}
+          className="mr-2"
+        />
         <span className="text-sm">환불 및 교환 약정 동의</span>
       </div>
 
       {/* 환불 요청 버튼 */}
-      <button className="w-full bg-pink-200 py-2 rounded text-black font-semibold">
-        환불요청
+      <button
+        onClick={handleRefundRequest}
+        className="w-full bg-pink-200 py-2 rounded text-black font-semibold"
+      >
+        {isEditMode ? "수정하기" : "환불요청"}
       </button>
     </div>
   );

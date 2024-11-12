@@ -19,6 +19,8 @@ import UserProfile from "./pages/user/UserProfile";
 import ChatList from "./pages/chat/ChatList";
 import Success from "./components/common/Success";
 import ChatRoom from "./pages/chat/ChatRoom";
+import PtScheduleList from "./components/user/PtScheduleList";
+import RefundListPage from "./components/user/RefundListPage";
 
 function App() {
   return (
@@ -48,6 +50,8 @@ function App() {
             <Route path="/usermypage" element={<UserMypage />} />
             <Route path="/trainersearch" element={<TrainerSearch />} />
             <Route path="/userprofile" element={<UserProfile />} />
+            <Route path="/userrefund" element={<RefundListPage />} />
+            <Route path="/userptschedule" element={<PtScheduleList />} />
           </Routes>
         </div>
       </ModalProvider>

@@ -54,10 +54,14 @@ export function UserMenuButtons({ onClick }) {
   const navigate = useNavigate();
 
   const handleLogout = () => {
-    dispatch(logout());
+    dispatch(authLogout());
+    dispatch(chatLogout());
+    dispatch(paymentLogout());
+    dispatch(refundLogout());
+    dispatch(scheduleLogout());
+    dispatch(trainerLogout());
+    dispatch(userLogout());
     persistor.purge(); // persisted 상태 초기화
-    localStorage.removeItem("user"); // 추가적으로 localStorage에서 제거
-    localStorage.removeItem("trainer");
     localStorage.removeItem("persist:root"); // 추가적으로 localStorage에서 제거
     navigate("/");
   };
