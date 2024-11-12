@@ -3,6 +3,7 @@ import Buttons from "../../components/common/Buttons";
 import { useModal } from "../../components/common/ModalProvider";
 import { TrainerInfoModal } from "../../components/trainer/TrainerInfoModal";
 import axios from "axios";
+import { useSelector } from "react-redux";
 
 function TrainerSearch() {
   const { openModal } = useModal();
@@ -16,7 +17,11 @@ function TrainerSearch() {
   const [trainers, setTrainers] = useState([]);
   const [filteredTrainers, setFilteredTrainers] = useState([]);
   const [isSearching, setIsSearching] = useState(false);
-  console.log(trainers);
+  const user_number = useSelector((state) => state.auth?.user?.user_number);
+  const user_name = useSelector((state) => state.auth?.user?.user_name);
+  // console.log(user_name);
+  // console.log(user_number);
+  // console.log(trainers);
 
   // 모든 트레이너 데이터 가져오기
   useEffect(() => {
@@ -66,7 +71,13 @@ function TrainerSearch() {
 
   // Show trainer info in a modal with the trainer's image
   const handleShowTrainerInfo = (trainer) => {
-    openModal(<TrainerInfoModal trainer={trainer} />);
+    openModal(
+      <TrainerInfoModal
+        trainer={trainer}
+        user_number={user_number}
+        user_name={user_name}
+      />
+    );
   };
 
   const handleConsult = (trainer) => {

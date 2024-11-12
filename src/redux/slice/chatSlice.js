@@ -1,6 +1,6 @@
 // src/redux/slices/chatSlice.js
 
-import { createSlice } from '@reduxjs/toolkit';
+import { createSlice } from "@reduxjs/toolkit";
 import {
   fetchChatMessages,
   sendMessage,
@@ -9,10 +9,10 @@ import {
   aiChatRequest,
   readMessage,
   deleteChatRoom,
-} from '../thunks/chatThunks';
+} from "../thunks/chatThunks";
 
 const chatSlice = createSlice({
-  name: 'chat',
+  name: "chat",
   initialState: {
     data: null,
     messages: [],
@@ -28,6 +28,10 @@ const chatSlice = createSlice({
     },
     setMessages: (state, action) => {
       state.messages = action.payload; // 메시지 배열 설정
+    },
+    logout: (state) => {
+      state.data = null;
+      state.error = null;
     },
   },
   extraReducers: (builder) => {
@@ -47,7 +51,9 @@ const chatSlice = createSlice({
         state.error = action.payload;
       })
       .addCase(deleteMessage.fulfilled, (state, action) => {
-        state.messages = state.messages.filter(msg => msg.messageNumber !== action.payload);
+        state.messages = state.messages.filter(
+          (msg) => msg.messageNumber !== action.payload
+        );
         state.error = null;
       })
       .addCase(deleteMessage.rejected, (state, action) => {
@@ -69,7 +75,9 @@ const chatSlice = createSlice({
       })
       .addCase(readMessage.fulfilled, (state, action) => {
         // 메시지 읽음 상태를 처리
-        const index = state.messages.findIndex(msg => msg.messageNumber === action.payload.messageNumber);
+        const index = state.messages.findIndex(
+          (msg) => msg.messageNumber === action.payload.messageNumber
+        );
         if (index !== -1) state.messages[index].read = true;
         state.error = null;
       })
@@ -87,5 +95,7 @@ const chatSlice = createSlice({
   },
 });
 
-export const { clearChatData, addMessage, setMessages } = chatSlice.actions;
+export const { clearChatData, logout, addMessage, setMessages } =
+  chatSlice.actions;
+
 export default chatSlice.reducer;

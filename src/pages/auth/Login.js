@@ -1,9 +1,9 @@
-import React, { useEffect, useState } from 'react';
-import { useNavigate, Link } from 'react-router-dom';
-import axios from 'axios';
-import Buttons from '../../components/common/Buttons';
-import { useDispatch, useSelector } from 'react-redux';
-import { trainerLogin, userLogin } from '../../redux/slice/authSlice';
+import React, { useEffect, useState } from "react";
+import { useNavigate, Link } from "react-router-dom";
+import axios from "axios";
+import Buttons from "../../components/common/Buttons";
+import { useDispatch, useSelector } from "react-redux";
+import { trainerLogin, userLogin } from "../../redux/slice/authSlice";
 
 function Login() {
   const navigate = useNavigate();
@@ -12,10 +12,14 @@ function Login() {
   const [password, setPassword] = useState("");
   const dispatch = useDispatch();
 
-  const { data, error, userType: loggedInUserType } = useSelector((state) => state.auth);
+  const {
+    data,
+    error,
+    userType: loggedInUserType,
+  } = useSelector((state) => state.auth);
 
   useEffect(() => {
-    // 로그인 상태가 설정되었고, 'data'가 유효할 때만 리디렉션 실행
+    // 로그인 상태가 설정되었고, 'data'와 'loggedInUserType'이 모두 유효할 때만 리디렉션을 실행
     if (data && loggedInUserType) {
       if (loggedInUserType === "trainer") {
         navigate("/trainermypage");
@@ -23,32 +27,25 @@ function Login() {
         navigate("/usermypage");
       }
     }
-    if (error) {
-      alert('로그인에 실패했습니다.');
+
+    // 로그인 실패 메시지 처리
+    if (error && !data) {
+      alert("로그인에 실패했습니다.");
     }
   }, [data, error, loggedInUserType, navigate]);
 
   const handleLogin = () => {
     const loginData =
-      userType === 'trainer'
+      userType === "trainer"
         ? { trainer_id: id, pass: password }
         : { user_id: id, pass: password };
-
-    // 로그인 전 유저 타입 초기화
-    localStorage.removeItem("userType");
+    localStorage.removeItem("trainer");
+    localStorage.removeItem("user");
 
     if (userType === "trainer") {
-      dispatch(trainerLogin(loginData)).then((result) => {
-        if (result.type.endsWith("/fulfilled")) {
-          localStorage.setItem("userType", "trainer"); // 로그인 성공 시 유저 타입 저장
-        }
-      });
+      dispatch(trainerLogin(loginData));
     } else {
-      dispatch(userLogin(loginData)).then((result) => {
-        if (result.type.endsWith("/fulfilled")) {
-          localStorage.setItem("userType", "user"); // 로그인 성공 시 유저 타입 저장
-        }
-      });
+      dispatch(userLogin(loginData));
     }
   };
 
@@ -62,17 +59,21 @@ function Login() {
 
         <div className="flex w-full max-w-xs mb-4">
           <button
-            onClick={() => setUserType('trainer')}
+            onClick={() => setUserType("trainer")}
             className={`flex-1 py-2 rounded-l-lg ${
-              userType === "trainer" ? "bg-[#4831D4] text-white" : "bg-[#CCF381] text-[#081f5c]"
+              userType === "trainer"
+                ? "bg-[#4831D4] text-white"
+                : "bg-[#CCF381] text-[#081f5c]"
             }`}
           >
             트레이너
           </button>
           <button
-            onClick={() => setUserType('user')}
+            onClick={() => setUserType("user")}
             className={`flex-1 py-2 rounded-r-lg ${
-              userType === "user" ? "bg-[#4831D4] text-white" : "bg-[#CCF381] text-[#081f5c]"
+              userType === "user"
+                ? "bg-[#4831D4] text-white"
+                : "bg-[#CCF381] text-[#081f5c]"
             }`}
           >
             유저
@@ -99,7 +100,9 @@ function Login() {
           로그인
         </Buttons>
 
-        <p className="text-center text-[#081f5c] my-7">아직 계정이 없으신가요?</p>
+        <p className="text-center text-[#081f5c] my-7">
+          아직 계정이 없으신가요?
+        </p>
         <Link to="/sortsignup">
           <Buttons size="middle">회원가입</Buttons>
         </Link>

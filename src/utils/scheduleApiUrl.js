@@ -1,7 +1,7 @@
 const url = process.env.REACT_APP_API_URL; // 백엔드 서버 URL에 맞게 설정
 
 // PT 일정 등록
-export const POST_PT_SCHEDULE_URL = () => `${url}/pt-schedules`;
+export const POST_PT_SCHEDULE_URL = `${url}/pt-schedules`;
 
 // PT 일정 완료
 export const COMPLETE_PT_SCHEDULE_URL = (schedule_number) =>
@@ -17,7 +17,7 @@ export const PATCH_PT_SCHEDULE_URL = (schedule_number) =>
 
 // PT 일정 삭제
 export const DELETE_PT_SCHEDULE_URL = (schedule_number) =>
-  `${url}/pt-schedules/${schedule_number}`;
+  `${url}/pt-schedules/${schedule_number}/status`;
 
 export const GET_SCHEDULE_RECORD_URL = (pt_number) =>
   `${url}/pt-schedules/${pt_number}`;

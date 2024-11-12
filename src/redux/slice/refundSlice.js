@@ -92,6 +92,10 @@ const refundSlice = createSlice({
     clearRefundData: (state) => {
       state.data = null;
     },
+    logout: (state) => {
+      state.data = null;
+      state.error = null;
+    },
   },
   extraReducers: (builder) => {
     builder
@@ -133,5 +137,5 @@ const refundSlice = createSlice({
   },
 });
 
-export const { clearRefundData } = refundSlice.actions;
+export const { clearRefundData, logout } = refundSlice.actions;
 export default refundSlice.reducer;
