@@ -18,36 +18,28 @@ export const TrainerInfoModal = ({ trainer, user_number, user_name }) => {
   // console.log(trainer);
 
   // Redux에서 PT 비용 데이터 선택
-  const {
-    data: trainerPtCostData,
-    loading,
-    error,
-  } = useSelector((state) => state.trainer);
-  console.log("현재 Redux의 trainerPtCostData:", trainerPtCostData);
-
-  // PT 비용 정보 가져오기
-  useEffect(() => {
-    if (trainer && trainer.trainer_number) {
-      dispatch(getTrainerPtCost(trainer.trainer_number));
-      console.log("데이터 가져오기 :", trainer.trainer_number);
-    }
-  }, [trainer, dispatch]);
+  // const {
+  //   data: trainerPtCostData,
+  //   loading,
+  //   error,
+  // } = useSelector((state) => state.trainer);
+  // console.log("현재 Redux의 trainerPtCostData:", trainerPtCostData);
 
   // 데이터 필터링
-  const filteredPtCostData =
-    trainerPtCostData && Array.isArray(trainerPtCostData)
-      ? trainerPtCostData.map(
-          ({ amount_number, option, amount, frequency }) => ({
-            amount_number,
-            option,
-            amount,
-            frequency,
-          })
-        )
-      : [];
+  // const filteredPtCostData =
+  //   trainerPtCostData && Array.isArray(trainerPtCostData)
+  //     ? trainerPtCostData.map(
+  //         ({ amount_number, option, amount, frequency }) => ({
+  //           amount_number,
+  //           option,
+  //           amount,
+  //           frequency,
+  //         })
+  //       )
+  //     : [];
 
-  console.log("트레이너 PT 비용 정보:", filteredPtCostData);
-  console.log("trainerPtCostData:", trainerPtCostData);
+  // console.log("트레이너 PT 비용 정보:", filteredPtCostData);
+  // console.log("trainerPtCostData:", trainerPtCostData);
 
   // trainer_id로 트레이너 이미지를 가져오기
   useEffect(() => {

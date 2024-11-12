@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import {
   getUser,
@@ -8,12 +8,15 @@ import {
 } from "../../redux/slice/userSlice";
 
 const UserProfile = () => {
+  const location = useLocation();
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
+  const { userInfo } = location.state || {};
+  // console.log(userInfo);
   // Redux에서 유저 정보 가져오기
-  const user = useSelector((state) => state.user.userInfo);
-  const userId = useSelector((state) => state.auth?.user?.user_id);
+  // const user = useSelector((state) => state.user.userInfo);
+  // const userId = useSelector((state) => state.auth?.user?.user_id);
 
   // console.log(userId);
 
@@ -28,16 +31,16 @@ const UserProfile = () => {
   // 유저 정보를 처음 불러올 때 상태 초기화
   useEffect(() => {
     // 유저 정보 디스패치
-    dispatch(getUser(userId));
+    dispatch(getUser(userInfo.user_number));
 
     // Redux 상태에 유저 정보가 있을 때 로컬 상태 초기화
-    if (user) {
-      setName(user.name || "");
-      setPhone(user.phone || "");
-      setEmail(user.email || "");
-      setZipcode(user.user_zipcode || "");
-      setAddress(user.user_address || "");
-      setDetailAddress(user.user_detail_address || "");
+    if (userInfo) {
+      setName(userInfo.name || "");
+      setPhone(userInfo.phone || "");
+      setEmail(userInfo.email || "");
+      setZipcode(userInfo.user_zipcode || "");
+      setAddress(userInfo.user_address || "");
+      setDetailAddress(userInfo.user_detail_address || "");
     }
   }, [dispatch]);
 
@@ -52,13 +55,13 @@ const UserProfile = () => {
     // 유저 정보 및 주소 업데이트 액션 호출
     dispatch(
       updateUserInfo({
-        user_number: user?.user_number,
+        user_number: userInfo?.user_number,
         updateData: updatedUserInfo,
       })
     );
     dispatch(
       updateUserAddress({
-        user_number: user?.user_number,
+        user_number: userInfo?.user_number,
         updateData: updatedAddress,
       })
     );

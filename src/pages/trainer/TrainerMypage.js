@@ -41,7 +41,9 @@ const TrainerMypage = () => {
   const schedule_record = useSelector(
     (state) => state.schedule?.data?.schedule_records
   );
-  // console.log(scheduleData);
+  const trainerInfo = useSelector((state) => state.trainer?.data);
+
+  // console.log(trainerInfo);
 
   useEffect(() => {
     if (trainer_number) {
@@ -109,7 +111,7 @@ const TrainerMypage = () => {
       console.error("Error fetching schedule records:", error);
     }
   };
-  console.log(scheduleRecords);
+  // console.log(scheduleRecords);
 
   useEffect(() => {
     if (!isFetched) {
@@ -185,13 +187,17 @@ const TrainerMypage = () => {
   // console.log(user_number);
   // console.log(profile);
 
+  const handleMyInfoUpdate = () => {
+    navigate("/trainerprofile", { state: { trainerInfo } });
+  };
+
   return (
     <div className="max-w-[390px] mx-auto bg-gray-100 p-4">
       {/* 내 정보 섹션 */}
       <div className="bg-white rounded-lg shadow-md p-4 mb-4 relative">
         <h2 className="text-lg font-semibold mb-2">내 정보</h2>
         <button
-          onClick={() => navigate("/trainerprofile")} // 페이지 이동 설정
+          onClick={() => handleMyInfoUpdate(trainerInfo)} // 페이지 이동 설정
           className="absolute top-4 right-4 px-3 py-1 bg-gray-300 text-sm rounded-full"
         >
           수정하기

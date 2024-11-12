@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import {
   getTrainer,
@@ -11,10 +11,11 @@ import {
 } from "../../redux/slice/trainerSlice";
 
 const TrainerProfile = () => {
+  const location = useLocation();
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const path = "http://localhost:8000";
-  const trainerInfo = useSelector((state) => state.trainer?.data);
+  const trainerInfo = location.state?.trainerInfo || {};
   // console.log(trainerInfo);
 
   const [name, setName] = useState("");

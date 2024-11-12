@@ -19,7 +19,8 @@ function TrainerSearch() {
   const [isSearching, setIsSearching] = useState(false);
   const user_number = useSelector((state) => state.auth?.user?.user_number);
   const user_name = useSelector((state) => state.auth?.user?.user_name);
-  // console.log(user_name);
+  const aaa = useSelector((state) => state);
+  console.log(aaa);
   // console.log(user_number);
   // console.log(trainers);
 
@@ -31,7 +32,9 @@ function TrainerSearch() {
         const uniqueTrainers = response.data.filter(
           (trainer, index, self) =>
             index ===
-            self.findIndex((t) => t.trainer_number === trainer.trainer_number)
+              self.findIndex(
+                (t) => t.trainer_number === trainer.trainer_number
+              ) && trainer.status !== "inactive" // "inactive" 상태 제외
         );
         setTrainers(uniqueTrainers);
       })
@@ -199,9 +202,9 @@ function TrainerSearch() {
                   {trainer.trainer_address} {trainer.trainer_detail_address}
                 </p>
                 <div className="flex gap-4 mt-4 justify-center items-center">
-                <Buttons size="small" onClick={() => handleConsult(trainer)}>
-                  1:1 상담 받기
-                </Buttons>
+                  <Buttons size="small" onClick={() => handleConsult(trainer)}>
+                    1:1 상담 받기
+                  </Buttons>
                 </div>
               </div>
             ))
