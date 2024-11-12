@@ -26,7 +26,9 @@ export const SEND_MESSAGE_URL = (room_id) =>
 export const GET_MESSAGES_URL = (room_id) =>
   `${url}/chat-room/${room_id}/messages`;
 
-
+// 채팅방 화면에서 나가기 
+export const LEAVE_CHAT_ROOM_URL = (room_id) =>
+  `${url}/chat-room/${room_id}/leave`;
 
 // // AI 채팅 요청
 // export const AI_CHAT_REQUEST_URL = `${url}/aichat`;

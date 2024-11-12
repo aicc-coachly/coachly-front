@@ -5,6 +5,7 @@ import {
   GET_MESSAGES_URL,
   GET_CHAT_ROOM_URL,
   GET_CHAT_ROOMS_URL,
+  LEAVE_CHAT_ROOM_URL,
   // AI_CHAT_REQUEST_URL,
   // READ_MESSAGE_URL,
   // DELETE_MESSAGE_URL,
@@ -91,6 +92,19 @@ export const sendMessage = createAsyncThunk(
       return response;
     } catch (error) {
       return rejectWithValue(error.message || '메시지 전송 실패');
+    }
+  }
+);
+
+// 채팅방 화면에서 나가기 
+export const leaveChatRoom = createAsyncThunk(
+  'chat/leaveChatRoom',
+  async (room_id, { rejectWithValue }) => {
+    try {
+      const response = await postRequest(LEAVE_CHAT_ROOM_URL(room_id), {});
+      return response;
+    } catch (error) {
+      return rejectWithValue(error.message || '채팅방 나가기 실패');
     }
   }
 );

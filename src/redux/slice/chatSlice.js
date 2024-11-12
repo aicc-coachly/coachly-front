@@ -4,6 +4,7 @@ import {
   createChatRoom,
   fetchChatMessages,
   fetchChatRooms,
+  leaveChatRoom,
   // deleteMessage,
   // deleteChatRoom,
   // aiChatRequest,
@@ -125,6 +126,17 @@ const chatSlice = createSlice({
         state.loading = false;
       })
       .addCase(fetchChatRooms.rejected, (state, action) => {
+        state.error = action.error.message;
+        state.loading = false;
+      })
+      .addCase(leaveChatRoom.pending, (state) => {
+        state.loading = true;
+      })
+      .addCase(leaveChatRoom.fulfilled, (state) => {
+        state.loading = false;
+        state.messages = []; // 메시지 초기화 또는 다른 처리
+      })
+      .addCase(leaveChatRoom.rejected, (state, action) => {
         state.error = action.error.message;
         state.loading = false;
       });
