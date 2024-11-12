@@ -1,5 +1,3 @@
-// src/redux/slices/chatSlice.js
-
 import { createSlice } from '@reduxjs/toolkit';
 import {
   fetchChatMessages,
@@ -9,6 +7,7 @@ import {
   aiChatRequest,
   readMessage,
   deleteChatRoom,
+  fetchChatRooms, // 추가된 fetchChatRooms
 } from '../thunks/chatThunks';
 
 const chatSlice = createSlice({
@@ -16,6 +15,7 @@ const chatSlice = createSlice({
   initialState: {
     data: null,
     messages: [],
+    chatRooms: [], // 채팅방 리스트를 저장할 배열 추가
     error: null,
   },
   reducers: {
@@ -68,7 +68,6 @@ const chatSlice = createSlice({
         state.error = action.payload;
       })
       .addCase(readMessage.fulfilled, (state, action) => {
-        // 메시지 읽음 상태를 처리
         const index = state.messages.findIndex(msg => msg.messageNumber === action.payload.messageNumber);
         if (index !== -1) state.messages[index].read = true;
         state.error = null;
@@ -83,9 +82,19 @@ const chatSlice = createSlice({
       })
       .addCase(deleteChatRoom.rejected, (state, action) => {
         state.error = action.payload;
+      })
+      .addCase(fetchChatRooms.fulfilled, (state, action) => {
+        state.chatRooms = action.payload; // 채팅방 리스트 설정
+        state.error = null;
+      })
+      .addCase(fetchChatRooms.rejected, (state, action) => {
+        state.error = action.payload;
       });
   },
 });
+
+// Selector for chat rooms
+export const selectChatRooms = (state) => state.chat.chatRooms;
 
 export const { clearChatData, addMessage, setMessages } = chatSlice.actions;
 export default chatSlice.reducer;
