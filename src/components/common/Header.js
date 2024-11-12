@@ -25,14 +25,14 @@ function Header() {
     "/trainerprofile",
     "/trainermypage",
     "/pricelist",
-    "/trainerchat",
+    "/chatlist",
   ];
   const userPages = [
     "/usermypage",
     "/trainersearch",
     "/userprofile",
-    "/userchat",
     "/userptschedule",
+    "/chatlist",
   ];
 
   const isTrainerPage = trainerPages.includes(location.pathname);

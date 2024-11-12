@@ -3,10 +3,9 @@ import { useModal } from "../../components/common/ModalProvider";
 import { EditScheduleModal } from "../../components/trainer/EditScheduleModal";
 import { CreateScheduleModal } from "../../components/trainer/CreateScheduleModal";
 import { UserModal } from "../../components/user/UserModal";
-import { useNavigate } from "react-router-dom"; // useNavigate 추가
+import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import {
-  getAllTrainers,
   getTrainer,
   updateTrainerStatus,
 } from "../../redux/slice/trainerSlice";
@@ -25,50 +24,47 @@ const TrainerMypage = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const [paidUsers, setPaidUsers] = useState([]);
-  const [isFetched, setIsFetched] = useState(false); // 데이터가 이미 fetch되었는지 확인
-  const [selectedSchedule, setSelectedSchedule] = useState(null); // 선택된 예약 정보를 상태로 관리
-  const [scheduleRecords, setScheduleRecords] = useState([]); // 모든 예약 정보를 합쳐서 관리
+  const [isFetched, setIsFetched] = useState(false);
+  const [selectedSchedule, setSelectedSchedule] = useState(null);
+  const [scheduleRecords, setScheduleRecords] = useState([]);
+  const [isChecked, setIsChecked] = useState(false);
 
-  // 유저 프로필 정보와 상태 관리
   const trainer_number = useSelector(
     (state) => state.auth?.trainer?.trainer_number
   );
   const profile = useSelector((state) => state.trainer?.data);
-  const [isChecked, setIsChecked] = useState(false);
-  const path = "http://localhost:8000";
-  const pt_schedule = useSelector((state) => state.payment?.data) || [];
-  const pt_number = pt_schedule.map((item) => item.pt_number);
-  const schedule_record = useSelector(
-    (state) => state.schedule?.data?.schedule_records
-  );
   const trainerInfo = useSelector((state) => state.trainer?.data);
 
-  // console.log(trainerInfo);
-
+  const pt_schedule = useSelector((state) => state.payment?.data) || [];
+  const path = "http://localhost:8000";
+  console.log(pt_schedule);
+  // Trainer 정보를 가져오는 useEffect
   useEffect(() => {
     if (trainer_number) {
-      dispatch(getTrainer(trainer_number)); // trainerNumber가 존재할 때 트레이너 정보 불러오기
+      dispatch(getTrainer(trainer_number)).then((response) => {
+        console.log("Trainer Profile Response:", response.payload);
+      });
     } else {
       const storedTrainer = JSON.parse(localStorage.getItem("trainer"));
       if (storedTrainer) {
-        dispatch(setTrainer(storedTrainer)); // localStorage에서 트레이너 정보 가져오기
+        dispatch(setTrainer(storedTrainer));
       }
     }
   }, [dispatch, trainer_number]);
 
+  // profile 상태에 따라 체크박스 초기 상태 설정
   useEffect(() => {
     if (profile) {
-      // 트레이너 상태에 따라 체크박스 초기 상태 설정
       setIsChecked(profile.status === "inactive");
     }
   }, [profile]);
 
+  // PT 스케줄 가져오기 및 paidUsers 설정
   useEffect(() => {
     if (trainer_number) {
-      dispatch(getPtschedule({ trainer_number: trainer_number }))
+      dispatch(getPtschedule({ trainer_number }))
         .then((response) => {
           if (response.payload) {
-            // 응답에서 유저 정보를 추출하여 중복 제거
             const users = response.payload.reduce((acc, curr) => {
               if (!acc.some((user) => user.user_number === curr.user_number)) {
                 acc.push({
@@ -85,119 +81,108 @@ const TrainerMypage = () => {
     }
   }, [dispatch, trainer_number]);
 
-  const ptNumbers = pt_schedule.map((item) => item.pt_number); // pt_number 배열로 가져오기
-  // console.log(ptNumbers);
-  // fetchScheduleRecords 함수
+  // 스케줄 레코드 가져오기
   const fetchScheduleRecords = async () => {
     try {
-      // 여러 pt_number로부터 schedule record를 받아와 하나의 배열로 합침
       const allRecords = await Promise.all(
-        ptNumbers.map(async (pt_number) => {
-          const result = await dispatch(getScheduleRecord(pt_number));
-          return result.payload; // 각 요청의 결과를 반환
+        pt_schedule.map(async (item) => {
+          const result = await dispatch(getScheduleRecord(item.pt_number));
+          return result.payload;
         })
       );
 
-      // `allRecords`는 여러 객체들을 포함하며, 각 객체에는 `schedule_records`가 배열로 포함됨
-      // `schedule_records`만 추출하여 하나의 배열로 결합
       const mergedRecords = allRecords
-        .map((record) => record.schedule_records) // 각 객체에서 schedule_records 추출
-        .flat(); // 다차원 배열을 1차원 배열로 합침
+        .map((record) => record?.schedule_records || [])
+        .flat();
 
-      // console.log("Merged Schedule Records:", mergedRecords); // 확인용 로그
-      setScheduleRecords(mergedRecords); // 하나의 배열로 상태 업데이트
-      setIsFetched(true); // 데이터 fetch 완료 상태 업데이트
+      setScheduleRecords(mergedRecords);
+      setIsFetched(true);
     } catch (error) {
       console.error("Error fetching schedule records:", error);
     }
   };
-  // console.log(scheduleRecords);
 
   useEffect(() => {
     if (!isFetched) {
       fetchScheduleRecords();
     }
-  }, [isFetched, ptNumbers]);
+  }, [isFetched, pt_schedule]);
 
+  // 유저 정보 가져오기
   useEffect(() => {
-    if (schedule_record) {
-      // console.log("Schedule Record:", schedule_record);
-    }
-  }, [schedule_record]); // schedule_record가 변경될 때만 호출
-
-  useEffect(() => {
-    // pt_schedule에서 유저 번호를 가져와 유저 정보를 가져오기
     pt_schedule.forEach((schedule) => {
       if (schedule.user_number) {
-        dispatch(getUser(schedule.user_number)) // 유저 번호를 통해 유저 정보 가져오기
-          .catch((error) => console.error("Error fetching user info:", error));
+        dispatch(getUser(schedule.user_number)).catch((error) =>
+          console.error("Error fetching user info:", error)
+        );
       }
     });
   }, [pt_schedule, dispatch]);
 
-  // console.log(paidUsers);
-
+  // 체크박스 상태 업데이트 핸들러
   const handleCheckboxChange = async (e) => {
     const newStatus = e.target.checked ? "inactive" : "active";
-    setIsChecked(e.target.checked); // 로컬 상태 업데이트
+    setIsChecked(e.target.checked);
 
-    // 서버에 새로운 상태 업데이트
-    await dispatch(
-      updateTrainerStatus({ trainer_number: trainer_number, status: newStatus })
-    );
-
-    // 상태 업데이트 후 최신 트레이너 정보 가져오기
-    dispatch(getTrainer(trainer_number));
+    try {
+      await dispatch(
+        updateTrainerStatus({ trainer_number, status: newStatus })
+      );
+      dispatch(getTrainer(trainer_number));
+    } catch (error) {
+      console.error("Error updating trainer status:", error);
+    }
   };
 
-  // 유저 모달 열기, user_number를 UserModal에 전달
+  // 모달 관련 핸들러 함수들
   const handleOpenUserModal = (pt_number) => {
     openModal(<UserModal pt_number={pt_number} />);
   };
 
-  // 수업 예약 모달 열기, pt_number와 user_number를 전달
   const handleOpenScheduleModal = (pt_number, user_number) => {
     openModal(
-      <CreateScheduleModal
-        pt_number={pt_number}
-        user_number={user_number} // 올바르게 해당 유저의 user_number를 전달
-      />
+      <CreateScheduleModal pt_number={pt_number} user_number={user_number} />
     );
   };
 
   const handleOpenPtScheduleModal = (schedule) => {
-    setSelectedSchedule(schedule); // 선택된 예약 정보 저장
+    setSelectedSchedule(schedule);
     openModal(
       <CheckScheduleModal
         schedule={schedule}
         onUpdate={handleUpdateSchedule}
         onDelete={handleDeleteSchedule}
       />
-    ); // 수정 모달 열기
+    );
   };
 
   const handleDeleteSchedule = (schedule_number) => {
-    dispatch(deletePtSchedule(schedule_number)); // 예약 삭제 액션 dispatch
+    dispatch(deletePtSchedule(schedule_number));
   };
 
   const handleUpdateSchedule = (updatedSchedule) => {
-    dispatch(patchPtSchedule(updatedSchedule)); // 예약 수정 액션 dispatch
+    dispatch(patchPtSchedule(updatedSchedule));
   };
-
-  // console.log(user_number);
-  // console.log(profile);
 
   const handleMyInfoUpdate = () => {
     navigate("/trainerprofile", { state: { trainerInfo } });
   };
 
+  const uniqueSchedules = pt_schedule
+    .filter((schedule) => schedule.status !== "completed") // status가 "completed"인 항목 제외
+    .reduce((acc, schedule) => {
+      if (!acc.some((item) => item.user_number === schedule.user_number)) {
+        acc.push(schedule);
+      }
+      return acc;
+    }, []);
+
   return (
     <div className="max-w-[390px] mx-auto bg-gray-100 p-4">
-      {/* 내 정보 섹션 */}
       <div className="bg-white rounded-lg shadow-md p-4 mb-4 relative">
         <h2 className="text-lg font-semibold mb-2">내 정보</h2>
         <button
-          onClick={() => handleMyInfoUpdate(trainerInfo)} // 페이지 이동 설정
+          onClick={() => handleMyInfoUpdate()}
           className="absolute top-4 right-4 px-3 py-1 bg-gray-300 text-sm rounded-full"
         >
           수정하기
@@ -206,7 +191,7 @@ const TrainerMypage = () => {
           <div className="w-[8rem] h-[8rem] bg-gray-200 overflow-hidden">
             {profile?.image ? (
               <img
-                src={`${path}/${profile.image}`} // 이미지 경로 설정
+                src={`${path}/${profile.image}`}
                 alt="트레이너 프로필 사진"
                 className="object-cover w-full h-full"
               />
@@ -226,63 +211,55 @@ const TrainerMypage = () => {
                 <span className="ml-2 text-sm">수업 그만 받기</span>
               </label>
             </div>
-
-            {/* 텍스트 정보 */}
             <p className="mt-2 text-base font-medium">{profile?.name}</p>
             <p className="text-sm text-gray-500">{profile?.phone}</p>
-
-            {/* 태그들 */}
             <div className="flex mt-2 space-x-2">
               <p className="px-3 py-1 bg-gray-300 text-sm rounded-md">
                 {profile?.trainer_detail_address}
               </p>
-              <p className="px-3 py-1 bg-gray-300 text-sm rounded-md">{}</p>
             </div>
           </div>
         </div>
       </div>
 
-      {/* 내 회원 관리 섹션 */}
-      {pt_schedule && pt_schedule.length > 0
-        ? pt_schedule.map((schedule) => (
-            <div
-              key={schedule.pt_number}
-              className="bg-white rounded-lg shadow-md p-4 mb-4"
-            >
-              <h2 className="text-lg font-semibold mb-2">내 회원 관리</h2>
-              <div className="flex items-center justify-between">
-                <div>
-                  <p>{schedule.user_name} 회원님</p> {/* 유저 이름 */}
-                </div>
-                <div className="flex gap-2">
-                  <button
-                    onClick={() => handleOpenUserModal(schedule)} // 유저 정보 확인
-                    className="px-3 py-1 bg-blue-300 text-sm rounded-md"
-                  >
-                    유저 인바디 확인하기
-                  </button>
-                  <button
-                    onClick={() => navigate("/trainerChat")} // 1:1 채팅 페이지로 이동
-                    className="px-3 py-1 bg-pink-300 text-sm rounded-md"
-                  >
-                    1:1 채팅하기
-                  </button>
-                  <button
-                    onClick={() => handleOpenScheduleModal(schedule)} // PT 번호와 함께 수업 예약 모달 열기
-                    className="px-3 py-1 bg-green-300 text-sm rounded-md"
-                  >
-                    수업 예약하기
-                  </button>
-                </div>
+      {uniqueSchedules.length > 0 &&
+        uniqueSchedules.map((schedule) => (
+          <div
+            key={schedule.pt_number}
+            className="bg-white rounded-lg shadow-md p-4 mb-4"
+          >
+            <h2 className="text-lg font-semibold mb-2">내 회원 관리</h2>
+            <div className="flex items-center justify-between">
+              <div>
+                <p>{schedule.user_name} 회원님</p>
+              </div>
+              <div className="flex gap-2">
+                <button
+                  onClick={() => handleOpenUserModal(schedule)}
+                  className="px-3 py-1 bg-blue-300 text-sm rounded-md"
+                >
+                  유저 인바디 확인하기
+                </button>
+                <button
+                  onClick={() => navigate("/trainerChat")}
+                  className="px-3 py-1 bg-pink-300 text-sm rounded-md"
+                >
+                  1:1 채팅하기
+                </button>
+                <button
+                  onClick={() => handleOpenScheduleModal(schedule)}
+                  className="px-3 py-1 bg-green-300 text-sm rounded-md"
+                >
+                  수업 예약하기
+                </button>
               </div>
             </div>
-          ))
-        : null}
+          </div>
+        ))}
 
-      {/* 예약된 수업 섹션 */}
       {scheduleRecords.length > 0 ? (
         scheduleRecords
-          .filter((schedule) => schedule.status !== "deleted") // deleted 상태 제외
+          .filter((schedule) => schedule.status !== "deleted")
           .map((schedule) => (
             <div
               key={schedule.schedule_number}

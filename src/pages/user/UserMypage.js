@@ -226,20 +226,28 @@ function UserMypage() {
       {pt_schedule && pt_schedule.length > 0 ? (
         <div className="bg-white rounded-lg shadow-md p-2 mb-4">
           <h2 className="text-lg font-semibold p-2">담당 트레이너</h2>
-          {pt_schedule.map((trainer, index) => (
-            <div
-              key={index}
-              className="flex items-center justify-between bg-gray-300 p-1 mb-2"
-            >
-              <p className="text-base text-sm">{trainer.trainer_name}</p>
-              <button
-                onClick={() => navigate("/UserChat")}
-                className="px-3 py-1 bg-pink-300 text-sm rounded-md"
+
+          {/* 중복된 트레이너 이름을 제거한 후 출력 */}
+          {pt_schedule
+            .filter(
+              (value, index, self) =>
+                index ===
+                self.findIndex((t) => t.trainer_name === value.trainer_name)
+            )
+            .map((trainer, index) => (
+              <div
+                key={index}
+                className="flex items-center justify-between bg-gray-300 p-1 mb-2"
               >
-                1:1 채팅하기
-              </button>
-            </div>
-          ))}
+                <p className="text-base text-sm">{trainer.trainer_name}</p>
+                <button
+                  onClick={() => navigate("/UserChat")}
+                  className="px-3 py-1 bg-pink-300 text-sm rounded-md"
+                >
+                  1:1 채팅하기
+                </button>
+              </div>
+            ))}
         </div>
       ) : null}
 

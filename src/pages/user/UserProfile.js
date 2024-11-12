@@ -24,7 +24,6 @@ const UserProfile = () => {
   const [name, setName] = useState("");
   const [phone, setPhone] = useState("");
   const [email, setEmail] = useState("");
-  const [zipcode, setZipcode] = useState("");
   const [address, setAddress] = useState("");
   const [detailAddress, setDetailAddress] = useState("");
 
@@ -38,7 +37,6 @@ const UserProfile = () => {
       setName(userInfo.name || "");
       setPhone(userInfo.phone || "");
       setEmail(userInfo.email || "");
-      setZipcode(userInfo.user_zipcode || "");
       setAddress(userInfo.user_address || "");
       setDetailAddress(userInfo.user_detail_address || "");
     }
@@ -47,7 +45,6 @@ const UserProfile = () => {
   const handleSave = () => {
     const updatedUserInfo = { name, phone, email };
     const updatedAddress = {
-      user_zipcode: zipcode,
       user_address: address,
       user_detail_address: detailAddress,
     };
@@ -105,13 +102,6 @@ const UserProfile = () => {
       <div className="mb-4">
         <h2 className="text-lg font-semibold mb-2">주소 관리</h2>
         <div className="mb-2">
-          <input
-            type="text"
-            value={zipcode}
-            onChange={(e) => setZipcode(e.target.value)}
-            className="w-full px-3 py-1 border rounded mb-2"
-            placeholder="우편번호"
-          />
           <input
             type="text"
             value={address}
