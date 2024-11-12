@@ -33,6 +33,13 @@ const chatSlice = createSlice({
     setMessages: (state, action) => {
       state.messages = action.payload;
     },
+    logout: (state) => {
+      state.data = null;
+      state.messages = [];
+      state.chatRooms = [];
+      state.error = null;
+      state.loading = false;
+    },
   },
   extraReducers: (builder) => {
     builder
@@ -148,5 +155,5 @@ export const selectChatRooms = (state) => state.chat.chatRooms;
 export const selectMessages = (state) => state.chat.messages;
 export const selectLoading = (state) => state.chat.loading;
 
-export const { clearChatData, addMessage, setMessages } = chatSlice.actions;
+export const { clearChatData, addMessage, setMessages,logout } = chatSlice.actions;
 export default chatSlice.reducer;
