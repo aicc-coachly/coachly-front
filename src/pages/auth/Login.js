@@ -1,4 +1,3 @@
-// src/pages/auth/Login.js
 import React, { useEffect, useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import axios from "axios";
@@ -19,14 +18,8 @@ function Login() {
     userType: loggedInUserType,
   } = useSelector((state) => state.auth);
 
-  // useEffect(() => {
-  //   if(data){
-  //     localStorage.removeItem("trainer")
-  //   }
-  // })
-
   useEffect(() => {
-    // 로그인 상태가 설정되었고, 'data'가 유효할 때만 리디렉션 실행
+    // 로그인 상태가 설정되었고, 'data'와 'loggedInUserType'이 모두 유효할 때만 리디렉션을 실행
     if (data && loggedInUserType) {
       if (loggedInUserType === "trainer") {
         navigate("/trainermypage");
@@ -34,7 +27,9 @@ function Login() {
         navigate("/usermypage");
       }
     }
-    if (error) {
+
+    // 로그인 실패 메시지 처리
+    if (error && !data) {
       alert("로그인에 실패했습니다.");
     }
   }, [data, error, loggedInUserType, navigate]);
@@ -69,7 +64,7 @@ function Login() {
             onClick={() => setUserType("trainer")}
             className={`flex-1 py-2 rounded-l-lg ${
               userType === "trainer"
-                ? "bg-[#4831D4] text-[#CCF381]"
+                ? "bg-[#4831D4] text-white"
                 : "bg-[#CCF381] text-[#081f5c]"
             }`}
           >
@@ -79,7 +74,7 @@ function Login() {
             onClick={() => setUserType("user")}
             className={`flex-1 py-2 rounded-r-lg ${
               userType === "user"
-                ? "bg-[#4831D4] text-[#CCF381]"
+                ? "bg-[#4831D4] text-white"
                 : "bg-[#CCF381] text-[#081f5c]"
             }`}
           >
@@ -110,7 +105,6 @@ function Login() {
           로그인
         </Buttons>
 
-        {/* 회원가입 안내 */}
         <p className="text-center text-[#081f5c] my-7">
           아직 계정이 없으신가요?
         </p>

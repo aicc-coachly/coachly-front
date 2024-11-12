@@ -285,6 +285,10 @@ const trainerSlice = createSlice({
       state.data = null;
       state.error = null;
     },
+    logout: (state) => {
+      state.data = null;
+      state.error = null;
+    },
   },
   extraReducers: (builder) => {
     builder

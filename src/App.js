@@ -1,25 +1,26 @@
-import React from 'react';
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import ModalProvider from './components/common/ModalProvider';
-import Header from './components/common/Header';
-import Login from './pages/auth/Login';
-import SortSignup from './pages/auth/SortSignup';
-import UserSignup from './pages/auth/UserSignup';
-import TrainerSignup from './pages/auth/TrainerSignup';
-import Buttons from './components/common/Buttons';
+import React from "react";
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import ModalProvider from "./components/common/ModalProvider";
+import Header from "./components/common/Header";
+import Login from "./pages/auth/Login";
+import SortSignup from "./pages/auth/SortSignup";
+import UserSignup from "./pages/auth/UserSignup";
+import TrainerSignup from "./pages/auth/TrainerSignup";
+import Buttons from "./components/common/Buttons";
 // trainer
-import TrainerProfile from './pages/trainer/TrainerProfile';
-import PriceList from './pages/trainer/PriceList';
-import TrainerMypage from './pages/trainer/TrainerMypage';
+import TrainerProfile from "./pages/trainer/TrainerProfile";
+import PriceList from "./pages/trainer/PriceList";
+import TrainerMypage from "./pages/trainer/TrainerMypage";
 // user
-import UserMypage from './pages/user/UserMypage';
-import TrainerSearch from './pages/user/TrainerSearch';
-import UserProfile from './pages/user/UserProfile';
+import UserMypage from "./pages/user/UserMypage";
+import TrainerSearch from "./pages/user/TrainerSearch";
+import UserProfile from "./pages/user/UserProfile";
 // chat
-import ChatList from './pages/chat/ChatList';
-import Success from './components/common/Success';
-import ChatRoom from './pages/chat/ChatRoom';
-import RefundListPage from './components/user/RefundListPage';
+import ChatList from "./pages/chat/ChatList";
+import Success from "./components/common/Success";
+import ChatRoom from "./pages/chat/ChatRoom";
+import PtScheduleList from "./components/user/PtScheduleList";
+import RefundListPage from "./components/user/RefundListPage";
 
 function App() {
   return (
@@ -50,6 +51,7 @@ function App() {
             <Route path="/trainersearch" element={<TrainerSearch />} />
             <Route path="/userprofile" element={<UserProfile />} />
             <Route path="/userrefund" element={<RefundListPage />} />
+            <Route path="/userptschedule" element={<PtScheduleList />} />
           </Routes>
         </div>
       </ModalProvider>

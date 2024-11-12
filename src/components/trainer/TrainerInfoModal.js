@@ -3,8 +3,12 @@ import axios from "axios";
 import Buttons from "../common/Buttons";
 import { useModal } from "../common/ModalProvider";
 import PTModal from "./PTModal"; // PTModal을 import
+import { useDispatch, useSelector } from 'react-redux';
+import { getTrainerPtCost } from '../../redux/slice/trainerSlice'; 
 
 export const TrainerInfoModal = ({ trainer, user_number, user_name }) => {
+  const dispatch = useDispatch(); // Redux dispatch 훅
+  const trainer_number = trainer?.trainer_id;
   const { closeModal, openModal } = useModal();
   const [image, setImage] = useState(null);
   const path = "http://localhost:8000";
@@ -26,11 +30,12 @@ export const TrainerInfoModal = ({ trainer, user_number, user_name }) => {
       closeModal();
     }
   };
-
+console.log(user_number)
   // PT 신청하기 버튼 클릭 시 PTModal 열기
   const handlePTRequest = () => {
     openModal(
       <PTModal
+        trainer={trainer}
         pt_cost_option={trainer.pt_cost_options}
         trainer_number={trainer.trainer_number}
         trainer_name={trainer.name}

@@ -35,7 +35,6 @@ export async function postRequest(url, options) {
     }),
     ...options,
   };
-
   return await fetch(url, defaultOptions).then((response) => {
     if (!response.ok) {
       throw new Error("Network response was not ok");

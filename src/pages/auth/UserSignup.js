@@ -8,7 +8,6 @@ function UserSignup() {
   const [formData, setFormData] = useState({
     user_id: "",
     pass: "",
-    confirmPassword: "",
     email: "",
     name: "",
     phone: "",
@@ -53,7 +52,7 @@ function UserSignup() {
       return;
     }
 
-    // 필수 필드 검증
+    // 필수 값이 입력되었는지 확인하는 검증
     const requiredFields = [
       "user_id",
       "pass",
@@ -227,9 +226,32 @@ function UserSignup() {
 
         {/* 우편번호 */}
         <div className="mb-4">
-          <label htmlFor="user_zipcode" className="block mb-2">
-            우편번호
+          <label htmlFor="user_address" className="block mb-2">
+            주소
           </label>
+          <div className="flex space-x-2 mb-2">
+            <input
+              type="text"
+              name="user_address"
+              value={formData.user_address}
+              onChange={handleChange}
+              className="w-full px-3 py-2 border rounded"
+              placeholder="주소"
+              required
+            />
+            <input
+              type="text"
+              name="user_detail_address"
+              value={formData.user_detail_address}
+              onChange={handleChange}
+              className="w-full px-3 py-2 border rounded"
+              placeholder="구 / 동"
+            />
+          </div>
+        </div>
+
+        {/* 개인정보 수집 동의 */}
+        <div className="mb-6 flex items-center">
           <input
             type="text"
             id="user_zipcode"
@@ -275,7 +297,7 @@ function UserSignup() {
         {/* 회원가입 버튼 */}
         <button
           type="submit"
-          className="w-full bg-[#081f5c] text-white py-2 rounded hover:bg-[#041c3d]"
+          className="w-full bg-[#4831D4] text-white py-2 rounded hover:bg-[#3824ae]"
         >
           회원가입 하기
         </button>

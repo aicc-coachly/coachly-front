@@ -48,8 +48,8 @@ export const PTModal = ({
     setSelectedOption(amountNumber); // 선택한 금액 옵션을 즉시 설정
   };
 
-  console.log(user_number);
-  console.log(trainer_number);
+  // console.log(user_number);
+  // console.log(trainer_number);
 
   const handleWidgetRender = async () => {
     if (!selectedOption) {

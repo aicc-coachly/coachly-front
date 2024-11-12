@@ -91,9 +91,11 @@ export const deleteUser = createAsyncThunk(
 // 사용자 인바디 정보 소프트 삭제
 export const deleteUserInbody = createAsyncThunk(
   "user/deleteUserInbody",
-  async (user_number, { rejectWithValue }) => {
+  async (user_inbody_number, { rejectWithValue }) => {
     try {
-      const response = await deleteRequest(DELETE_USER_INBODY_URL(user_number));
+      const response = await patchRequest(
+        DELETE_USER_INBODY_URL(user_inbody_number)
+      );
       return response;
     } catch (error) {
       return rejectWithValue(error.message || "인바디 정보 삭제 실패");
