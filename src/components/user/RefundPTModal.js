@@ -33,7 +33,11 @@ export const RefundPTModal = ({
   const remainingSessions = schedule.frequency
     ? schedule.frequency - completedSessions
     : 0;
-
+  const totalAmount = schedule.amount || 0;
+  const refundAmount =
+    remainingSessions === schedule.frequency
+      ? totalAmount
+      : (totalAmount / schedule.frequency) * remainingSessions;
   useEffect(() => {
     if (isEditMode) {
       setSelectedReason(refundData.refund_reason || '');
@@ -127,9 +131,7 @@ export const RefundPTModal = ({
           </p>
           <p>
             예상 환불 금액:
-            {schedule.amount && remainingSessions
-              ? `${schedule.amount / remainingSessions}원`
-              : '금액 없음'}
+            {refundAmount ? `${refundAmount}원` : '금액 없음'}
           </p>
         </div>
       </div>
