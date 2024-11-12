@@ -34,6 +34,7 @@ function Header() {
     '/userchat',
     '/userrefund',
     '/UserChat',
+    '/userptschedule',
   ];
 
   const isTrainerPage = trainerPages.includes(location.pathname);

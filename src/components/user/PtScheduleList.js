@@ -17,13 +17,9 @@ const PtScheduleList = () => {
     dispatch(getPtschedule({ user_number }))
       .unwrap()
       .then((schedules) => {
-        const userSchedules = schedules
-          .filter((schedule) => schedule.user_number === user_number)
-          .map((schedule) => ({
-            pt_number: schedule.pt_number,
-            pt_date: schedule.pt_date,
-            status: schedule.status,
-          }));
+        const userSchedules = schedules.filter(
+          (schedule) => schedule.user_number === user_number
+        );
         setPtSchedules(userSchedules);
       })
       .catch((error) => {
@@ -31,14 +27,14 @@ const PtScheduleList = () => {
       });
   }, [dispatch, user_number]);
 
-  const handleRefundRequest = (pt_number) => {
+  const handleRefundRequest = (schedule) => {
     const onRequestSuccess = (newRefund) => {
       console.log('환불 신청이 완료되었습니다:', newRefund);
     };
 
     openModal(
       <RefundPTModal
-        pt_number={pt_number}
+        schedule={schedule}
         onRequestSuccess={onRequestSuccess}
         isEditMode={false} // 새로운 환불 신청 모드
       />
@@ -59,13 +55,10 @@ const PtScheduleList = () => {
                 className="p-4 bg-white border border-[#d0e3ff] rounded-lg shadow-md"
               >
                 <p className="font-semibold text-[#081f5c]">
-                  PT 날짜:{' '}
-                  {schedule.created_at
-                    ? new Date(schedule.created_at).toISOString().split('T')[0]
-                    : '날짜 정보 없음'}
+                  PT 트레이너 : {schedule.trainer_name}
                 </p>
                 <p className="text-[#081f5c]">
-                  상태:{' '}
+                  상태:
                   <span
                     className={`font-semibold ${
                       schedule.status === 'completed'
@@ -73,13 +66,17 @@ const PtScheduleList = () => {
                         : 'text-yellow-500'
                     }`}
                   >
-                    {schedule.status === 'completed' ? '완료' : '진행 중'}
+                    {schedule.status === 'completed'
+                      ? '완료'
+                      : schedule.status === 'refund'
+                      ? '환불 진행 중'
+                      : '수업 진행 중'}
                   </span>
                 </p>
                 {schedule.status !== 'completed' && (
                   <button
                     className="mt-4 w-full px-4 py-2 bg-[#00A5E3] text-white rounded hover:bg-[#006F8C]"
-                    onClick={() => handleRefundRequest(schedule.pt_number)}
+                    onClick={() => handleRefundRequest(schedule)}
                   >
                     환불 신청
                   </button>
