@@ -21,7 +21,7 @@ function Header() {
   ].includes(location.pathname);
 
   // 트레이너 페이지와 유저 페이지 확인
-  const trainerPages = ['/trainerprofile', '/trainermypage', '/pricelist', '/trainerchat'];
+  const trainerPages = ['/trainerprofile', '/trainermypage', '/pricelist', '/trainerchat', '/chatlist'];
   const userPages = ['/usermypage', '/trainersearch', '/userprofile','/userchat'];
   
   const isTrainerPage = trainerPages.includes(location.pathname);
