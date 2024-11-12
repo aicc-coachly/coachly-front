@@ -47,11 +47,10 @@ function App() {
             {/* 트레이너의 PT 가격관리 페이지 */}
             <Route path="/pricelist" element={<PriceList />} />
             {/* 회원 메인 페이지 */}
-            <Route path="/usermypage" element={<UserMypage />} />
-            <Route path="/trainersearch" element={<TrainerSearch />} />
-            <Route path="/userprofile" element={<UserProfile />} />
-            <Route path="/userrefund" element={<RefundListPage />} />
-            <Route path="/userptschedule" element={<PtScheduleList />} />
+            <Route path="/usermypage" element={<UserMypage/>} />
+            <Route path="/trainersearch" element={<TrainerSearch/>} />
+            <Route path="/userprofile" element={<UserProfile/>} />
+            console.log(UserMypage); 
           </Routes>
         </div>
       </ModalProvider>
