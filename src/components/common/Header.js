@@ -1,15 +1,8 @@
 // src/components/common/Header.js
-<<<<<<< HEAD
-import React, { useState } from 'react';
-import { useLocation, Link } from 'react-router-dom';
-import { UserMenuButtons, TrainerMenuButtons } from './Buttons';
-import logo from '../../assets/images/logo.png';
-=======
 import React, { useState } from "react";
 import { useLocation, Link } from "react-router-dom";
 import { UserMenuButtons, TrainerMenuButtons } from "./Buttons";
 import logo from "../../assets/images/logo.png";
->>>>>>> 0f3e6a3b0a3e18e0296303e6f9316f1d89ceb494
 
 function Header() {
   const location = useLocation();
@@ -21,21 +14,6 @@ function Header() {
 
   // 특정 페이지에서 메뉴바 숨김
   const hideMenuBar = [
-<<<<<<< HEAD
-    '/',
-    '/sortsignup',
-    '/trainersignup',
-    '/usersignup'
-  ].includes(location.pathname);
-
-  // 트레이너 페이지와 유저 페이지 확인
-  const trainerPages = ['/trainerprofile', '/trainermypage', '/pricelist', '/trainerchat', '/chatlist'];
-  const userPages = ['/usermypage', '/trainersearch', '/userprofile','/userchat'];
-  
-  const isTrainerPage = trainerPages.includes(location.pathname);
-  const isUserPage = userPages.includes(location.pathname);
-
-=======
     "/",
     "/sortsignup",
     "/trainersignup",
@@ -59,7 +37,6 @@ function Header() {
 
   const isTrainerPage = trainerPages.includes(location.pathname);
   const isUserPage = userPages.includes(location.pathname);
->>>>>>> 0f3e6a3b0a3e18e0296303e6f9316f1d89ceb494
 
   return (
     <header className="relative flex justify-between items-center p-4 bg-[#edf1f6] shadow-md max-w-[390px] mx-auto">
