@@ -25,10 +25,9 @@ const TrainerSearch = () => {
         type: "trainer", // 트레이너와의 채팅방 생성
       });
 
-      if (response.status === 201) {
+      if (response.status === 200 || response.status === 201) {
         const { room_id } = response.data;
-        console.log("채팅방이 생성되었습니다. 방 ID:", room_id);
-        // 생성된 채팅방 페이지로 이동
+        console.log("채팅방으로 이동합니다. 방 ID:", room_id);
         navigate(`/chatroom/${room_id}`);
       }
     } catch (error) {

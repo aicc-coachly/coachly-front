@@ -4,8 +4,8 @@ const url = process.env.REACT_APP_API_URL; // 백엔드 서버 URL에 맞게 설
 export const CREATE_CHAT_ROOM_URL = `${url}/chat-room`;
 
 // 채팅방 조회
-export const GET_CHAT_ROOM_URL = (userNumber, trainerNumber) =>
-  `${url}/chat-room?userNumber=${userNumber}&trainerNumber=${trainerNumber}`;
+export const GET_CHAT_ROOM_URL = (roomId, userNumber) =>
+  `${url}/chat-room?roomId=${roomId}&userNumber=${userNumber}`;
 
 // 채팅방 리스트 조회 
 export const GET_CHAT_ROOMS_URL = (userNumber, trainerNumber) => {

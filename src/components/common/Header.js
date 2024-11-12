@@ -1,16 +1,23 @@
 // src/components/common/Header.js
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useLocation, Link } from "react-router-dom";
+import { useSelector } from "react-redux";
 import { UserMenuButtons, TrainerMenuButtons } from "./Buttons";
 import logo from "../../assets/images/logo.png";
 
 function Header() {
   const location = useLocation();
   const [menuOpen, setMenuOpen] = useState(false);
+  const { userType, data: isLoggedIn } = useSelector((state) => state.auth);
 
   const toggleMenu = () => {
     setMenuOpen(!menuOpen);
   };
+
+  useEffect(() => {
+    // 로그인 상태가 변경될 때마다 메뉴를 닫음
+    setMenuOpen(false);
+  }, [isLoggedIn]);
 
   // 특정 페이지에서 메뉴바 숨김
   const hideMenuBar = [
@@ -20,23 +27,8 @@ function Header() {
     "/usersignup",
   ].includes(location.pathname);
 
-  // 트레이너 페이지와 유저 페이지 확인
-  const trainerPages = [
-    "/trainerprofile",
-    "/trainermypage",
-    "/pricelist",
-    "/trainerchat",
-  ];
-  const userPages = [
-    "/usermypage",
-    "/trainersearch",
-    "/userprofile",
-    "/userchat",
-    "/userptschedule",
-  ];
-
-  const isTrainerPage = trainerPages.includes(location.pathname);
-  const isUserPage = userPages.includes(location.pathname);
+  const isTrainerPage = userType === "trainer";
+  const isUserPage = userType === "user";
 
   return (
     <header className="relative flex justify-between items-center p-4 bg-[#edf1f6] shadow-md max-w-[390px] mx-auto">
@@ -49,7 +41,7 @@ function Header() {
       </Link>
 
       {/* 오른쪽 메뉴 버튼 */}
-      {!hideMenuBar && (
+      {!hideMenuBar && isLoggedIn && (
         <>
           <button onClick={toggleMenu} className="text-2xl">
             {menuOpen ? "✕" : "≡"}

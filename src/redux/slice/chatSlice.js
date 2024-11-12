@@ -4,11 +4,8 @@ import {
   createChatRoom,
   fetchChatMessages,
   fetchChatRooms,
+  fetchChatRoom, // 특정 채팅방 조회 액션 추가
   leaveChatRoom,
-  // deleteMessage,
-  // deleteChatRoom,
-  // aiChatRequest,
-  // readMessage,
 } from '../thunks/chatThunks';
 
 const chatSlice = createSlice({
@@ -67,18 +64,6 @@ const chatSlice = createSlice({
         state.error = action.error.message;
         state.loading = false;
       })
-      // .addCase(deleteMessage.pending, (state) => {
-      //   state.loading = true;
-      // })
-      // .addCase(deleteMessage.fulfilled, (state, action) => {
-      //   state.messages = state.messages.filter(msg => msg.messageNumber !== action.payload);
-      //   state.error = null;
-      //   state.loading = false;
-      // })
-      // .addCase(deleteMessage.rejected, (state, action) => {
-      //   state.error = action.error.message;
-      //   state.loading = false;
-      // })
       .addCase(createChatRoom.pending, (state) => {
         state.loading = true;
       })
@@ -91,39 +76,6 @@ const chatSlice = createSlice({
         state.error = action.error.message;
         state.loading = false;
       })
-      // .addCase(aiChatRequest.pending, (state) => {
-      //   state.loading = true;
-      // })
-      // .addCase(aiChatRequest.fulfilled, (state, action) => {
-      //   state.data = action.payload;
-      //   state.error = null;
-      //   state.loading = false;
-      // })
-      // .addCase(aiChatRequest.rejected, (state, action) => {
-      //   state.error = action.error.message;
-      //   state.loading = false;
-      // })
-      // .addCase(readMessage.fulfilled, (state, action) => {
-      //   const index = state.messages.findIndex(msg => msg.messageNumber === action.payload.messageNumber);
-      //   if (index !== -1) state.messages[index].read = true;
-      //   state.error = null;
-      // })
-      // .addCase(readMessage.rejected, (state, action) => {
-      //   state.error = action.error.message;
-      // })
-      // .addCase(deleteChatRoom.pending, (state) => {
-      //   state.loading = true;
-      // })
-      // .addCase(deleteChatRoom.fulfilled, (state, action) => {
-      //   state.data = null;
-      //   state.messages = [];
-      //   state.error = null;
-      //   state.loading = false;
-      // })
-      // .addCase(deleteChatRoom.rejected, (state, action) => {
-      //   state.error = action.error.message;
-      //   state.loading = false;
-      // })
       .addCase(fetchChatRooms.pending, (state) => {
         state.loading = true;
       })
@@ -133,6 +85,18 @@ const chatSlice = createSlice({
         state.loading = false;
       })
       .addCase(fetchChatRooms.rejected, (state, action) => {
+        state.error = action.error.message;
+        state.loading = false;
+      })
+      .addCase(fetchChatRoom.pending, (state) => {
+        state.loading = true;
+      })
+      .addCase(fetchChatRoom.fulfilled, (state, action) => {
+        state.data = action.payload; // 특정 채팅방 정보 저장
+        state.error = null;
+        state.loading = false;
+      })
+      .addCase(fetchChatRoom.rejected, (state, action) => {
         state.error = action.error.message;
         state.loading = false;
       })
@@ -155,5 +119,5 @@ export const selectChatRooms = (state) => state.chat.chatRooms;
 export const selectMessages = (state) => state.chat.messages;
 export const selectLoading = (state) => state.chat.loading;
 
-export const { clearChatData, addMessage, setMessages,logout } = chatSlice.actions;
+export const { clearChatData, addMessage, setMessages, logout } = chatSlice.actions;
 export default chatSlice.reducer;

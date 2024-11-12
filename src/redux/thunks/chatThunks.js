@@ -33,17 +33,20 @@ export const createChatRoom = createAsyncThunk(
 // 채팅방 조회
 export const fetchChatRoom = createAsyncThunk(
   'chat/fetchChatRoom',
-  async ({ userNumber, trainerNumber }, { rejectWithValue }) => {
+  async ({ roomId, userNumber }, { rejectWithValue }) => {
     try {
-      const response = await getRequest(GET_CHAT_ROOM_URL(userNumber, trainerNumber));
+      const url = GET_CHAT_ROOM_URL(roomId, userNumber); // roomId와 userNumber를 쿼리 파라미터로 사용
+      console.log("Fetching specific chat room with URL:", url); // URL 확인용
+      const response = await getRequest(url);
       
-      if (response && response.roomId) {
-        return response.roomId;
+      if (response) {
+        return response; 
       } else {
-        throw new Error('해당 유저와 트레이너에 대한 채팅방이 존재하지 않습니다.');
+        console.warn('조회된 특정 채팅방이 없습니다.');
+        return null;
       }
     } catch (error) {
-      return rejectWithValue(error.message || '채팅방 조회 실패');
+      return rejectWithValue(error.message || '특정 채팅방 조회 실패');
     }
   }
 );
@@ -52,13 +55,18 @@ export const fetchChatRoom = createAsyncThunk(
 export const fetchChatRooms = createAsyncThunk(
   'chat/fetchChatRooms',
   async ({ userNumber, trainerNumber }, { rejectWithValue }) => {
+    console.log("fetchChatRooms called with:", { userNumber, trainerNumber }); // 추가된 로그
+
     try {
-      const response = await getRequest(GET_CHAT_ROOMS_URL(userNumber, trainerNumber));
+      const url = GET_CHAT_ROOMS_URL(userNumber, trainerNumber);
+      console.log("Fetching chat rooms with URL:", url); // URL 확인용
+      const response = await getRequest(url);
       
-      if (response && response.length > 0) {
-        return response;
+      if (response) {
+        return response; // 빈 리스트라도 반환
       } else {
-        throw new Error('조회된 채팅방이 없습니다.');
+        console.warn('조회된 채팅방이 없습니다.');
+        return []; // 빈 리스트를 반환
       }
     } catch (error) {
       return rejectWithValue(error.message || '채팅방 리스트 조회 실패');

@@ -226,7 +226,7 @@ function UserMypage() {
             >
               <p className="text-base text-sm">{trainer.trainer_name}</p>
               <button
-                onClick={() => navigate("/UserChat")}
+                onClick={() => navigate("/Chatroom")}
                 className="px-3 py-1 bg-pink-300 text-sm rounded-md"
               >
                 1:1 채팅하기

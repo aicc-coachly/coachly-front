@@ -4,97 +4,89 @@ import { useDispatch, useSelector } from 'react-redux';
 import { UserChatButtons, TrainerChatButtons } from '../../components/common/Buttons';
 import { useParams } from 'react-router-dom';
 
-// 채팅에 대한 모듈
-import { leaveChatRoom } from '../../redux/thunks/chatThunks';
+// Redux Thunks
+import { leaveChatRoom, fetchChatMessages, fetchChatRoom } from '../../redux/thunks/chatThunks';
 import { addMessage } from '../../redux/slice/chatSlice';
-import { fetchChatMessages } from '../../redux/thunks/chatThunks';
 
-const socket = io(process.env.REACT_APP_API_URL || "http://localhost:8000");
-
-const ChatRoom = ({ userNumber, trainerNumber }) => {
+const ChatRoom = () => {
   const { roomId } = useParams();
   const dispatch = useDispatch();
   const [menuOpen, setMenuOpen] = useState(false);
   const [input, setInput] = useState("");
   const [isTrainer, setIsTrainer] = useState(false);
+  const [otherPartyName, setOtherPartyName] = useState(""); // 상대방 이름 상태
+
+  // Redux 상태에서 필요한 정보 가져오기
+  const userType = useSelector((state) => state.auth.userType);
+  const userNumber = useSelector((state) => state.auth.user?.user_number);
+  const trainerNumber = useSelector((state) => state.auth.trainer?.trainer_number);
   const messages = useSelector((state) => state.chat.messages);
 
-  console.log("userNumber:", userNumber, "trainerNumber:", trainerNumber, "roomId:", roomId);
+  // userType에 따른 userNumber 선택
+  const idToSend = userType === "user" ? userNumber : trainerNumber;
 
-
-
-  // 컴포넌트가 언마운트되거나 다른 페이지로 이동할 때 채팅방 나가기 요청
+  // 상대방 이름 가져오기
   useEffect(() => {
+    const fetchOtherPartyName = async () => {
+      try {
+        // 상대방 이름 불러오기
+        const response = await dispatch(fetchChatRoom({ roomId, userNumber: idToSend })).unwrap();
+        setOtherPartyName(response.other_party_name);
+      } catch (error) {
+        console.error("Error fetching chat room details:", error);
+      }
+    };
+
+    fetchOtherPartyName();
+
     return () => {
       dispatch(leaveChatRoom(roomId));
     };
-  }, [dispatch, roomId]);
+  }, [dispatch, roomId, idToSend]);
 
+  // Socket 연결 설정
+  const socket = io(process.env.REACT_APP_API_URL || "http://localhost:8000");
 
+  socket.on('connect', () => {
+    console.log('Connected to server:', socket.id);
+  });
 
   useEffect(() => {
-    // 로컬 스토리지에서 유저 타입 확인
-    const userType = localStorage.getItem("userType");
     setIsTrainer(userType === "trainer");
-
-    // 채팅방 참가
     socket.emit("joinRoom", roomId);
 
-    // 메시지 수신 이벤트 설정
     const handleReceivedMessage = (message) => {
       dispatch(addMessage(message));
     };
 
     socket.on('messageReceived', handleReceivedMessage);
-
-    // 기존 메시지 로딩
     dispatch(fetchChatMessages(roomId));
 
-    // 컴포넌트 언마운트 시 이벤트 해제와 방 나가기
     return () => {
       socket.off('messageReceived', handleReceivedMessage);
       socket.emit('leaveRoom', roomId);
     };
-  }, [roomId, dispatch]);
-
-  useEffect(() => {
-    // 외부 클릭 시 메뉴 닫기
-    const handleClickOutside = (event) => {
-      if (menuOpen && !event.target.closest(".menu-container")) {
-        setMenuOpen(false);
-      }
-    };
-
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
-    };
-  }, [menuOpen]);
+  }, [roomId, dispatch, userType]);
 
   const sendMessage = useCallback(() => {
     if (input.trim()) {
       const message = { 
-        roomId,  // roomId를 메시지와 함께 전송
-        userNumber, 
-        trainerNumber,
+        roomId, 
+        userNumber: idToSend, // userType에 따라 선택된 userNumber 값 사용
         content: input, 
-        senderId: userNumber, 
+        senderId: idToSend, 
         senderName: isTrainer ? "Trainer" : "User" 
       };
       socket.emit("sendMessage", message);
       dispatch(addMessage(message));
       setInput("");
     }
-  }, [input, roomId, userNumber, trainerNumber, isTrainer, dispatch]);
-
-  const toggleMenu = () => {
-    setMenuOpen(!menuOpen);
-  };
+  }, [input, roomId, idToSend, isTrainer, dispatch]);
 
   return (
     <div className="max-w-[390px] mx-auto bg-gray-100 min-h-screen flex flex-col relative">
       <div className="bg-gray-300 p-4 text-center text-black font-bold">
-        {isTrainer ? "트레이너" : "삼대몇 회원님"}
+        <span>{otherPartyName} {isTrainer ? "회원" : "트레이너"}</span>
       </div>
 
       {/* Chat Messages */}
@@ -102,16 +94,13 @@ const ChatRoom = ({ userNumber, trainerNumber }) => {
         {messages.map((msg, index) => (
           <div 
             key={index} 
-            className={`flex ${msg.senderId === userNumber ? "justify-end" : "justify-start"}`}
+            className={`flex ${msg.senderId === idToSend ? "justify-end" : "justify-start"}`}
           >
             <div
-              className={`relative ${msg.senderId === userNumber ? "bg-blue-500 text-white" : "bg-gray-300 text-black"} 
-                p-4 rounded-lg w-2/3 ${msg.senderId === userNumber ? "mr-2" : "ml-2"}`}
+              className={`relative ${msg.senderId === idToSend ? "bg-blue-500 text-white" : "bg-gray-300 text-black"} 
+                p-4 rounded-lg w-2/3 ${msg.senderId === idToSend ? "mr-2" : "ml-2"}`}
             >
               <p>{msg.content}</p>
-              <div className={`absolute ${msg.senderId === userNumber ? "right-0 bottom-0 transform translate-x-full translate-y-1/2" : "left-0 bottom-0 transform -translate-x-full translate-y-1/2"}`}>
-                <div className={`w-0 h-0 ${msg.senderId === userNumber ? "border-t-[10px] border-t-blue-500 border-l-[10px] border-l-transparent" : "border-t-[10px] border-t-gray-300 border-r-[10px] border-r-transparent"}`}></div>
-              </div>
             </div>
           </div>
         ))}
@@ -119,7 +108,7 @@ const ChatRoom = ({ userNumber, trainerNumber }) => {
 
       {/* Bottom Input Bar */}
       <div className="bg-gray-200 p-4 flex items-center justify-between fixed bottom-0 left-1/2 transform -translate-x-1/2 w-full max-w-[390px]">
-        <button onClick={toggleMenu} className="text-2xl">
+        <button onClick={() => setMenuOpen(!menuOpen)} className="text-2xl">
           {menuOpen ? "✕" : "+"}
         </button>
 
