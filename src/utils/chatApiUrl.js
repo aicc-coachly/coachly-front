@@ -6,6 +6,10 @@ export const AI_CHAT_REQUEST_URL = `${url}/aichat`;
 // 채팅방 생성
 export const CREATE_CHAT_ROOM_URL = `${url}/chat-room`;
 
+// 채팅방 조회
+export const GET_CHAT_ROOM_URL = (userNumber, trainerNumber) =>
+  `${url}/chat-room?userNumber=${userNumber}&trainerNumber=${trainerNumber}`;
+
 // 메시지 전송
 export const SEND_MESSAGE_URL = (room_id) =>
   `${url}/chat-room/${room_id}/messages`;

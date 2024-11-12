@@ -9,9 +9,46 @@ import {
   DELETE_MESSAGE_URL,
   DEACTIVATE_CHAT_ROOM_URL,
   GET_MESSAGES_URL,
+  GET_CHAT_ROOM_URL,
 } from '../../utils/chatApiUrl';
 import { deleteRequest, getRequest, patchRequest, postRequest } from '../../utils/requestMethod';
 import { addMessage, setMessages, clearChatData } from '../slice/chatSlice';
+
+// 채팅방 생성
+export const createChatRoom = createAsyncThunk(
+  'chat/createChatRoom',
+  async (chatRoomData, { rejectWithValue }) => {
+    try {
+      const response = await postRequest(CREATE_CHAT_ROOM_URL, {
+        body: JSON.stringify(chatRoomData),
+      });
+      return response;
+    } catch (error) {
+      return rejectWithValue(error.message || '채팅방 생성 실패');
+    }
+  }
+);
+
+// 채팅방 조회
+export const fetchChatRoom = createAsyncThunk(
+  'chat/fetchChatRoom',
+  async ({ userNumber, trainerNumber }, { rejectWithValue }) => {
+    try {
+      // roomId를 조회하기 위한 요청 (예시 URL - 실제 API에 맞게 수정 필요)
+      const response = await getRequest(GET_CHAT_ROOM_URL(userNumber, trainerNumber));
+      
+      if (response && response.roomId) {
+        return response.roomId; // roomId를 반환
+      } else {
+        throw new Error('해당 유저와 트레이너에 대한 채팅방이 존재하지 않습니다.');
+      }
+    } catch (error) {
+      return rejectWithValue(error.message || '채팅방 조회 실패');
+    }
+  }
+);
+
+
 
 // 채팅방 내 메시지 조회
 export const fetchChatMessages = createAsyncThunk(
@@ -56,20 +93,7 @@ export const deleteMessage = createAsyncThunk(
   }
 );
 
-// 채팅방 생성
-export const createChatRoom = createAsyncThunk(
-  'chat/createChatRoom',
-  async (chatRoomData, { rejectWithValue }) => {
-    try {
-      const response = await postRequest(CREATE_CHAT_ROOM_URL, {
-        body: JSON.stringify(chatRoomData),
-      });
-      return response;
-    } catch (error) {
-      return rejectWithValue(error.message || '채팅방 생성 실패');
-    }
-  }
-);
+
 
 // AI 챗 요청
 export const aiChatRequest = createAsyncThunk(
