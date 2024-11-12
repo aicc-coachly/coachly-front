@@ -10,6 +10,7 @@ import {
   DEACTIVATE_CHAT_ROOM_URL,
   GET_MESSAGES_URL,
   GET_CHAT_ROOM_URL,
+  GET_CHAT_ROOMS_URL
 } from '../../utils/chatApiUrl';
 import { deleteRequest, getRequest, patchRequest, postRequest } from '../../utils/requestMethod';
 import { addMessage, setMessages, clearChatData } from '../slice/chatSlice';
@@ -34,7 +35,6 @@ export const fetchChatRoom = createAsyncThunk(
   'chat/fetchChatRoom',
   async ({ userNumber, trainerNumber }, { rejectWithValue }) => {
     try {
-      // roomId를 조회하기 위한 요청 (예시 URL - 실제 API에 맞게 수정 필요)
       const response = await getRequest(GET_CHAT_ROOM_URL(userNumber, trainerNumber));
       
       if (response && response.roomId) {
@@ -48,9 +48,25 @@ export const fetchChatRoom = createAsyncThunk(
   }
 );
 
+// 채팅방 리스트 조회
+export const fetchChatRooms = createAsyncThunk(
+  'chat/fetchChatRooms',
+  async ({ userNumber, trainerNumber }, { rejectWithValue }) => {
+    try {
+      const response = await getRequest(GET_CHAT_ROOMS_URL(userNumber, trainerNumber));
+      
+      if (response && response.length > 0) {
+        return response; // 채팅방 리스트를 반환
+      } else {
+        throw new Error('조회된 채팅방이 없습니다.');
+      }
+    } catch (error) {
+      return rejectWithValue(error.message || '채팅방 리스트 조회 실패');
+    }
+  }
+);
 
-
-// 채팅방 내 메시지 조회
+// 채팅방 메시지 조회
 export const fetchChatMessages = createAsyncThunk(
   'chat/fetchChatMessages',
   async (roomId, { dispatch, rejectWithValue }) => {
@@ -94,22 +110,6 @@ export const deleteMessage = createAsyncThunk(
 );
 
 
-
-// AI 챗 요청
-export const aiChatRequest = createAsyncThunk(
-  'chat/aiChatRequest',
-  async (requestData, { rejectWithValue }) => {
-    try {
-      const response = await postRequest(AI_CHAT_REQUEST_URL, {
-        body: JSON.stringify(requestData),
-      });
-      return response;
-    } catch (error) {
-      return rejectWithValue(error.message || 'AI 채팅 요청 실패');
-    }
-  }
-);
-
 // 메시지 읽음 처리
 export const readMessage = createAsyncThunk(
   'chat/readMessage',
@@ -133,6 +133,24 @@ export const deleteChatRoom = createAsyncThunk(
       return roomId;
     } catch (error) {
       return rejectWithValue(error.message || '채팅방 비활성화 실패');
+    }
+  }
+);
+
+
+
+
+// AI 챗 요청
+export const aiChatRequest = createAsyncThunk(
+  'chat/aiChatRequest',
+  async (requestData, { rejectWithValue }) => {
+    try {
+      const response = await postRequest(AI_CHAT_REQUEST_URL, {
+        body: JSON.stringify(requestData),
+      });
+      return response;
+    } catch (error) {
+      return rejectWithValue(error.message || 'AI 채팅 요청 실패');
     }
   }
 );
