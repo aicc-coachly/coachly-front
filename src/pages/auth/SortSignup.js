@@ -1,7 +1,6 @@
 // src/pages/auth/SortSignup.js
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
-import Header from '../../components/common/Header';
 import Buttons from '../../components/common/Buttons';
 
 function SortSignup() {
@@ -9,9 +8,7 @@ function SortSignup() {
 
   return (
     <div className="w-full min-h-screen bg-[#edf1f6] flex flex-col items-center ">
-        <div className='mt-20'>
-
-        </div>
+      <div className="mt-20"></div>
 
       <div className="w-full max-w-[390px] mt-8 flex flex-col items-center p-6 bg-[#edf1f6]">
         <h2 className="text-2xl font-semibold text-[#081f5c] mb-4">회원가입</h2>
@@ -30,8 +27,6 @@ function SortSignup() {
             트레이너로 시작하기
           </Buttons>
         </div>
-
-  
       </div>
     </div>
   );

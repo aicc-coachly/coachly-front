@@ -1,87 +1,81 @@
 import React, { useEffect, useState } from 'react';
 import { useModal } from '../../components/common/ModalProvider';
-import { useNavigate } from 'react-router-dom'; // useNavigate 추가
+import { useNavigate } from 'react-router-dom';
 import { CheckScheduleModal } from '../../components/trainer/CheckScheduleModal';
 import { BodyCompositionModal } from '../../components/user/BodyCompositionModal';
 import { EditBodyCompositionModal } from '../../components/user/EditBodyCompositionModal';
 
-import { useDispatch, useSelector } from "react-redux";
-import { getUser, getUserInbody } from "../../redux/slice/userSlice";
-import { setUser } from "../../redux/slice/authSlice";
+import { useDispatch, useSelector } from 'react-redux';
+import { getUser, getUserInbody } from '../../redux/slice/userSlice';
+import { setUser } from '../../redux/slice/authSlice';
+import { getPtschedule } from '../../redux/slice/paymentSlice';
 
 function UserMypage() {
   const dispatch = useDispatch();
   const { openModal } = useModal();
   const navigate = useNavigate();
+
   const userId = useSelector((state) => state.auth?.user?.user_id);
-  const inbodyData = useSelector((state) => state.user?.inbodyData || []); // 인바디 데이터 가져오기
+  const user_number = useSelector((state) => state.auth?.user?.user_number);
   const profile = useSelector((state) => state.user?.userInfo);
   const [isLoading, setIsLoading] = useState(true);
-  console.log(inbodyData);
-  // 측정 날짜가 유효한 경우만 포맷하고, 유효하지 않으면 빈 문자열을 반환
-  const formatDate = (date) => {
-    return date ? new Date(date).toISOString().split("T")[0] : "";
-  };
 
-  // console.log(inbodyData);
+  const inbodyData = useSelector((state) => {
+    const userInbodyData = Array.isArray(state.user?.inbodyData)
+      ? state.user.inbodyData
+      : [];
+    return userInbodyData.filter((data) => data.user_number === user_number);
+  });
+
+  const pt_schedule = useSelector((state) =>
+    Array.isArray(state.payment?.data) ? state.payment.data : []
+  );
+
+  const pt_number = pt_schedule.map((item) => item.pt_number);
+
+  const formatDate = (date) =>
+    date ? new Date(date).toISOString().split('T')[0] : '';
 
   useEffect(() => {
-    if (userId) {
-      dispatch(getUser(userId));
-      dispatch(getUserInbody(userId)); // 유저의 인바디 데이터 불러오기
+    if (user_number) {
+      dispatch(getUser(user_number));
+      dispatch(getUserInbody(user_number));
     } else {
       const storedUser = JSON.parse(localStorage.getItem('user'));
       if (storedUser) {
         dispatch(setUser(storedUser));
       }
     }
-  }, [dispatch, userId]);
+  }, [dispatch, user_number]);
 
   useEffect(() => {
-    if (inbodyData) {
+    if (user_number) {
+      dispatch(
+        getPtschedule({
+          user_number: user_number,
+        })
+      );
     }
-  }, [inbodyData]);
-
-  // useEffect(() => {
-  //   if (profile) {
-  //     setIsLoading(false);
-  //   }
-  // }, [profile]);
-
-  // console.log(userId);
-  // console.log(profile);
+  }, [dispatch, user_number]);
 
   return (
     <div className="max-w-[390px] mx-auto bg-gray-100 p-4">
-      {/* 내 정보 섹션 */}
       <div className="bg-white rounded-lg shadow-md p-4 mb-4 relative">
         <h2 className="text-lg font-semibold mb-2">내 정보</h2>
         <button
-          onClick={() => navigate('/userprofile')} // 페이지 이동 설정
+          onClick={() => navigate('/userprofile')}
           className="absolute top-4 right-4 px-3 py-1 bg-gray-300 text-sm rounded-full"
         >
           수정하기
         </button>
         <div className="flex items-start mt-4 space-x-4">
-          {/* 프로필 사진 */}
-          <div className="w-[8rem] h-[8rem] bg-gray-200 overflow-hidden">
-            {/* <img 
-                    // src="https://via.placeholder.com/64" // 프로필 사진 URL 또는 경로로 대체
-                    alt="프로필 사진" 
-                    className="object-cover w-full h-full"
-                  /> */}
-          </div>
-
-          {/* 텍스트 정보와 체크박스 */}
+          <div className="w-[8rem] h-[8rem] bg-gray-200 overflow-hidden"></div>
           <div className="flex-1">
-            {/* 체크박스 */}
             <div className="flex justify-end">
               <p className="px-3 py-1 bg-gray-300 text-sm rounded-md">
                 {profile?.user_detail_address}
               </p>
             </div>
-
-            {/* 텍스트 정보 */}
             <p className="mt-2 text-base font-medium">{profile?.name}</p>
             <p className="text-sm text-gray-500">{profile?.email}</p>
             <p className="text-sm text-gray-500">{profile?.phone}</p>
@@ -90,21 +84,21 @@ function UserMypage() {
         </div>
       </div>
 
-      {/* 담당 트레이너 */}
-      <div className="bg-white rounded-lg shadow-md p-2 mb-4">
-        <h2 className="text-lg font-semibold p-2">담당 트레이너</h2>
-        <div className="flex items-center justify-between bg-gray-300 p-1">
-          <p className="text-base text-sm">이건 트레이너</p>
-          <button 
-            onClick={() => navigate('/chatRoom')}  // 페이지 이동 설정
-            className="px-3 py-1 bg-pink-300 text-sm  rounded-md"
-          >
-            1:1 채팅하기
-          </button>
+      {pt_schedule[0]?.trainer_name && (
+        <div className="bg-white rounded-lg shadow-md p-2 mb-4">
+          <h2 className="text-lg font-semibold p-2">담당 트레이너</h2>
+          <div className="flex items-center justify-between bg-gray-300 p-1">
+            <p className="text-base text-sm">{pt_schedule[0].trainer_name}</p>
+            <button
+              onClick={() => navigate('/UserChat')}
+              className="px-3 py-1 bg-pink-300 text-sm rounded-md"
+            >
+              1:1 채팅하기
+            </button>
+          </div>
         </div>
-      </div>
+      )}
 
-      {/* 예약된 수업 섹션 */}
       <div className="bg-white rounded-lg shadow-md p-2 mb-4">
         <h2 className="text-lg font-semibold p-2">예약된 수업</h2>
         <div className="flex items-center justify-between bg-gray-300 p-1">
@@ -119,7 +113,6 @@ function UserMypage() {
         </div>
       </div>
 
-      {/* 인바디 세션*/}
       <div className="bg-white rounded-lg shadow-md p-2 mb-4">
         <div className="flex justify-between p-2">
           <h2 className="text-lg font-semibold">나의 체성분 기록</h2>
@@ -131,25 +124,24 @@ function UserMypage() {
           </button>
         </div>
 
-        {Array.isArray(inbodyData) &&
-          inbodyData.map((inbody, index) => (
-            <div
-              key={index}
-              className="flex items-center justify-between bg-gray-300 p-1 mb-2"
+        {inbodyData.map((inbody, index) => (
+          <div
+            key={index}
+            className="flex items-center justify-between bg-gray-300 p-1 mb-2"
+          >
+            <p className="text-base text-sm">
+              측정날짜: {formatDate(inbody.user_measurement_date)}
+            </p>
+            <button
+              onClick={() =>
+                openModal(<EditBodyCompositionModal inbodyData={inbody} />)
+              }
+              className="text-center px-3 py-1 bg-pink-300 text-sm rounded-md"
             >
-              <p className="text-base text-sm">
-                측정날짜: {formatDate(inbody.user_measurement_date)}
-              </p>
-              <button
-                onClick={() =>
-                  openModal(<EditBodyCompositionModal inbodyData={inbody} />)
-                }
-                className="text-center px-3 py-1 bg-pink-300 text-sm rounded-md"
-              >
-                더보기
-              </button>
-            </div>
-          ))}
+              더보기
+            </button>
+          </div>
+        ))}
       </div>
     </div>
   );
