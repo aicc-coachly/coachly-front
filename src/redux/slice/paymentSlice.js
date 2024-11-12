@@ -2,7 +2,6 @@ import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import {
   CREATE_PT_PAYMENT_URL,
   COMPLETE_PT_PAYMENT_URL,
-  GET_PT_SCHEDULE_URL,
 } from "../../utils/paymentApiUrl";
 import {
   getRequest,

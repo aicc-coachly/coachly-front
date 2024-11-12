@@ -1,4 +1,3 @@
-// src/pages/auth/Login.js
 import React, { useEffect, useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import axios from "axios";
@@ -8,7 +7,7 @@ import { trainerLogin, userLogin } from "../../redux/slice/authSlice";
 
 function Login() {
   const navigate = useNavigate();
-  const [userType, setUserType] = useState("trainer"); // 'trainer' 또는 'user'
+  const [userType, setUserType] = useState("trainer");
   const [id, setId] = useState("");
   const [password, setPassword] = useState("");
   const dispatch = useDispatch();
@@ -20,7 +19,7 @@ function Login() {
   } = useSelector((state) => state.auth);
 
   useEffect(() => {
-    // 로그인 상태가 설정되었고, 'data'가 유효할 때만 리디렉션 실행
+    // 로그인 상태가 설정되었고, 'data'와 'loggedInUserType'이 모두 유효할 때만 리디렉션을 실행
     if (data && loggedInUserType) {
       if (loggedInUserType === "trainer") {
         navigate("/trainermypage");
@@ -28,7 +27,9 @@ function Login() {
         navigate("/usermypage");
       }
     }
-    if (error) {
+
+    // 로그인 실패 메시지 처리
+    if (error && !data) {
       alert("로그인에 실패했습니다.");
     }
   }, [data, error, loggedInUserType, navigate]);
@@ -48,7 +49,6 @@ function Login() {
     }
   };
 
-  // relative flex justify-between items-center p-4 bg-[#edf1f6]
   return (
     <div className="w-full min-h-screen bg-[#edf1f6] flex flex-col items-center">
       <div className="w-full max-w-[390px] mt-8 flex flex-col items-center p-6 bg-[#edf1f6]">
@@ -57,13 +57,12 @@ function Login() {
           <br /> 나만의 피트니스 여정을 시작해보세요
         </h2>
 
-        {/* 회원 구분 선택 */}
         <div className="flex w-full max-w-xs mb-4">
           <button
             onClick={() => setUserType("trainer")}
             className={`flex-1 py-2 rounded-l-lg ${
               userType === "trainer"
-                ? "bg-[#4831D4] text-[#CCF381]"
+                ? "bg-[#4831D4] text-white"
                 : "bg-[#CCF381] text-[#081f5c]"
             }`}
           >
@@ -73,7 +72,7 @@ function Login() {
             onClick={() => setUserType("user")}
             className={`flex-1 py-2 rounded-r-lg ${
               userType === "user"
-                ? "bg-[#4831D4] text-[#CCF381]"
+                ? "bg-[#4831D4] text-white"
                 : "bg-[#CCF381] text-[#081f5c]"
             }`}
           >
@@ -81,7 +80,6 @@ function Login() {
           </button>
         </div>
 
-        {/* 아이디 입력 */}
         <input
           type="text"
           placeholder="아이디"
@@ -90,7 +88,6 @@ function Login() {
           className="w-full max-w-xs px-4 py-2 mb-4 border rounded bg-white text-[#081f5c] border-[#d0e3ff] focus:outline-none"
         />
 
-        {/* 비밀번호 입력 */}
         <input
           type="password"
           placeholder="비밀번호"
@@ -99,12 +96,10 @@ function Login() {
           className="w-full max-w-xs px-4 py-2 mb-6 border rounded bg-white text-[#081f5c] border-[#d0e3ff] focus:outline-none"
         />
 
-        {/* 로그인 버튼 */}
         <Buttons size="middle" onClick={handleLogin}>
           로그인
         </Buttons>
 
-        {/* 회원가입 안내 */}
         <p className="text-center text-[#081f5c] my-7">
           아직 계정이 없으신가요?
         </p>

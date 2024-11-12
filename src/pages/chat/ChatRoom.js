@@ -6,7 +6,8 @@ import {
   UserChatButtons,
   TrainerChatButtons,
 } from "../../components/common/Buttons";
-import { addMessage, getMessages } from "../../redux/slice/chatSlice";
+import { addMessage } from "../../redux/slice/chatSlice";
+import { fetchChatMessages } from "../../redux/thunks/chatThunks";
 
 const socket = io(process.env.REACT_APP_API_URL || "http://localhost:8000");
 
@@ -28,11 +29,11 @@ const ChatRoom = ({ roomId, userId }) => {
 
     // 메시지 수신 이벤트 설정
     socket.on("messageReceived", (message) => {
-      dispatch(sendMessage(message));
+      dispatch(addMessage(message));
     });
 
     // 기존 메시지 로딩
-    dispatch(getMessages(roomId));
+    dispatch(fetchChatMessages(roomId));
 
     // 컴포넌트 언마운트 시 방을 떠나기
     return () => {
@@ -63,7 +64,7 @@ const ChatRoom = ({ roomId, userId }) => {
         senderName: isTrainer ? "Trainer" : "User",
       };
       socket.emit("sendMessage", message);
-      dispatch(sendMessage(message));
+      dispatch(addMessage(message));
       setInput("");
     }
   };

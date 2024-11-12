@@ -21,7 +21,6 @@ export async function getRequest(url) {
     throw new Error("Expected JSON response but received something else");
   }
 }
-
 /* ====== Common Post Request Function ====== */
 export async function postRequest(url, options) {
   const isFormData = options.body instanceof FormData;
@@ -35,7 +34,6 @@ export async function postRequest(url, options) {
     }),
     ...options,
   };
-
   return await fetch(url, defaultOptions).then((response) => {
     if (!response.ok) {
       throw new Error("Network response was not ok");

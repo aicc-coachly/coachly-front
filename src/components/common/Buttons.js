@@ -16,7 +16,7 @@ import { logout as scheduleLogout } from "../../redux/slice/scheduleSlice";
 import { logout as trainerLogout } from "../../redux/slice/trainerSlice";
 import { logout as userLogout } from "../../redux/slice/userSlice";
 
-function Buttons({ size, color = "#4831D4", children, onClick }) {
+function Buttons({ size, color = '#4831D4', children, onClick }) {
   // 버튼 크기에 따라 클래스 지정
   let buttonClasses = "rounded font-semibold flex items-center justify-center";
 
@@ -40,7 +40,7 @@ function Buttons({ size, color = "#4831D4", children, onClick }) {
       className={`${buttonClasses}`}
       style={{
         backgroundColor: color,
-        color: color === "#4831D4" ? "white" : "#CCF381",
+        color: color === "#4831D4" ? "white" : "#CCF381"
       }}
     >
       {children}
@@ -105,10 +105,7 @@ export function TrainerMenuButtons({ onClick }) {
 
 export function MenuButton({ label, to, onClick }) {
   return (
-    <button
-      className="text-sm z-50 p-2 rounded bg-[#4831D4] text-[#CCF381] "
-      onClick={onClick}
-    >
+    <button className="text-sm z-50 p-2 rounded bg-[#4831D4] text-white " onClick={onClick}>
       <Link to={to}>{label}</Link>
     </button>
   );
@@ -120,10 +117,8 @@ export function UserChatButtons({ onClick }) {
   const { openModal } = useModal();
   return (
     <>
-      <button onClick={() => openModal(<PTModal />)}>결제하기</button>
-      <button onClick={() => openModal(<RefundPTModal />)}>
-        결제취소/환불
-      </button>
+       <button onClick={() => openModal(<PTModal/>)}>결제하기</button>
+       <button onClick={() => openModal(<RefundPTModal/>)}>결제취소/환불</button>
     </>
   );
 }
@@ -132,11 +127,12 @@ export function TrainerChatButtons({ onClick }) {
   const { openModal } = useModal();
   return (
     <>
-      <button onClick={() => openModal(<PaymentListModal />)}>
-        결제요청하기
-      </button>
+       <button onClick={() => openModal(<PaymentListModal/>)}>결제요청하기</button>
     </>
   );
 }
+
+
+
 
 export default Buttons;

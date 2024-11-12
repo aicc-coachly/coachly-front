@@ -36,7 +36,7 @@ export const userLogin = createAsyncThunk(
   async (loginData, { rejectWithValue }) => {
     try {
       const response = await postRequest(USER_LOGIN_URL, {
-        body: JSON.stringify(loginData),
+        body: JSON.stringify(loginData), // loginData를 JSON으로 변환
       });
       return response;
     } catch (error) {
@@ -66,7 +66,7 @@ export const trainerLogin = createAsyncThunk(
   async (loginData, { rejectWithValue }) => {
     try {
       const response = await postRequest(TRAINER_LOGIN_URL, {
-        body: JSON.stringify(loginData),
+        body: JSON.stringify(loginData), // loginData를 JSON으로 변환
       });
       return response;
     } catch (error) {
@@ -88,8 +88,6 @@ const authSlice = createSlice({
       state.userType = "trainer";
     },
     logout: (state) => {
-      state.data = null;
-      state.auth = null;
       state.user = null;
       state.trainer = null;
       state.userType = null;

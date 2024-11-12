@@ -10,7 +10,6 @@ import { getUser, getUserInbody } from "../../redux/slice/userSlice";
 import { setUser } from "../../redux/slice/authSlice";
 import { getPtschedule } from "../../redux/slice/paymentSlice";
 import { getScheduleRecord } from "../../redux/slice/scheduleSlice";
-import PtScheduleList from "../../components/user/PtScheduleList";
 
 function UserMypage() {
   const dispatch = useDispatch();
@@ -34,17 +33,18 @@ function UserMypage() {
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 3;
   const maxPageButtons = 5;
-
   // 인바디 데이터 가져오기
   const profile = useSelector((state) => state.user?.userInfo);
   const [isLoading, setIsLoading] = useState(true);
   const pt_schedule = useSelector((state) => state.payment?.data);
+  const pt_schedules = useSelector((state) => state);
   // const pt_schedule = useSelector((state) =>
   //   Array.isArray(state.payment?.data) ? state.payment.data : []
   // );
   const pt_number = pt_schedule
     ? pt_schedule.map((item) => item.pt_number)
     : [];
+  console.log(pt_schedules);
 
   // console.log(pt_schedule);
   // console.log(inbodyData);
@@ -269,6 +269,7 @@ function UserMypage() {
       </div>
 
       {/* 인바디 세션 */}
+
       <div className="bg-white rounded-lg shadow-md p-2 mb-4">
         <div className="flex justify-between p-2">
           <h2 className="text-lg font-semibold">나의 체성분 기록</h2>
