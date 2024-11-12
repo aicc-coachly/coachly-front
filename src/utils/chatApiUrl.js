@@ -10,6 +10,17 @@ export const CREATE_CHAT_ROOM_URL = `${url}/chat-room`;
 export const GET_CHAT_ROOM_URL = (userNumber, trainerNumber) =>
   `${url}/chat-room?userNumber=${userNumber}&trainerNumber=${trainerNumber}`;
 
+// 채팅방 리스트 조회 
+export const GET_CHAT_ROOMS_URL = (userNumber, trainerNumber) => {
+  if (userNumber) {
+    return `${url}/chat-rooms?userNumber=${userNumber}`;
+  } else if (trainerNumber) {
+    return `${url}/chat-rooms?trainerNumber=${trainerNumber}`;
+  } else {
+    throw new Error('userNumber 또는 trainerNumber 중 하나는 제공되어야 합니다.');
+  }
+}
+
 // 메시지 전송
 export const SEND_MESSAGE_URL = (room_id) =>
   `${url}/chat-room/${room_id}/messages`;
