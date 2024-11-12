@@ -92,8 +92,8 @@ function TrainerSearch() {
           <button
             className={`px-4 py-2 rounded ${
               filters.service_option === "여성전문"
-                ? "bg-[#4831D4] text-white"
-                : "bg-[#CCF381]"
+                ? "bg-[#081f5c] text-white"
+                : "bg-[#d0e3ff]"
             }`}
             onClick={() => handleFilterChange("service_option", "여성전문")}
           >
@@ -102,8 +102,8 @@ function TrainerSearch() {
           <button
             className={`px-4 py-2 rounded ${
               filters.service_option === "재활전문"
-                ? "bg-[#4831D4] text-white"
-                : "bg-[#CCF381]"
+                ? "bg-[#081f5c] text-white"
+                : "bg-[#d0e3ff]"
             }`}
             onClick={() => handleFilterChange("service_option", "재활전문")}
           >
@@ -112,8 +112,8 @@ function TrainerSearch() {
           <button
             className={`px-4 py-2 rounded ${
               filters.service_option === "실버전문"
-                ? "bg-[#4831D4] text-white"
-                : "bg-[#CCF381]"
+                ? "bg-[#081f5c] text-white"
+                : "bg-[#d0e3ff]"
             }`}
             onClick={() => handleFilterChange("service_option", "실버전문")}
           >
@@ -122,8 +122,8 @@ function TrainerSearch() {
           <button
             className={`px-4 py-2 rounded ${
               filters.service_option === "선수/대회전문"
-                ? "bg-[#4831D4] text-white"
-                : "bg-[#CCF381]"
+                ? "bg-[#081f5c] text-white"
+                : "bg-[#d0e3ff]"
             }`}
             onClick={() =>
               handleFilterChange("service_option", "선수/대회전문")
@@ -145,8 +145,8 @@ function TrainerSearch() {
           <button
             className={`px-4 py-2 rounded ${
               filters.gender === "male"
-                ? "bg-[#4831D4] text-white"
-                : "bg-[#CCF381]"
+                ? "bg-[#081f5c] text-white"
+                : "bg-[#d0e3ff]"
             }`}
             onClick={() => handleFilterChange("gender", "male")}
           >
@@ -155,8 +155,8 @@ function TrainerSearch() {
           <button
             className={`px-4 py-2 rounded ml-2 ${
               filters.gender === "female"
-                ? "bg-[#4831D4] text-white"
-                : "bg-[#CCF381]"
+                ? "bg-[#081f5c] text-white"
+                : "bg-[#d0e3ff]"
             }`}
             onClick={() => handleFilterChange("gender", "female")}
           >
@@ -169,8 +169,8 @@ function TrainerSearch() {
           onClick={handleSearch}
           className={`px-4 py-2 rounded w-full ${
             isSearching
-              ? "bg-[#CCF381] text-[#CCF381]"
-              : "bg-[#4831D4] text-white"
+              ? "bg-[#4831D4] text-[#CCF381]"
+              : "bg-[#081f5c] text-white"
           }`}
         >
           검색
@@ -198,11 +198,10 @@ function TrainerSearch() {
                 <p>
                   {trainer.trainer_address} {trainer.trainer_detail_address}
                 </p>
-                <div className="flex gap-4 mt-4 justify-center items-center">
+                <div></div>
                 <Buttons size="small" onClick={() => handleConsult(trainer)}>
                   1:1 상담 받기
                 </Buttons>
-                </div>
               </div>
             ))
           ) : (

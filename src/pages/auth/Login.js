@@ -7,7 +7,7 @@ import { trainerLogin, userLogin } from "../../redux/slice/authSlice";
 
 function Login() {
   const navigate = useNavigate();
-  const [userType, setUserType] = useState("trainer");
+  const [userType, setUserType] = useState("trainer"); // 'trainer' 또는 'user'
   const [id, setId] = useState("");
   const [password, setPassword] = useState("");
   const dispatch = useDispatch();
@@ -49,6 +49,7 @@ function Login() {
     }
   };
 
+  // relative flex justify-between items-center p-4 bg-[#edf1f6]
   return (
     <div className="w-full min-h-screen bg-[#edf1f6] flex flex-col items-center">
       <div className="w-full max-w-[390px] mt-8 flex flex-col items-center p-6 bg-[#edf1f6]">
@@ -57,6 +58,7 @@ function Login() {
           <br /> 나만의 피트니스 여정을 시작해보세요
         </h2>
 
+        {/* 회원 구분 선택 */}
         <div className="flex w-full max-w-xs mb-4">
           <button
             onClick={() => setUserType("trainer")}
@@ -80,6 +82,7 @@ function Login() {
           </button>
         </div>
 
+        {/* 아이디 입력 */}
         <input
           type="text"
           placeholder="아이디"
@@ -88,6 +91,7 @@ function Login() {
           className="w-full max-w-xs px-4 py-2 mb-4 border rounded bg-white text-[#081f5c] border-[#d0e3ff] focus:outline-none"
         />
 
+        {/* 비밀번호 입력 */}
         <input
           type="password"
           placeholder="비밀번호"
@@ -96,6 +100,7 @@ function Login() {
           className="w-full max-w-xs px-4 py-2 mb-6 border rounded bg-white text-[#081f5c] border-[#d0e3ff] focus:outline-none"
         />
 
+        {/* 로그인 버튼 */}
         <Buttons size="middle" onClick={handleLogin}>
           로그인
         </Buttons>

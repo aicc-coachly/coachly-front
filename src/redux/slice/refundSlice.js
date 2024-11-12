@@ -1,21 +1,21 @@
-import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
+import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import {
   CREATE_REFUND_URL,
   GET_ALL_REFUNDS_URL,
   GET_REFUND_URL,
   UPDATE_REFUND_URL,
   DELETE_REFUND_URL,
-} from "../../utils/refundApiUrl";
+} from '../../utils/refundApiUrl';
 import {
   deleteRequest,
   getRequest,
   patchRequest,
   postRequest,
-} from "../../utils/requestMethod";
+} from '../../utils/requestMethod';
 
 // 환불 사유 생성
 export const createRefund = createAsyncThunk(
-  "refund/createRefund",
+  'refund/createRefund',
   async (refundData, { rejectWithValue }) => {
     try {
       const response = await postRequest(CREATE_REFUND_URL, {
@@ -23,40 +23,40 @@ export const createRefund = createAsyncThunk(
       });
       return response;
     } catch (error) {
-      return rejectWithValue(error.message || "환불 사유 생성 실패");
+      return rejectWithValue(error.message || '환불 사유 생성 실패');
     }
   }
 );
 
 // 모든 환불 사유 조회
 export const getAllRefunds = createAsyncThunk(
-  "refund/getAllRefunds",
+  'refund/getAllRefunds',
   async (_, { rejectWithValue }) => {
     try {
-      const response = await getRequest(GET_ALL_REFUNDS_URL);
+      const response = await getRequest(GET_ALL_REFUNDS_URL());
       return response;
     } catch (error) {
-      return rejectWithValue(error.message || "환불 사유 조회 실패");
+      return rejectWithValue(error.message || '환불 사유 조회 실패');
     }
   }
 );
 
 // 특정 환불 사유 조회
 export const getRefund = createAsyncThunk(
-  "refund/getRefund",
+  'refund/getRefund',
   async (refund_number, { rejectWithValue }) => {
     try {
       const response = await getRequest(GET_REFUND_URL(refund_number));
       return response;
     } catch (error) {
-      return rejectWithValue(error.message || "환불 사유 조회 실패");
+      return rejectWithValue(error.message || '환불 사유 조회 실패');
     }
   }
 );
 
 // 환불 사유 수정
 export const updateRefund = createAsyncThunk(
-  "refund/updateRefund",
+  'refund/updateRefund',
   async ({ refund_number, updateData }, { rejectWithValue }) => {
     try {
       const response = await patchRequest(UPDATE_REFUND_URL(refund_number), {
@@ -64,26 +64,26 @@ export const updateRefund = createAsyncThunk(
       });
       return response;
     } catch (error) {
-      return rejectWithValue(error.message || "환불 사유 수정 실패");
+      return rejectWithValue(error.message || '환불 사유 수정 실패');
     }
   }
 );
 
 // 환불 사유 삭제
 export const deleteRefund = createAsyncThunk(
-  "refund/deleteRefund",
+  'refund/deleteRefund',
   async (refund_number, { rejectWithValue }) => {
     try {
       const response = await deleteRequest(DELETE_REFUND_URL(refund_number));
       return response;
     } catch (error) {
-      return rejectWithValue(error.message || "환불 사유 삭제 실패");
+      return rejectWithValue(error.message || '환불 사유 삭제 실패');
     }
   }
 );
 
 const refundSlice = createSlice({
-  name: "refund",
+  name: 'refund',
   initialState: {
     data: null,
     error: null,

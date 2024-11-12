@@ -22,7 +22,7 @@ import { CheckScheduleModal } from "../../components/trainer/CheckScheduleModal"
 
 const TrainerMypage = () => {
   const { openModal } = useModal();
-  const navigate = useNavigate();
+  const navigate = useNavigate(); // navigate 함수 생성
   const dispatch = useDispatch();
   const [paidUsers, setPaidUsers] = useState([]);
   const [isFetched, setIsFetched] = useState(false); // 데이터가 이미 fetch되었는지 확인
@@ -197,6 +197,7 @@ const TrainerMypage = () => {
           수정하기
         </button>
         <div className="flex items-start mt-4 space-x-4">
+          {/* 프로필 사진 */}
           <div className="w-[8rem] h-[8rem] bg-gray-200 overflow-hidden">
             {profile?.image ? (
               <img
@@ -208,7 +209,10 @@ const TrainerMypage = () => {
               <p className="text-center text-gray-400">이미지 없음</p>
             )}
           </div>
+
+          {/* 텍스트 정보와 체크박스 */}
           <div className="flex-1">
+            {/* 체크박스 */}
             <div className="flex justify-end">
               <label className="inline-flex items-center">
                 <input

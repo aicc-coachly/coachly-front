@@ -21,6 +21,7 @@ export async function getRequest(url) {
     throw new Error("Expected JSON response but received something else");
   }
 }
+
 /* ====== Common Post Request Function ====== */
 export async function postRequest(url, options) {
   const isFormData = options.body instanceof FormData;

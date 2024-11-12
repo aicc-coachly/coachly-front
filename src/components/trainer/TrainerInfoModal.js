@@ -1,53 +1,18 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-import { useNavigate } from "react-router-dom"; // useNavigate 추가
 import Buttons from "../common/Buttons";
 import { useModal } from "../common/ModalProvider";
-import { PTModal } from "./PTModal"; // PTModal을 import
-import { useDispatch, useSelector } from "react-redux";
-import { getTrainerPtCost } from "../../redux/slice/trainerSlice";
+import PTModal from "./PTModal"; // PTModal을 import
+import { useDispatch, useSelector } from 'react-redux';
+import { getTrainerPtCost } from '../../redux/slice/trainerSlice'; 
 
 export const TrainerInfoModal = ({ trainer, user_number, user_name }) => {
-  const dispatch = useDispatch();
-  const { closeModal, openModal } = useModal();
+  const dispatch = useDispatch(); // Redux dispatch 훅
   const trainer_number = trainer?.trainer_id;
+  const { closeModal, openModal } = useModal();
   const [image, setImage] = useState(null);
-  const navigate = useNavigate();
-
   const path = "http://localhost:8000";
   // console.log(trainer);
-
-  // Redux에서 PT 비용 데이터 선택
-  const {
-    data: trainerPtCostData,
-    loading,
-    error,
-  } = useSelector((state) => state.trainer);
-  console.log("현재 Redux의 trainerPtCostData:", trainerPtCostData);
-
-  // PT 비용 정보 가져오기
-  useEffect(() => {
-    if (trainer && trainer.trainer_number) {
-      dispatch(getTrainerPtCost(trainer.trainer_number));
-      console.log("데이터 가져오기 :", trainer.trainer_number);
-    }
-  }, [trainer, dispatch]);
-
-  // 데이터 필터링
-  const filteredPtCostData =
-    trainerPtCostData && Array.isArray(trainerPtCostData)
-      ? trainerPtCostData.map(
-          ({ amount_number, option, amount, frequency }) => ({
-            amount_number,
-            option,
-            amount,
-            frequency,
-          })
-        )
-      : [];
-
-  console.log("트레이너 PT 비용 정보:", filteredPtCostData);
-  console.log("trainerPtCostData:", trainerPtCostData);
 
   // trainer_id로 트레이너 이미지를 가져오기
   useEffect(() => {
@@ -65,11 +30,12 @@ export const TrainerInfoModal = ({ trainer, user_number, user_name }) => {
       closeModal();
     }
   };
-  console.log(trainer);
+console.log(user_number)
   // PT 신청하기 버튼 클릭 시 PTModal 열기
   const handlePTRequest = () => {
     openModal(
       <PTModal
+        trainer={trainer}
         pt_cost_option={trainer.pt_cost_options}
         trainer_number={trainer.trainer_number}
         trainer_name={trainer.name}
@@ -104,15 +70,14 @@ export const TrainerInfoModal = ({ trainer, user_number, user_name }) => {
 
           {/* 트레이너 정보 */}
           <h3 className="text-xl font-semibold">{trainer.name} 트레이너</h3>
-          <p className="text-sm bg-[#4831D4] text-white px-2 py-1 rounded-md inline-block mt-2">
-            {trainer.trainer_address}
+          <p className="text-sm bg-gray-400 px-2 py-1 rounded-md inline-block mt-2">
             {trainer.trainer_detail_address}
           </p>
           <div className="flex gap-2 justify-center mt-2">
             {trainer.service_options.map((option, index) => (
               <span
                 key={index}
-                className="text-xs bg-[#CCF381] text-[#4831D4] px-2 py-1 rounded-full"
+                className="text-xs bg-gray-500 text-white px-2 py-1 rounded-full"
               >
                 {option}
               </span>
@@ -143,14 +108,11 @@ export const TrainerInfoModal = ({ trainer, user_number, user_name }) => {
           <div className="flex flex-col gap-2 w-full mt-4">
             <button
               onClick={handlePTRequest} // PT 신청하기 버튼 클릭 시 모달 열기
-              className="bg-[#4831D4]  text-white rounded-md py-2 text-sm"
+              className="bg-pink-200 text-black rounded-md py-2 text-sm"
             >
               PT 신청하기
             </button>
-            <button
-              onClick={() => navigate("/chatRoom")}
-              className="bg-[#4831D4] text-white rounded-md py-2 text-sm"
-            >
+            <button className="bg-blue-200 text-black rounded-md py-2 text-sm">
               1:1 상담 받기
             </button>
           </div>
