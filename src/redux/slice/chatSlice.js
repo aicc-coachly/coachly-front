@@ -15,15 +15,19 @@ const chatSlice = createSlice({
   name: "chat",
   initialState: {
     data: null,
+    messages: [],
     error: null,
   },
   reducers: {
     clearChatData: (state) => {
       state.data = null;
+      state.messages = []; // 상태 초기화
     },
-    logout: (state) => {
-      state.data = null;
-      state.error = null;
+    addMessage: (state, action) => {
+      state.messages.push(action.payload); // 새로운 메시지 추가
+    },
+    setMessages: (state, action) => {
+      state.messages = action.payload; // 메시지 배열 설정
     },
     logout: (state) => {
       state.data = null;
@@ -32,7 +36,14 @@ const chatSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder
-      .addCase(aiChatRequest.fulfilled, (state, action) => {
+      .addCase(fetchChatMessages.fulfilled, (state, action) => {
+        state.messages = action.payload;
+        state.error = null;
+      })
+      .addCase(fetchChatMessages.rejected, (state, action) => {
+        state.error = action.payload;
+      })
+      .addCase(sendMessage.fulfilled, (state, action) => {
         state.data = action.payload;
         state.error = null;
       })
@@ -55,11 +66,11 @@ const chatSlice = createSlice({
       .addCase(createChatRoom.rejected, (state, action) => {
         state.error = action.payload;
       })
-      .addCase(sendMessage.fulfilled, (state, action) => {
+      .addCase(aiChatRequest.fulfilled, (state, action) => {
         state.data = action.payload;
         state.error = null;
       })
-      .addCase(sendMessage.rejected, (state, action) => {
+      .addCase(aiChatRequest.rejected, (state, action) => {
         state.error = action.payload;
       })
       .addCase(readMessage.fulfilled, (state, action) => {
@@ -73,25 +84,12 @@ const chatSlice = createSlice({
       .addCase(readMessage.rejected, (state, action) => {
         state.error = action.payload;
       })
-      .addCase(deleteMessage.fulfilled, (state, action) => {
-        state.data = action.payload;
+      .addCase(deleteChatRoom.fulfilled, (state, action) => {
+        state.data = null;
+        state.messages = [];
         state.error = null;
       })
-      .addCase(deleteMessage.rejected, (state, action) => {
-        state.error = action.payload;
-      })
-      .addCase(deactivateChatRoom.fulfilled, (state, action) => {
-        state.data = action.payload;
-        state.error = null;
-      })
-      .addCase(deactivateChatRoom.rejected, (state, action) => {
-        state.error = action.payload;
-      })
-      .addCase(getMessages.fulfilled, (state, action) => {
-        state.data = action.payload;
-        state.error = null;
-      })
-      .addCase(getMessages.rejected, (state, action) => {
+      .addCase(deleteChatRoom.rejected, (state, action) => {
         state.error = action.payload;
       });
   },

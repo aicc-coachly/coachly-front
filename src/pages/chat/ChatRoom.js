@@ -1,3 +1,4 @@
+
 import React, { useEffect, useState } from "react";
 import io from "socket.io-client";
 import { useDispatch, useSelector } from "react-redux";
@@ -33,7 +34,7 @@ const ChatRoom = ({ roomId, userId }) => {
     });
 
     // 기존 메시지 로딩
-    dispatch(getMessages(roomId));
+    dispatch(fetchChatMessages(roomId));
 
     // 컴포넌트 언마운트 시 방을 떠나기
     return () => {
