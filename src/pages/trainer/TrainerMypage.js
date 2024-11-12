@@ -228,9 +228,11 @@ const TrainerMypage = () => {
             {/* 태그들 */}
             <div className="flex mt-2 space-x-2">
               <p className="px-3 py-1 bg-gray-300 text-sm rounded-md">
+                {profile?.trainer_address}
                 {profile?.trainer_detail_address}
+
               </p>
-              <p className="px-3 py-1 bg-gray-300 text-sm rounded-md">{}</p>
+              {/* <p className="px-3 py-1 bg-gray-300 text-sm rounded-md">{}</p> */}
             </div>
           </div>
         </div>
