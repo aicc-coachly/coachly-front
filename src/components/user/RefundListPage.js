@@ -39,7 +39,8 @@ const RefundListPage = () => {
   }, [dispatch, user_number, user_type, trainer_number]);
 
   useEffect(() => {
-    if (ptScheduleNumbers.length > 0) {
+    if (ptScheduleNumbers && ptScheduleNumbers.length > 0) {
+      // ptScheduleNumbers가 유효할 때만 호출
       dispatch(getAllRefunds())
         .unwrap()
         .then((fetchedRefunds) => {
@@ -57,12 +58,18 @@ const RefundListPage = () => {
   }, [dispatch, ptScheduleNumbers]);
 
   const handleCancelRefund = (refund_number) => {
+    console.log('handleCancelRefund 호출됨:', refund_number); // 함수 호출 확인
     dispatch(deleteRefund(refund_number))
       .unwrap()
       .then(() => {
-        setLocalRefunds((prevRefunds) =>
-          prevRefunds.filter((refund) => refund.refund_number !== refund_number)
-        );
+        console.log('deleteRefund 성공, 필터링 전 상태:', localRefunds); // 상태 업데이트 전
+        setLocalRefunds((prevRefunds) => {
+          const updatedRefunds = prevRefunds.filter(
+            (refund) => refund.refund_number !== refund_number
+          );
+          console.log('필터링 후 상태:', updatedRefunds); // 필터링 후 상태 확인
+          return updatedRefunds;
+        });
       })
       .catch((error) => {
         console.error('환불을 취소하는 중 오류가 발생했습니다:', error);

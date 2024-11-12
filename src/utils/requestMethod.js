@@ -1,9 +1,9 @@
 /* ====== Common GET Request Function ====== */
 export async function getRequest(url) {
   const response = await fetch(url, {
-    method: "GET",
+    method: 'GET',
     headers: {
-      "Content-Type": "application/json",
+      'Content-Type': 'application/json',
     },
   });
 
@@ -14,11 +14,11 @@ export async function getRequest(url) {
   }
 
   // JSON 응답 확인 후 파싱
-  const contentType = response.headers.get("content-type");
-  if (contentType && contentType.includes("application/json")) {
+  const contentType = response.headers.get('content-type');
+  if (contentType && contentType.includes('application/json')) {
     return response.json();
   } else {
-    throw new Error("Expected JSON response but received something else");
+    throw new Error('Expected JSON response but received something else');
   }
 }
 
@@ -27,10 +27,10 @@ export async function postRequest(url, options) {
   const isFormData = options.body instanceof FormData;
 
   const defaultOptions = {
-    method: "POST",
+    method: 'POST',
     ...(!isFormData && {
       headers: {
-        "Content-Type": "application/json",
+        'Content-Type': 'application/json',
       },
     }),
     ...options,
@@ -38,7 +38,7 @@ export async function postRequest(url, options) {
 
   return await fetch(url, defaultOptions).then((response) => {
     if (!response.ok) {
-      throw new Error("Network response was not ok");
+      throw new Error('Network response was not ok');
     }
     return response.json();
   });
@@ -48,9 +48,9 @@ export async function postRequestTwo(url, options) {
   const isFormData = options.body instanceof FormData;
 
   const defaultOptions = {
-    method: "POST",
+    method: 'POST',
     headers: {
-      "Content-Type": "application/json", // JSON 형식으로 요청 보내기
+      'Content-Type': 'application/json', // JSON 형식으로 요청 보내기
     },
     body: isFormData ? options.body : JSON.stringify(options.body), // 객체일 때 JSON.stringify로 직렬화
   };
@@ -62,7 +62,7 @@ export async function postRequestTwo(url, options) {
     }
     return await response.json(); // 응답을 JSON 형식으로 받기
   } catch (error) {
-    console.error("Request failed:", error);
+    console.error('Request failed:', error);
     throw error;
   }
 }
@@ -70,16 +70,15 @@ export async function postRequestTwo(url, options) {
 /* ====== Common Patch Request Function ====== */
 export async function patchRequest(url, options) {
   const defaultOptions = {
-    method: "PATCH",
+    method: 'PATCH',
     headers: {
-      "Content-Type": "application/json",
+      'Content-Type': 'application/json',
     },
-    ...options,
   };
 
   return await fetch(url, defaultOptions).then((response) => {
     if (!response.ok) {
-      throw new Error("Network response was not ok");
+      throw new Error('Network response was not ok');
     }
     return response.json();
   });
@@ -87,9 +86,15 @@ export async function patchRequest(url, options) {
 
 /* ====== Common Delete Request Function ====== */
 export async function deleteRequest(url, options) {
-  return await fetch(url, options).then((response) => {
+  const defaultOptions = {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+  };
+  return await fetch(url, defaultOptions).then((response) => {
     if (!response.ok) {
-      throw new Error("Network response was not ok");
+      throw new Error('Network response was not ok');
     }
     if (response.status !== 204) {
       return response.json();
