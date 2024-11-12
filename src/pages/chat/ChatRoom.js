@@ -2,9 +2,12 @@ import React, { useEffect, useState, useCallback } from 'react';
 import io from 'socket.io-client';
 import { useDispatch, useSelector } from 'react-redux';
 import { UserChatButtons, TrainerChatButtons } from '../../components/common/Buttons';
+import { useParams } from 'react-router-dom';
+
+// 채팅에 대한 모듈
+import { leaveChatRoom } from '../../redux/thunks/chatThunks';
 import { addMessage } from '../../redux/slice/chatSlice';
 import { fetchChatMessages } from '../../redux/thunks/chatThunks';
-import { useParams } from 'react-router-dom';
 
 const socket = io(process.env.REACT_APP_API_URL || 'http://localhost:8000');
 
@@ -17,6 +20,17 @@ const ChatRoom = ({ userNumber, trainerNumber }) => {
   const messages = useSelector((state) => state.chat.messages); 
 
   console.log("userNumber:", userNumber, "trainerNumber:", trainerNumber, "roomId:", roomId);
+
+
+
+  // 컴포넌트가 언마운트되거나 다른 페이지로 이동할 때 채팅방 나가기 요청
+  useEffect(() => {
+    return () => {
+      dispatch(leaveChatRoom(roomId));
+    };
+  }, [dispatch, roomId]);
+
+
 
   useEffect(() => {
     // 로컬 스토리지에서 유저 타입 확인
