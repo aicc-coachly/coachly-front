@@ -1,18 +1,25 @@
-// src/components/common/Header.js
-import React, { useState } from 'react';
-import { useLocation, Link } from 'react-router-dom';
-import { UserMenuButtons, TrainerMenuButtons } from './Buttons';
-import logo from '../../assets/images/logo.png';
-import { useSelector } from 'react-redux';
+import React, { useState, useEffect } from "react";
+import { useLocation, Link } from "react-router-dom";
+import { useSelector } from "react-redux";
+import { UserMenuButtons, TrainerMenuButtons } from "./Buttons";
+import logo from "../../assets/images/logo.png";
 
 function Header() {
   const location = useLocation();
   const [menuOpen, setMenuOpen] = useState(false);
-  const userType = useSelector((state) => state.auth.userType);
-  console.log(userType);
+  const { userType } = useSelector((state) => state.auth);
+
+  // 새로고침 후에도 isLoggedIn 상태를 유지하기 위해
+  const isLoggedIn = userType === "user" || userType === "trainer";
+
   const toggleMenu = () => {
     setMenuOpen(!menuOpen);
   };
+
+  useEffect(() => {
+    // 로그인 상태가 변경될 때마다 메뉴를 닫음
+    setMenuOpen(false);
+  }, [isLoggedIn]);
 
   // 특정 페이지에서 메뉴바 숨김
   const hideMenuBar = [
@@ -42,17 +49,17 @@ function Header() {
       </Link>
 
       {/* 오른쪽 메뉴 버튼 */}
-      {!hideMenuBar && (
+      {!hideMenuBar && isLoggedIn && (
         <>
           <button onClick={toggleMenu} className="text-2xl">
             {menuOpen ? '✕' : '≡'}
           </button>
           {menuOpen && (
             <div className="absolute right-4 z-50 top-16 bg-white shadow-md rounded-lg p-4 flex flex-col space-y-2">
-              {userType === 'trainer' && (
+              {userType === "trainer" && (
                 <TrainerMenuButtons onClick={() => setMenuOpen(false)} />
               )}
-              {userType === 'user' && (
+              {userType === "user" && (
                 <UserMenuButtons onClick={() => setMenuOpen(false)} />
               )}
             </div>

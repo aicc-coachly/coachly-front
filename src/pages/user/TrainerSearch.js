@@ -2,36 +2,35 @@ import React, { useEffect, useState } from "react";
 import Buttons from "../../components/common/Buttons";
 import { useModal } from "../../components/common/ModalProvider";
 import { TrainerInfoModal } from "../../components/trainer/TrainerInfoModal";
+import { useNavigate } from 'react-router-dom';
 import axios from "axios";
+import { CREATE_CHAT_ROOM_URL } from "../../utils/chatApiUrl"; 
 import { useSelector } from "react-redux";
-import { useNavigate } from "react-router-dom";
-import { CREATE_CHAT_ROOM_URL } from "../../utils/chatApiUrl";
 
 function TrainerSearch() {
+  const path = "http://localhost:8000";
+  const [trainers, setTrainers] = useState([]);
+  const [filteredTrainers, setFilteredTrainers] = useState([]);
+  const [isSearching, setIsSearching] = useState(false);
+
+  const navigate = useNavigate();
   const { openModal } = useModal();
+
   const [filters, setFilters] = useState({
     searchTerm: "",
     gender: "",
     service_option: "",
   });
 
-  const navigate = useNavigate();
-  const path = "http://localhost:8000";
-  const [trainers, setTrainers] = useState([]);
-  const [filteredTrainers, setFilteredTrainers] = useState([]);
-  const [isSearching, setIsSearching] = useState(false);
-  const user_number = useSelector((state) => state.auth?.user?.user_number);
-  const user_name = useSelector((state) => state.auth?.user?.user_name);
-  const aaa = useSelector((state) => state);
-  // console.log(aaa);
-  // console.log(user_number);
-  // console.log(trainers);
+  // Redux에서 userNumber 가져오기
+  const userNumber = useSelector((state) => state.auth?.user?.user_number);
+  console.log("Redux에서 가져온 userNumber:", userNumber);
 
   const handleCreateChatRoom = async (trainerNumber) => {
     try {
-      console.log("Creating chat room with:", { user_number, trainerNumber });
+      console.log("Creating chat room with:", { userNumber, trainerNumber });
       const response = await axios.post(CREATE_CHAT_ROOM_URL, {
-        user_number: user_number,
+        user_number: userNumber,
         trainer_number: trainerNumber,
         type: "trainer", // 트레이너와의 채팅방 생성
       });
@@ -64,7 +63,7 @@ function TrainerSearch() {
 
   // 필터 적용
   const applyFilters = () => {
-    const searchAddress = filters.searchTerm.trim(); // 검색어에서 공백 제거
+    const searchAddress = filters.searchTerm.trim();
     const filtered = trainers.filter((trainer) => {
       const matchesService = filters.service_option
         ? trainer.service_options.includes(filters.service_option)
@@ -95,17 +94,7 @@ function TrainerSearch() {
 
   // Show trainer info in a modal with the trainer's image
   const handleShowTrainerInfo = (trainer) => {
-    openModal(
-      <TrainerInfoModal
-        trainer={trainer}
-        user_number={user_number}
-        user_name={user_name}
-      />
-    );
-  };
-
-  const handleConsult = (trainer) => {
-    alert(`${trainer.name}님과의 상담을 요청하였습니다.`);
+    openModal(<TrainerInfoModal trainer={trainer} />);
   };
 
   return (
@@ -222,14 +211,13 @@ function TrainerSearch() {
                 <p>
                   {trainer.trainer_address} {trainer.trainer_detail_address}
                 </p>
-                <div className="flex gap-4 mt-4 justify-center items-center">
-                  <Buttons
-                    size="small"
+                
+                  <Buttons 
+                    size="small" 
                     onClick={() => handleCreateChatRoom(trainer.trainer_number)}
                   >
                     1:1 상담 받기
                   </Buttons>
-                </div>
               </div>
             ))
           ) : (

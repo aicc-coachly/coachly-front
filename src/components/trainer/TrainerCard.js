@@ -1,7 +1,7 @@
-import React from 'react'
-import Buttons from '../common/Buttons'
+import React from 'react';
+import Buttons from '../common/Buttons';
 
-const TrainerCard = () => {
+const TrainerCard = ({ trainerNumber, handleCreateChatRoom }) => {
   return (
     <div className="w-2/5 h-1/3 bg-white rounded-lg shadow-lg flex flex-col items-center p-4">
       {/* 사진 영역 */}
@@ -24,12 +24,12 @@ const TrainerCard = () => {
       <Buttons 
         size="middle" 
         color="#081f5c"
-        // onClick={() => 트레이너 채팅방 이동}
+        onClick={() => handleCreateChatRoom(trainerNumber)}
       >
         1:1 상담받기
       </Buttons>
     </div>
-  )
+  );
 }
 
-export default TrainerCard
+export default TrainerCard;

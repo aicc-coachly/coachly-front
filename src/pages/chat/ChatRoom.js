@@ -1,34 +1,25 @@
-import React, { useEffect, useState, useCallback } from "react";
-import io from "socket.io-client";
-import { useDispatch, useSelector } from "react-redux";
-import {
-  UserChatButtons,
-  TrainerChatButtons,
-} from "../../components/common/Buttons";
-import { useParams } from "react-router-dom";
+import React, { useEffect, useState, useCallback } from 'react';
+import io from 'socket.io-client';
+import { useDispatch, useSelector } from 'react-redux';
+import { UserChatButtons, TrainerChatButtons } from '../../components/common/Buttons';
+import { useParams } from 'react-router-dom';
 
 // Redux Thunks
-import {
-  leaveChatRoom,
-  fetchChatMessages,
-  fetchChatRoom,
-} from "../../redux/thunks/chatThunks";
-import { addMessage } from "../../redux/slice/chatSlice";
+import { leaveChatRoom, fetchChatMessages, fetchChatRoom } from '../../redux/thunks/chatThunks';
+import { addMessage } from '../../redux/slice/chatSlice';
 
 const ChatRoom = () => {
   const { roomId } = useParams();
   const dispatch = useDispatch();
-  const [menuOpen, setMenuOpen] = useState(false);
   const [input, setInput] = useState("");
   const [isTrainer, setIsTrainer] = useState(false);
+  const [menuOpen, setMenuOpen] = useState(false);
   const [otherPartyName, setOtherPartyName] = useState(""); // 상대방 이름 상태
 
-  // Redux 상태에서 필요한 정보 가져오기
+  // Redux 상태에서 필요한 정보 가져오기ß
   const userType = useSelector((state) => state.auth.userType);
   const userNumber = useSelector((state) => state.auth.user?.user_number);
-  const trainerNumber = useSelector(
-    (state) => state.auth.trainer?.trainer_number
-  );
+  const trainerNumber = useSelector((state) => state.auth.trainer?.trainer_number);
   const messages = useSelector((state) => state.chat.messages);
 
   // userType에 따른 userNumber 선택
@@ -39,9 +30,7 @@ const ChatRoom = () => {
     const fetchOtherPartyName = async () => {
       try {
         // 상대방 이름 불러오기
-        const response = await dispatch(
-          fetchChatRoom({ roomId, userNumber: idToSend })
-        ).unwrap();
+        const response = await dispatch(fetchChatRoom({ roomId, userNumber: idToSend })).unwrap();
         setOtherPartyName(response.other_party_name);
       } catch (error) {
         console.error("Error fetching chat room details:", error);
@@ -58,8 +47,8 @@ const ChatRoom = () => {
   // Socket 연결 설정
   const socket = io(process.env.REACT_APP_API_URL || "http://localhost:8000");
 
-  socket.on("connect", () => {
-    console.log("Connected to server:", socket.id);
+  socket.on('connect', () => {
+    console.log('Connected to server:', socket.id);
   });
 
   useEffect(() => {
@@ -70,23 +59,23 @@ const ChatRoom = () => {
       dispatch(addMessage(message));
     };
 
-    socket.on("messageReceived", handleReceivedMessage);
+    socket.on('messageReceived', handleReceivedMessage);
     dispatch(fetchChatMessages(roomId));
 
     return () => {
-      socket.off("messageReceived", handleReceivedMessage);
-      socket.emit("leaveRoom", roomId);
+      socket.off('messageReceived', handleReceivedMessage);
+      socket.emit('leaveRoom', roomId);
     };
   }, [roomId, dispatch, userType]);
 
   const sendMessage = useCallback(() => {
     if (input.trim()) {
-      const message = {
-        roomId,
+      const message = { 
+        roomId, 
         userNumber: idToSend, // userType에 따라 선택된 userNumber 값 사용
-        content: input,
-        senderId: idToSend,
-        senderName: isTrainer ? "Trainer" : "User",
+        content: input, 
+        senderId: idToSend, 
+        senderName: isTrainer ? "Trainer" : "User" 
       };
       socket.emit("sendMessage", message);
       dispatch(addMessage(message));
@@ -97,29 +86,19 @@ const ChatRoom = () => {
   return (
     <div className="max-w-[390px] mx-auto bg-gray-100 min-h-screen flex flex-col relative">
       <div className="bg-gray-300 p-4 text-center text-black font-bold">
-        <span>
-          {otherPartyName} {isTrainer ? "회원" : "트레이너"}
-        </span>
+        <span>{otherPartyName} {isTrainer ? "회원" : "트레이너"}</span>
       </div>
 
       {/* Chat Messages */}
       <div className="flex-1 p-4 space-y-4 mb-20 overflow-y-auto">
         {messages.map((msg, index) => (
-          <div
-            key={index}
-            className={`flex ${
-              msg.senderId === idToSend ? "justify-end" : "justify-start"
-            }`}
+          <div 
+            key={index} 
+            className={`flex ${msg.senderId === idToSend ? "justify-end" : "justify-start"}`}
           >
             <div
-              className={`relative ${
-                msg.senderId === idToSend
-                  ? "bg-blue-500 text-white"
-                  : "bg-gray-300 text-black"
-              } 
-                p-4 rounded-lg w-2/3 ${
-                  msg.senderId === idToSend ? "mr-2" : "ml-2"
-                }`}
+              className={`relative ${msg.senderId === idToSend ? "bg-blue-500 text-white" : "bg-gray-300 text-black"} 
+                p-4 rounded-lg w-2/3 ${msg.senderId === idToSend ? "mr-2" : "ml-2"}`}
             >
               <p>{msg.content}</p>
             </div>
