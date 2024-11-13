@@ -23,7 +23,7 @@ function TrainerSearch() {
   });
 
   // Redux에서 userNumber 가져오기
-  const userNumber = useSelector((state) => state.user.user_number);
+  const userNumber = useSelector((state) => state.auth?.user?.user_number);
   console.log("Redux에서 가져온 userNumber:", userNumber);
 
   const handleCreateChatRoom = async (trainerNumber) => {
