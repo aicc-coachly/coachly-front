@@ -88,10 +88,10 @@ export const fetchChatMessages = createAsyncThunk(
   }
 );
 
-// 채팅방 조회
-export const fetchChatRoom = createAsyncThunk(
-  "chat/fetchChatRoom",
-  async ({ roomId, userNumber }, { rejectWithValue }) => {
+// 메시지 전송
+export const sendMessage = createAsyncThunk(
+  'chat/sendMessage',
+  async ({ room_id, messageData }, { dispatch, rejectWithValue }) => {
     try {
       const response = await postRequest(SEND_MESSAGE_URL(room_id), {
         body: JSON.stringify(messageData),
@@ -99,7 +99,7 @@ export const fetchChatRoom = createAsyncThunk(
       dispatch(addMessage(response));
       return response;
     } catch (error) {
-      return rejectWithValue(error.message || "특정 채팅방 조회 실패");
+      return rejectWithValue(error.message || '메시지 전송 실패');
     }
   }
 );
@@ -116,6 +116,9 @@ export const leaveChatRoom = createAsyncThunk(
     }
   }
 );
+
+
+
 
 // // 메시지 삭제
 // export const deleteMessage = createAsyncThunk(

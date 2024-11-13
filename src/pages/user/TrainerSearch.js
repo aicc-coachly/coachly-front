@@ -8,11 +8,22 @@ import { CREATE_CHAT_ROOM_URL } from "../../utils/chatApiUrl";
 import { useSelector } from "react-redux";
 
 function TrainerSearch() {
+  const path = "http://localhost:8000";
+  const [trainers, setTrainers] = useState([]);
+  const [filteredTrainers, setFilteredTrainers] = useState([]);
+  const [isSearching, setIsSearching] = useState(false);
+
   const navigate = useNavigate();
   const { openModal } = useModal();
 
+  const [filters, setFilters] = useState({
+    searchTerm: "",
+    gender: "",
+    service_option: "",
+  });
+
   // Redux에서 userNumber 가져오기
-  const userNumber = useSelector((state) => state.user.userInfo.user_number);
+  const userNumber = useSelector((state) => state.user.user_number);
   console.log("Redux에서 가져온 userNumber:", userNumber);
 
   const handleCreateChatRoom = async (trainerNumber) => {
@@ -20,42 +31,6 @@ function TrainerSearch() {
       console.log("Creating chat room with:", { userNumber, trainerNumber });
       const response = await axios.post(CREATE_CHAT_ROOM_URL, {
         user_number: userNumber,
-        trainer_number: trainerNumber,
-        type: "trainer", // 트레이너와의 채팅방 생성
-      });
-
-      if (response.status === 200 || response.status === 201) {
-        const { room_id } = response.data;
-        console.log("채팅방으로 이동합니다. 방 ID:", room_id);
-        navigate(`/chatroom/${room_id}`);
-      }
-    } catch (error) {
-      console.error("채팅방 생성 중 오류가 발생했습니다:", error);
-    }
-  };
-
-  const [filters, setFilters] = useState({
-    searchTerm: "",
-    gender: "",
-    service_option: "",
-  });
-  const navigate = useNavigate();
-  const path = "http://localhost:8000";
-  const [trainers, setTrainers] = useState([]);
-  const [filteredTrainers, setFilteredTrainers] = useState([]);
-  const [isSearching, setIsSearching] = useState(false);
-  const user_number = useSelector((state) => state.auth?.user?.user_number);
-  const user_name = useSelector((state) => state.auth?.user?.user_name);
-  const aaa = useSelector((state) => state);
-  // console.log(aaa);
-  // console.log(user_number);
-  // console.log(trainers);
-
-  const handleCreateChatRoom = async (trainerNumber) => {
-    try {
-      console.log("Creating chat room with:", { user_number, trainerNumber });
-      const response = await axios.post(CREATE_CHAT_ROOM_URL, {
-        user_number: user_number,
         trainer_number: trainerNumber,
         type: "trainer", // 트레이너와의 채팅방 생성
       });
