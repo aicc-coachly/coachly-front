@@ -62,6 +62,7 @@ export const TrainerInfoModal = ({ trainer, user_number, user_name }) => {
   const handlePTRequest = () => {
     openModal(
       <PTModal
+      trainer={trainer}
         pt_cost_option={trainer.pt_cost_options}
         trainer_number={trainer.trainer_number}
         trainer_name={trainer.name}

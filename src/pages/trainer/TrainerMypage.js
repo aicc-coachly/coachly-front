@@ -132,7 +132,10 @@ const TrainerMypage = () => {
     } catch (error) {
       console.error("Error updating trainer status:", error);
     }
+  
   };
+    // console.log(trainerNumber);
+  // console.log(profile);
 
   // 모달 관련 핸들러 함수들
   const handleOpenUserModal = (pt_number) => {
@@ -215,8 +218,11 @@ const TrainerMypage = () => {
             <p className="text-sm text-gray-500">{profile?.phone}</p>
             <div className="flex mt-2 space-x-2">
               <p className="px-3 py-1 bg-gray-300 text-sm rounded-md">
+                {profile?.trainer_address}
                 {profile?.trainer_detail_address}
+
               </p>
+
             </div>
           </div>
         </div>
