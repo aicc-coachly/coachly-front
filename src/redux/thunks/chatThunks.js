@@ -81,16 +81,16 @@ export const fetchChatRooms = createAsyncThunk(
 // 채팅방 메시지 조회
 export const fetchChatMessages = createAsyncThunk(
   'chat/fetchChatMessages',
-  async (roomId, { dispatch, rejectWithValue }) => {
+  async (roomId, { rejectWithValue }) => {
     try {
       const response = await getRequest(GET_MESSAGES_URL(roomId));
-      dispatch(setMessages(response));
-      return response;
+      return response; // 리듀서에서 직접 상태를 업데이트
     } catch (error) {
-      return rejectWithValue(error.message || "채팅방 생성 실패");
+      return rejectWithValue(error.message || "채팅 메시지 조회 실패");
     }
   }
 );
+
 
 // 메시지 전송
 export const sendMessage = createAsyncThunk(

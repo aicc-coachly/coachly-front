@@ -4,8 +4,8 @@ import { v4 as uuidv4 } from 'uuid';
 import { useDispatch, useSelector } from 'react-redux';
 import { UserChatButtons, TrainerChatButtons } from '../../components/common/Buttons';
 import { useParams } from 'react-router-dom';
-import { leaveChatRoom, fetchChatRoom } from '../../redux/thunks/chatThunks';
-import { addMessage } from '../../redux/slice/chatSlice';
+import { leaveChatRoom, fetchChatRoom, fetchChatMessages } from '../../redux/thunks/chatThunks';
+import { addMessage, setMessages } from '../../redux/slice/chatSlice';
 
 const ChatRoom = () => {
   const { roomId } = useParams();
@@ -25,8 +25,9 @@ const ChatRoom = () => {
   const idToSend = userType === "user" ? userNumber : trainerNumber;
 
   useEffect(() => {
-    const fetchOtherPartyName = async () => {
+    const fetchChatData = async () => {
       try {
+        // 채팅방 정보 로드
         let response;
         if (userType === "user" && userNumber) {
           response = await dispatch(fetchChatRoom({ roomId, userNumber })).unwrap();
@@ -40,12 +41,15 @@ const ChatRoom = () => {
         if (response) {
           setOtherPartyName(response.other_party_name);
         }
+
+        // 해당 방의 대화 메시지 불러오기
+        await dispatch(fetchChatMessages(roomId)).unwrap();
       } catch (error) {
-        console.error("Error fetching chat room details:", error);
+        console.error("Error fetching chat data:", error);
       }
     };
 
-    fetchOtherPartyName();
+    fetchChatData();
 
     return () => {
       dispatch(leaveChatRoom(roomId));
@@ -103,21 +107,23 @@ const ChatRoom = () => {
         <span>{otherPartyName} {isTrainer ? "회원" : "트레이너"}</span>
       </div>
 
-      <div className="flex-1 p-4 space-y-4 mb-20 overflow-y-auto">
-        {messages.map((msg, index) => (
-          <div 
-            key={msg.messageId || index} 
-            className={`flex ${msg.senderId === idToSend ? "justify-end" : "justify-start"}`}
-          >
-            <div
-              className={`relative ${msg.senderId === idToSend ? "bg-blue-500 text-white" : "bg-gray-300 text-black"} 
-                p-4 rounded-lg w-2/3 ${msg.senderId === idToSend ? "mr-2" : "ml-2"}`}
-            >
-              <p>{msg.content}</p>
-            </div>
-          </div>
-        ))}
+      <div className="flex-1 p-4 space-y-4 mb-20 overflow-y-auto chat-messages-container">
+  {messages.map((msg, index) => (
+    <div 
+      key={msg.messageId || index} 
+      className={`flex ${msg.sender_name === "Trainer" ? "justify-end" : "justify-start"}`}
+    >
+      <div
+        className={`relative ${msg.sender_name === "Trainer" ? "bg-blue-500 text-white" : "bg-gray-300 text-black"} 
+          p-4 rounded-lg w-2/3 ${msg.sender_name === "Trainer" ? "mr-2" : "ml-2"}`}
+      >
+        <p>{msg.message || msg.content}</p> {/* msg.message 또는 msg.content */}
       </div>
+    </div>
+  ))}
+</div>
+채
+
 
       <div className="bg-gray-200 p-4 flex items-center justify-between fixed bottom-0 left-1/2 transform -translate-x-1/2 w-full max-w-[390px]">
         <button onClick={() => setMenuOpen(!menuOpen)} className="text-2xl">
