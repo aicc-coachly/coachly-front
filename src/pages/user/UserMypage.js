@@ -36,17 +36,20 @@ function UserMypage() {
   // 인바디 데이터 가져오기
   const profile = useSelector((state) => state.user?.userInfo);
   const [isLoading, setIsLoading] = useState(true);
-  const pt_schedule = useSelector((state) => state.payment?.data);
+  const pt_schedule = useSelector((state) => state.payment?.data) || [];
   const pt_schedules = useSelector((state) => state);
   // const pt_schedule = useSelector((state) =>
   //   Array.isArray(state.payment?.data) ? state.payment.data : []
   // );
-  const pt_number = pt_schedule
-    ? pt_schedule.map((item) => item.pt_number)
-    : [];
-  console.log(pt_schedules);
+  // const pt_number = pt_schedule
+  //   ? pt_schedule.map((item) => item.pt_number)
+  //   : [];
+  const userInfo = useSelector((state) => state.user?.userInfo);
+  // const aaa = useSelector((state) => state);
 
-  // console.log(pt_schedule);
+  // console.log(aaa);
+
+  // console.log(pt_schedules);
   // console.log(inbodyData);
   // console.log(schedule_record);
   // 측정 날짜가 유효한 경우만 포맷하고, 유효하지 않으면 빈 문자열을 반환
@@ -84,7 +87,7 @@ function UserMypage() {
     }
   }, [dispatch, user_number]); // user_number 또는 trainer_number가 변경될 때마다 호출
 
-  const ptNumbers = pt_schedule
+  const ptNumbers = Array.isArray(pt_schedule)
     ? pt_schedule.map((item) => item.pt_number)
     : []; // pt_number 배열로 가져오기
   // console.log(ptNumbers);
@@ -170,6 +173,10 @@ function UserMypage() {
     navigate("/userptschedule", { state: { pt_schedule } });
   };
 
+  const handleMyInfoUpdate = () => {
+    navigate("/userprofile", { state: { userInfo } });
+  };
+
   return (
     <div className="max-w-[390px] mx-auto bg-gray-100 p-4">
       {/* 내 정보 섹션 */}
@@ -182,7 +189,7 @@ function UserMypage() {
           환불신청
         </button>
         <button
-          onClick={() => navigate("/userprofile")} // 페이지 이동 설정
+          onClick={() => handleMyInfoUpdate(userInfo)} // 페이지 이동 설정
           className="absolute top-4 right-4 px-3 py-1 bg-gray-300 text-sm rounded-full"
         >
           수정하기
@@ -219,20 +226,28 @@ function UserMypage() {
       {pt_schedule && pt_schedule.length > 0 ? (
         <div className="bg-white rounded-lg shadow-md p-2 mb-4">
           <h2 className="text-lg font-semibold p-2">담당 트레이너</h2>
-          {pt_schedule.map((trainer, index) => (
-            <div
-              key={index}
-              className="flex items-center justify-between bg-gray-300 p-1 mb-2"
-            >
-              <p className="text-base text-sm">{trainer.trainer_name}</p>
-              <button
-                onClick={() => navigate("/UserChat")}
-                className="px-3 py-1 bg-pink-300 text-sm rounded-md"
+
+          {/* 중복된 트레이너 이름을 제거한 후 출력 */}
+          {pt_schedule
+            .filter(
+              (value, index, self) =>
+                index ===
+                self.findIndex((t) => t.trainer_name === value.trainer_name)
+            )
+            .map((trainer, index) => (
+              <div
+                key={index}
+                className="flex items-center justify-between bg-gray-300 p-1 mb-2"
               >
-                1:1 채팅하기
-              </button>
-            </div>
-          ))}
+                <p className="text-base text-sm">{trainer.trainer_name}</p>
+                <button
+                  onClick={() => navigate("/UserChat")}
+                  className="px-3 py-1 bg-pink-300 text-sm rounded-md"
+                >
+                  1:1 채팅하기
+                </button>
+              </div>
+            ))}
         </div>
       ) : null}
 

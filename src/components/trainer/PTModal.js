@@ -28,6 +28,7 @@ export const PTModal = ({
       dispatch(getTrainer(trainer_number));
     }
   }, [trainer_number, dispatch]);
+  // console.log(pt_cost_option);
 
   const trainerPtCostData = pt_cost_option;
   const filteredPtCostData = trainerPtCostData
