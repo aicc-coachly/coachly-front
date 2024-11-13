@@ -16,33 +16,48 @@ const ChatRoom = () => {
   const [menuOpen, setMenuOpen] = useState(false);
   const [otherPartyName, setOtherPartyName] = useState(""); // 상대방 이름 상태
 
-  // Redux 상태에서 필요한 정보 가져오기ß
-  const userType = useSelector((state) => state.auth.userType);
+   // Redux 상태에서 필요한 정보 가져오기
+   const userType = useSelector((state) => state.auth.userType);
   const userNumber = useSelector((state) => state.auth.user?.user_number);
   const trainerNumber = useSelector((state) => state.auth.trainer?.trainer_number);
   const messages = useSelector((state) => state.chat.messages);
 
-  // userType에 따른 userNumber 선택
+  // userType에 따라 user_number 또는 trainer_number 중 하나 선택
   const idToSend = userType === "user" ? userNumber : trainerNumber;
 
-  // 상대방 이름 가져오기
   useEffect(() => {
     const fetchOtherPartyName = async () => {
       try {
-        // 상대방 이름 불러오기
-        const response = await dispatch(fetchChatRoom({ roomId, userNumber: idToSend })).unwrap();
-        setOtherPartyName(response.other_party_name);
+        let response;
+        if (userType === "user" && userNumber) {
+          response = await dispatch(fetchChatRoom({ roomId, userNumber })).unwrap();
+        } else if (userType === "trainer" && trainerNumber) {
+          response = await dispatch(fetchChatRoom({ roomId, trainerNumber })).unwrap();
+        } else {
+          console.warn("유효한 userNumber 또는 trainerNumber가 없습니다.");
+          return; // userNumber나 trainerNumber가 유효하지 않으면 실행 중지
+        }
+        
+        if (response) {
+          setOtherPartyName(response.other_party_name);
+        }
       } catch (error) {
         console.error("Error fetching chat room details:", error);
       }
     };
-
+  
+    console.log("userType:", userType);
+    console.log("userNumber:", userNumber);
+    console.log("trainerNumber:", trainerNumber);
+    console.log("idToSend:", idToSend);
+  
     fetchOtherPartyName();
-
+  
     return () => {
       dispatch(leaveChatRoom(roomId));
     };
-  }, [dispatch, roomId, idToSend]);
+  }, [dispatch, roomId, userType, userNumber, trainerNumber]);
+  
 
   // Socket 연결 설정
   const socket = io(process.env.REACT_APP_API_URL || "http://localhost:8000");
@@ -51,6 +66,7 @@ const ChatRoom = () => {
     console.log('Connected to server:', socket.id);
   });
 
+  
   useEffect(() => {
     setIsTrainer(userType === "trainer");
     socket.emit("joinRoom", roomId);

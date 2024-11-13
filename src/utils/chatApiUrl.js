@@ -4,8 +4,20 @@ const url = process.env.REACT_APP_API_URL; // 백엔드 서버 URL에 맞게 설
 export const CREATE_CHAT_ROOM_URL = `${url}/chat-room`;
 
 // 채팅방 조회
-export const GET_CHAT_ROOM_URL = (roomId, userNumber) =>
-  `${url}/chat-room?roomId=${roomId}&userNumber=${userNumber}`;
+export const GET_CHAT_ROOM_URL = (roomId, userNumber = null, trainerNumber = null) => {
+  let url = `${process.env.REACT_APP_API_URL}/chat-room/${roomId}`;
+
+  if (userNumber) {
+    url += `?userNumber=${userNumber}`;
+  } else if (trainerNumber) {
+    url += `?trainerNumber=${trainerNumber}`;
+  } else {
+    throw new Error("userNumber 또는 trainerNumber 중 하나는 제공되어야 합니다.");
+  }
+
+  return url;
+};
+
 
 // 채팅방 리스트 조회 
 export const GET_CHAT_ROOMS_URL = (userNumber, trainerNumber) => {
