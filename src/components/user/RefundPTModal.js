@@ -5,13 +5,13 @@ import { createRefund, updateRefund } from "../../redux/slice/refundSlice";
 import { useModal } from "../common/ModalProvider";
 
 export const RefundPTModal = ({
-  pt_schedule,
+  schedule = {}, // 기본값 설정
   refundData = {},
   isEditMode = false,
 }) => {
   const dispatch = useDispatch();
   const { closeModal } = useModal();
-  const userNumber = useSelector((state) => state.user.userInfo.user_number);
+  const userNumber = useSelector((state) => state.auth.user.user_number);
 
   const [showOtherReason, setShowOtherReason] = useState(false);
   const [selectedReason, setSelectedReason] = useState("");
@@ -24,7 +24,15 @@ export const RefundPTModal = ({
     oneDayClass: false,
     ptSessions: false,
   });
-  console.log(pt_schedule);
+
+  // 진행된 일정을 안전하게 계산
+  const completedSessions = schedule.data
+    ? schedule.data.filter((item) => item.status === "completed").length
+    : 0;
+
+  const remainingSessions = schedule.frequency
+    ? schedule.frequency - completedSessions
+    : 0;
 
   useEffect(() => {
     if (isEditMode) {
@@ -44,7 +52,7 @@ export const RefundPTModal = ({
   };
 
   const handleRefundRequest = async () => {
-    if (!userNumber || !pt_schedule) {
+    if (!userNumber || !schedule.pt_number) {
       alert("필요한 정보가 없습니다. 다시 시도해 주세요.");
       return;
     }
@@ -61,7 +69,7 @@ export const RefundPTModal = ({
     }
 
     const refundDataToSubmit = {
-      pt_schedule,
+      pt_number: schedule.pt_number,
       refund_reason: selectedReason === "기타" ? otherReason : selectedReason,
       account: accountNumber,
       bank_name: bankName,
@@ -101,30 +109,29 @@ export const RefundPTModal = ({
         {isEditMode ? "환불 정보 수정" : "결제 취소 및 환불"}
       </h2>
 
-      {/* 환불할 항목 선택 */}
-      <div className="flex items-center justify-between mb-4">
-        <label className="flex items-center">
-          <input
-            type="checkbox"
-            checked={selectedItems.oneDayClass}
-            onChange={() => toggleSelectedItem("oneDayClass")}
-            className="mr-2"
-          />
-          <span>원데이 클래스</span>
-        </label>
-        <span>50000 원</span>
-      </div>
-
-      <div className="flex items-center justify-between mb-4">
-        <label className="flex items-center">
+      {/* 환불할 항목 확인 */}
+      <div className="flex flex-col items-start justify-between mb-4">
+        <label className="flex items-center mb-2">
           <input
             type="checkbox"
             checked={selectedItems.ptSessions}
             onChange={() => toggleSelectedItem("ptSessions")}
             className="mr-2"
           />
-          <span>총 20회 중 3회 수강</span>
+          <span>PT 세션 환불</span>
         </label>
+        <div className="ml-6 text-sm text-gray-700">
+          <p>
+            남은 진행 횟수:
+            {remainingSessions ? `${remainingSessions}회` : "0회"}
+          </p>
+          <p>
+            예상 환불 금액:
+            {schedule.amount && remainingSessions
+              ? `${schedule.amount / remainingSessions}원`
+              : "금액 없음"}
+          </p>
+        </div>
       </div>
 
       {/* 환불 규정 */}

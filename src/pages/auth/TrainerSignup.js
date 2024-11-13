@@ -19,7 +19,6 @@ function TrainerSignup() {
     phone: "",
     gender: "",
     resume: "",
-    trainer_zipcode: "",
     trainer_address: "",
     trainer_detail_address: "",
     price_options: {
@@ -35,18 +34,7 @@ function TrainerSignup() {
   });
 
   // 회원가입 상태 확인
-  const { data, error } = useSelector((state) => state.auth);
-
-  useEffect(() => {
-    if (data) {
-      alert("회원가입이 완료되었습니다!");
-      navigate("/"); // 로그인 페이지로 이동
-    }
-    if (error) {
-      alert("회원가입에 실패했습니다.");
-    }
-  }, [data, error, navigate]);
-
+  // const { data, error } = useSelector((state) => state.auth);
 
   const [selectedImage, setSelectedImage] = useState(null); // 이미지 선택 상태
   const optionMap = {
@@ -218,9 +206,23 @@ function TrainerSignup() {
     if (selectedImage) {
       data.append("trainer_image", selectedImage);
     }
-    console.log(formData)
 
-    dispatch(trainerSignup(data));
+    try {
+      const response = await dispatch(trainerSignup(data)); // 서버로 전송한 후 응답 받기
+
+      // 서버에서 받은 응답 메시지 확인
+      if (
+        response?.payload?.message === "트레이너가 성공적으로 등록되었습니다."
+      ) {
+        alert("트레이너가 성공적으로 등록되었습니다.");
+        window.location.href = "/"; // 홈 페이지로 리디렉션
+      } else {
+        alert("회원가입에 실패했습니다.");
+      }
+    } catch (error) {
+      console.error("회원가입 오류:", error);
+      alert("회원가입에 실패했습니다.");
+    }
   };
 
   return (
@@ -368,19 +370,6 @@ function TrainerSignup() {
           {/* 수업 장소 */}
           <div className="mb-4">
             <label className="block mb-2">수업 장소</label>
-            <input
-              type="number"
-              name="trainer_zipcode"
-              value={formData.trainer_zipcode}
-              onChange={(e) => {
-                if (/^\d*$/.test(e.target.value) && e.target.value.length <= 5) {
-                  handleChange(e);
-                }
-              }}
-              maxLength="5"
-              className="w-full px-3 py-2 border rounded mb-2"
-              placeholder="우편번호"
-            />
             <input
               type="text"
               name="trainer_address"

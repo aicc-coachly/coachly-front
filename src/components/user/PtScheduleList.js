@@ -5,37 +5,36 @@ import { getPtschedule } from "../../redux/slice/paymentSlice";
 import { createRefund } from "../../redux/slice/refundSlice";
 import { useModal } from "../common/ModalProvider";
 import { RefundPTModal } from "./RefundPTModal";
-import { useLocation } from "react-router-dom";
 
 const PtScheduleList = () => {
   const dispatch = useDispatch();
   const { openModal } = useModal();
   const user_number = useSelector((state) => state.user.userInfo?.user_number);
   const [ptSchedules, setPtSchedules] = useState([]);
-  const location = useLocation();
-  const { pt_schedule } = location.state || {};
-
-  //   console.log(pt_schedule);
 
   useEffect(() => {
-    if (user_number) {
-      // user_number 또는 trainer_number 중 하나만 있으면 스케줄을 가져옵니다.
-      dispatch(
-        getPtschedule({
-          user_number: user_number,
-        })
-      );
-    }
+    // 유저가 신청한 PT 스케줄을 가져옴
+    dispatch(getPtschedule({ user_number }))
+      .unwrap()
+      .then((schedules) => {
+        const userSchedules = schedules.filter(
+          (schedule) => schedule.user_number === user_number
+        );
+        setPtSchedules(userSchedules);
+      })
+      .catch((error) => {
+        console.error("PT 스케줄을 불러오는 중 오류가 발생했습니다:", error);
+      });
   }, [dispatch, user_number]);
 
-  const handleRefundRequest = (pt_number) => {
+  const handleRefundRequest = (schedule) => {
     const onRequestSuccess = (newRefund) => {
       console.log("환불 신청이 완료되었습니다:", newRefund);
     };
 
     openModal(
       <RefundPTModal
-        pt_schedule={pt_schedule}
+        schedule={schedule}
         onRequestSuccess={onRequestSuccess}
         isEditMode={false} // 새로운 환불 신청 모드
       />
@@ -48,19 +47,18 @@ const PtScheduleList = () => {
         <h1 className="text-2xl font-bold mb-4 text-[#081f5c] text-center">
           내 PT 스케줄
         </h1>
-        {pt_schedule.length > 0 ? (
+        {ptSchedules.length > 0 ? (
           <ul className="space-y-4">
-            {pt_schedule.map((schedule) => (
+            {ptSchedules.map((schedule) => (
               <li
                 key={schedule.pt_number}
                 className="p-4 bg-white border border-[#d0e3ff] rounded-lg shadow-md"
               >
                 <p className="font-semibold text-[#081f5c]">
-                  PT 담당 트레이너:
-                  {schedule.trainer_name}
+                  PT 트레이너 : {schedule.trainer_name}
                 </p>
                 <p className="text-[#081f5c]">
-                  상태:{" "}
+                  상태:
                   <span
                     className={`font-semibold ${
                       schedule.status === "completed"
@@ -68,13 +66,17 @@ const PtScheduleList = () => {
                         : "text-yellow-500"
                     }`}
                   >
-                    {schedule.status === "completed" ? "완료" : "수업 진행 중"}
+                    {schedule.status === "completed"
+                      ? "완료"
+                      : schedule.status === "refund"
+                      ? "환불 진행 중"
+                      : "수업 진행 중"}
                   </span>
                 </p>
                 {schedule.status !== "completed" && (
                   <button
                     className="mt-4 w-full px-4 py-2 bg-[#00A5E3] text-white rounded hover:bg-[#006F8C]"
-                    onClick={() => handleRefundRequest(schedule.pt_number)}
+                    onClick={() => handleRefundRequest(schedule)}
                   >
                     환불 신청
                   </button>

@@ -82,6 +82,7 @@ const ChatRoom = () => {
       setInput("");
     }
   }, [input, roomId, idToSend, isTrainer, dispatch]);
+  }, [input, roomId, idToSend, isTrainer, dispatch]);
 
   return (
     <div className="max-w-[390px] mx-auto bg-gray-100 min-h-screen flex flex-col relative">
@@ -108,6 +109,7 @@ const ChatRoom = () => {
 
       {/* Bottom Input Bar */}
       <div className="bg-gray-200 p-4 flex items-center justify-between fixed bottom-0 left-1/2 transform -translate-x-1/2 w-full max-w-[390px]">
+        <button onClick={() => setMenuOpen(!menuOpen)} className="text-2xl">
         <button onClick={() => setMenuOpen(!menuOpen)} className="text-2xl">
           {menuOpen ? "✕" : "+"}
         </button>

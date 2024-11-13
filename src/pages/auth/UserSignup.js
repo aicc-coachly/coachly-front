@@ -14,16 +14,16 @@ function UserSignup() {
     phone: "",
     gender: "",
     birth: "",
-    user_zipcode: "",
     user_address: "",
     user_detail_address: "",
   });
+
+  const [agreeTerms, setAgreeTerms] = useState(false); // agreeTerms 별도 상태 관리
 
   const dispatch = useDispatch();
 
   // 회원가입 상태 확인
   const { data, error } = useSelector((state) => state.auth);
-  console.log(data);
 
   useEffect(() => {
     if (data) {
@@ -62,11 +62,11 @@ function UserSignup() {
       "phone",
       "gender",
       "birth",
-      "user_zipcode",
       "user_address",
       "user_detail_address",
       "agreeTerms",
     ];
+
     for (const field of requiredFields) {
       if (!formData[field]) {
         alert(`${field.replace("_", " ")}(을)를 입력해주세요.`);
@@ -74,9 +74,15 @@ function UserSignup() {
       }
     }
 
-    // confirmPassword 필드 제거
-    const mappedData = { ...formData };
-    delete mappedData.confirmPassword;
+    // 개인정보 수집 동의 확인
+    if (!formData.agreeTerms) {
+      alert("개인정보 수집 및 활용 동의는 필수입니다.");
+      return;
+    }
+
+    // confirmPassword와 agreeTerms 필드 제거 후 서버로 전송할 데이터 생성
+    const { confirmPassword, agreeTerms, ...mappedData } = formData;
+    // console.log(mappedData);
 
     // 회원가입 액션 디스패치
     dispatch(userSignup(mappedData));

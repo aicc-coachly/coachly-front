@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import {
   getTrainer,
@@ -11,11 +11,12 @@ import {
 } from "../../redux/slice/trainerSlice";
 
 const TrainerProfile = () => {
+  const location = useLocation();
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const path = "http://localhost:8000";
-  const trainerInfo = useSelector((state) => state.trainer?.data);
-  // console.log(trainerInfo);
+  const trainerInfo = location.state?.trainerInfo || {};
+  console.log(trainerInfo);
 
   const [name, setName] = useState("");
   const [phone, setPhone] = useState("");
@@ -36,13 +37,6 @@ const TrainerProfile = () => {
   });
 
   const [ptCostOptions, setPtCostOptions] = useState([]);
-
-  useEffect(() => {
-    // Redux에 trainerInfo가 없으면 서버에서 데이터 가져오기
-    if (!trainerInfo) {
-      dispatch(getTrainer());
-    }
-  }, [dispatch, trainerInfo]);
 
   useEffect(() => {
     // trainerInfo가 있을 때만 로컬 상태 초기화
@@ -220,18 +214,6 @@ const TrainerProfile = () => {
               }))
             }
             className="text-sm text-gray-500 border rounded px-2 py-1 mr-1 w-1/3"
-          />
-          <input
-            type="text"
-            placeholder="우편번호"
-            value={addressSections.trainer_zipcode}
-            onChange={(e) =>
-              setAddressSections((prev) => ({
-                ...prev,
-                trainer_zipcode: e.target.value,
-              }))
-            }
-            className="text-sm text-gray-500 border rounded px-2 py-1 w-1/3"
           />
         </div>
       </div>

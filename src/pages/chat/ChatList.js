@@ -36,7 +36,17 @@ const ChatList = () => {
           style={{ backgroundColor: '#e0e0e0', padding: '10px', marginBottom: '10px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderRadius: '5px', cursor: 'pointer' }}
         >
           <span>AI 트레이너</span>
-          <span style={{ backgroundColor: '#fff', color: '#000', padding: '2px 8px', borderRadius: '12px', fontSize: '0.8rem' }}>new</span>
+          <span
+            style={{
+              backgroundColor: "#fff",
+              color: "#000",
+              padding: "2px 8px",
+              borderRadius: "12px",
+              fontSize: "0.8rem",
+            }}
+          >
+            new
+          </span>
         </div>
       )}
 
