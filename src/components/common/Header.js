@@ -2,7 +2,7 @@
 import React, { useState } from "react";
 import { useLocation, Link } from "react-router-dom";
 import { UserMenuButtons, TrainerMenuButtons } from "./Buttons";
-import logo from "../../assets/images/logo.png";
+import newlogo from "../../assets/images/newlogo.png";
 
 function Header() {
   const location = useLocation();
@@ -40,13 +40,13 @@ function Header() {
   const isUserPage = userPages.includes(location.pathname);
 
   return (
-    <header className="relative flex justify-between items-center p-4 bg-[#edf1f6] shadow-md max-w-[390px] mx-auto">
+    <header className="relative flex justify-between items-center p-4 bg-[#4831D4] max-w-[390px] mx-auto">
       {/* 왼쪽 빈 공간으로 로고 가운데 정렬 */}
       <div className="w-8"></div>
 
       {/* 가운데 로고 */}
       <Link to="/" className="flex justify-center flex-grow">
-        <img src={logo} alt="로고" className="w-12 sm:w-16 h-auto" />
+        <img src={newlogo} alt="로고" className="w-20 sm:w-16 h-[40px]" />
       </Link>
 
       {/* 오른쪽 메뉴 버튼 */}
