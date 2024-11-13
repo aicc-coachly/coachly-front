@@ -56,32 +56,31 @@ const ChatRoom = () => {
   useEffect(() => {
     if (!socketRef.current) {
       socketRef.current = io(process.env.REACT_APP_API_URL || "http://localhost:8000");
-
-      socketRef.current.on('connect', () => {
-        console.log('Connected to server:', socketRef.current.id);
+  
+      socketRef.current.on("connect", () => {
+        console.log("Connected to server:", socketRef.current.id);
       });
-
-      socketRef.current.emit("joinRoom", roomId);
-
-      socketRef.current.on("messageReceived", (message) => {
+  
+      // messageReceived 이벤트 리스너가 중복 등록되지 않도록 한 번만 설정
+      const handleMessageReceived = (message) => {
+        console.log("Message received from server:", message);
         dispatch(addMessage(message));
-      });
-
-      dispatch(fetchChatMessages(roomId));
+      };
+  
+      socketRef.current.on("messageReceived", handleMessageReceived);
+  
+      // Clean up to avoid multiple listeners
+      return () => {
+        socketRef.current.off("messageReceived", handleMessageReceived);
+        socketRef.current.disconnect();
+        socketRef.current = null;
+      };
     }
-
-    return () => {
-      if (socketRef.current) {
-        socketRef.current.off("messageReceived");
-        socketRef.current.emit("leaveRoom", roomId);
-        socketRef.current.disconnect(); // 소켓 연결 해제
-        socketRef.current = null; // 소켓 인스턴스 초기화
-      }
-    };
   }, [roomId, dispatch, userType]);
 
   const sendMessage = useCallback(() => {
     if (input.trim()) {
+      console.log("Sending message from client:", input);
       const message = { 
         roomId, 
         userNumber: idToSend,
