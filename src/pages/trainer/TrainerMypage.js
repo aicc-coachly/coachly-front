@@ -141,12 +141,11 @@ const TrainerMypage = () => {
 
     // 서버에 새로운 상태 업데이트
     await dispatch(
-      updateTrainerStatus({ trainer_number: trainer_number, status: newStatus })
-    );
-
-    // 상태 업데이트 후 최신 트레이너 정보 가져오기
-    dispatch(getTrainer(trainer_number));
+      updateTrainerStatus({ trainer_number: trainer_number, status: newStatus }));
+      dispatch(getTrainer(trainer_number)); // 상태 업데이트 후 최신 트레이너 정보 가져오기
   };
+    // console.log(trainerNumber);
+  // console.log(profile);
 
   // 유저 모달 열기, user_number를 UserModal에 전달
   const handleOpenUserModal = (pt_number) => {
@@ -228,9 +227,11 @@ const TrainerMypage = () => {
             {/* 태그들 */}
             <div className="flex mt-2 space-x-2">
               <p className="px-3 py-1 bg-gray-300 text-sm rounded-md">
+                {profile?.trainer_address}
                 {profile?.trainer_detail_address}
+
               </p>
-              <p className="px-3 py-1 bg-gray-300 text-sm rounded-md">{}</p>
+              {/* <p className="px-3 py-1 bg-gray-300 text-sm rounded-md">{}</p> */}
             </div>
           </div>
         </div>
