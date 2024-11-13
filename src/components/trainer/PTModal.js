@@ -21,8 +21,9 @@ export const PTModal = ({
   const [isPaymentReady, setIsPaymentReady] = useState(false); // 결제 준비 상태 추가
   const trainerProfile = trainer || {};
   const trainerImage = trainerProfile.image;
-  const path = "http://localhost:8000";
-  // console.log(user_number);
+
+  const path = 'http://localhost:8000';
+
   useEffect(() => {
     if (trainer_number) {
       dispatch(getTrainer(trainer_number));
@@ -142,8 +143,10 @@ export const PTModal = ({
   };
 
   return (
+
     <div className="max-w-sm p-6 w-full rounded-lg relative bg-white">
       {/* 트레이너 정보 섹션 */}
+
       <div className="flex gap-4 mb-6">
         <picture className="w-32 h-32 bg-gray-200 rounded-lg flex items-center justify-center">
           {trainerImage ? (
@@ -163,6 +166,7 @@ export const PTModal = ({
             {trainerProfile.trainer_address || "주소 없음"}{" "}
             {trainerProfile.trainer_detail_address || ""}{" "}
           </p>
+
           <div className="flex gap-2">
             {trainer.service_options?.map((option, index) => (
               <span
@@ -217,3 +221,4 @@ export default PTModal;
 PTModal.defaultProps = {
   trainer: {},
 };
+

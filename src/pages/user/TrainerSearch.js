@@ -54,9 +54,8 @@ function TrainerSearch() {
         const uniqueTrainers = response.data.filter(
           (trainer, index, self) =>
             index ===
-              self.findIndex(
-                (t) => t.trainer_number === trainer.trainer_number
-              ) && trainer.status !== "inactive" // "inactive" 상태 제외
+            self.findIndex((t) => t.trainer_number === trainer.trainer_number) &&
+          trainer.status !== "inactive" // "inactive" 상태 제외
         );
         setTrainers(uniqueTrainers);
       })
