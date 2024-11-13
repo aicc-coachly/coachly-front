@@ -5,8 +5,10 @@ import Buttons from "../common/Buttons";
 import { loadTossPayments } from "@tosspayments/tosspayments-sdk";
 import { createPtPayment } from "../../redux/slice/paymentSlice";
 import { getTrainer } from "../../redux/slice/trainerSlice";
+import { useModal } from "../common/ModalProvider";
 
 export const PTModal = ({
+  trainer,
   trainer_name,
   trainer_number,
   user_number,
@@ -14,24 +16,20 @@ export const PTModal = ({
   pt_cost_option,
 }) => {
   const dispatch = useDispatch();
+  const { openModal, closeModal } = useModal();
   const [selectedOption, setSelectedOption] = useState("");
-  const [widgets, setWidgets] = useState(null);
   const [isPaymentReady, setIsPaymentReady] = useState(false); // 결제 준비 상태 추가
-
-  // 유저 정보를 authSlice에서 가져오기
-  // const user = useSelector((state) => state.user);
-  // const user_number = useSelector((state) => state.auth?.user?.user_number);
-  // console.log(user_name);
-  // 트레이너 PT 비용 정보 가져오기
+  const trainerProfile = trainer || {};
+  const trainerImage = trainerProfile.image;
+  const path = "http://localhost:8000";
+  // console.log(user_number);
   useEffect(() => {
     if (trainer_number) {
       dispatch(getTrainer(trainer_number));
     }
   }, [trainer_number, dispatch]);
-  // console.log(pt_cost_option);
 
   const trainerPtCostData = pt_cost_option;
-  // console.log(trainerPtCostData);
   const filteredPtCostData = trainerPtCostData
     ? trainerPtCostData.map(({ amount_number, option, amount }) => ({
         amount_number,
@@ -40,17 +38,12 @@ export const PTModal = ({
       }))
     : [];
 
-  console.log("트레이너 PT 비용 정보:", filteredPtCostData);
-
   const widgetClientKey = process.env.REACT_APP_WIDGET_CLIENT_KEY;
   const generateRandomString = () => window.btoa(Math.random()).slice(0, 20);
 
   const handleCheckboxChange = (amountNumber) => {
-    setSelectedOption(amountNumber); // 선택한 금액 옵션을 즉시 설정
+    setSelectedOption(amountNumber);
   };
-
-  // console.log(user_number);
-  // console.log(trainer_number);
 
   const handleWidgetRender = async () => {
     if (!selectedOption) {
@@ -74,45 +67,63 @@ export const PTModal = ({
       const paymentWidgets = tossPayments.widgets({ customerKey: "ANONYMOUS" });
 
       await paymentWidgets.setAmount({ currency: "KRW", value: amount });
-      await paymentWidgets.renderPaymentMethods({
-        selector: "#payment-method",
-      });
-      await paymentWidgets.renderAgreement({
-        selector: "#agreement",
-      });
-
-      console.log("위젯 렌더링 완료");
-      setWidgets({ paymentWidgets });
       setIsPaymentReady(true);
+
+      openModal(
+        <div className="p-6 bg-white rounded-lg w-full max-w-sm">
+          <h2 className="text-xl font-bold mb-4 text-center">
+            {selectedCost.option} 결제
+          </h2>
+          <p className="text-center mb-4">금액: {amount}원</p>
+          <div id="payment-method-container">
+            <div id="payment-method" />
+            <div id="agreement" />
+          </div>
+          <div className="flex gap-4 mt-4 justify-center items-center">
+            <Buttons
+              size="middle"
+              color="#4831D4"
+              onClick={() => handlePaymentRequest(paymentWidgets, selectedCost)}
+              className="mt-4"
+            >
+              결제 하기
+            </Buttons>
+          </div>
+        </div>
+      );
+
+      setTimeout(() => {
+        paymentWidgets.renderPaymentMethods({
+          selector: "#payment-method",
+        });
+        paymentWidgets.renderAgreement({
+          selector: "#agreement",
+        });
+      }, 0);
     } catch (error) {
       console.error("위젯 렌더링 중 오류 발생:", error);
       alert("위젯 렌더링에 실패했습니다.");
     }
   };
 
-  const handlePaymentRequest = async () => {
-    if (!widgets) {
+  const handlePaymentRequest = async (paymentWidgets, selectedCost) => {
+    if (!paymentWidgets) {
       alert("결제 정보를 선택한 후에 시도해 주세요.");
       return;
     }
-
-    const { paymentWidgets } = widgets;
-    const selectedCost = filteredPtCostData.find(
-      (ptCost) => ptCost.amount_number === selectedOption
-    );
 
     const order_id = generateRandomString();
 
     try {
       const result = await dispatch(
         createPtPayment({
-          user_number,
+          user_number: user_number,
           trainer_number,
           payment_option: selectedOption,
           amount_number: selectedCost.amount_number,
         })
       ).unwrap();
-
+      // console.log(user_number);
       const { pt_number, payment_number } = result;
 
       await paymentWidgets.requestPayment({
@@ -131,7 +142,40 @@ export const PTModal = ({
   };
 
   return (
-    <div>
+    <div className="max-w-sm p-6 w-full rounded-lg relative bg-white">
+      {/* 트레이너 정보 섹션 */}
+      <div className="flex gap-4 mb-6">
+        <picture className="w-32 h-32 bg-gray-200 rounded-lg flex items-center justify-center">
+          {trainerImage ? (
+            <img
+              src={`${path}/${trainerImage}`}
+              alt="프로필"
+              className="w-full h-full object-cover rounded-lg"
+            />
+          ) : (
+            <p className="text-center text-gray-400">이미지 없음</p>
+          )}
+        </picture>
+
+        <div className="flex flex-col gap-4">
+          <p className="font-bold text-lg">{trainerProfile.name}</p>
+          <p className="text-[#4831D4]">
+            {trainerProfile.trainer_address || "주소 없음"}{" "}
+            {trainerProfile.trainer_detail_address || ""}{" "}
+          </p>
+          <div className="flex gap-2">
+            {trainer.service_options?.map((option, index) => (
+              <span
+                key={index}
+                className="text-xs bg-[#CCF381] text-[#4831D4] px-3 py-1 rounded-full"
+              >
+                {option}
+              </span>
+            ))}
+          </div>
+        </div>
+      </div>
+
       {/* 가격 선택 섹션 */}
       <div className="flex flex-col gap-4 mb-6">
         {filteredPtCostData.length > 0 ? (
@@ -141,8 +185,8 @@ export const PTModal = ({
               className="border rounded-lg p-4 flex items-center justify-between"
             >
               <input
-                type="radio" // checkbox 대신 radio로 변경
-                name="ptOption" // 동일한 name 속성 설정
+                type="radio"
+                name="ptOption"
                 id={`option-${ptCost.amount_number}`}
                 className="w-5 h-5"
                 checked={selectedOption === ptCost.amount_number}
@@ -158,19 +202,18 @@ export const PTModal = ({
         )}
       </div>
 
-      {/* 결제 위젯이 렌더링될 요소들 추가 */}
-      <div id="payment-method" className="mt-4"></div>
-      <div id="agreement" className="mt-4"></div>
-
-      <div className=" flex items-center justify-center">
-        {isPaymentReady === false ? (
-          <Buttons onClick={handleWidgetRender}>결제 위젯 렌더링</Buttons>
-        ) : (
-          <Buttons onClick={handlePaymentRequest}>결제 요청</Buttons>
-        )}
+      <div className="flex gap-4 mt-4 justify-center items-center">
+        {!isPaymentReady ? (
+          <Buttons size="middle" color="#4831D4" onClick={handleWidgetRender}>
+            결제 요청하기
+          </Buttons>
+        ) : null}
       </div>
     </div>
   );
 };
 
 export default PTModal;
+PTModal.defaultProps = {
+  trainer: {},
+};

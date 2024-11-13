@@ -63,7 +63,7 @@ const Success = () => {
         console.log("결제가 완료되었습니다:", result);
         alert("결제가 완료되었습니다!");
         paymentSuccess.current = true; // 성공 상태 설정
-        navigate("/UserMypage");
+        navigate("/usermypage");
       } catch (error) {
         console.error(
           `결제 완료 처리 중 오류 발생, 재시도 횟수: ${retryCount + 1}`,
