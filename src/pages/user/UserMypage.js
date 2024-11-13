@@ -10,35 +10,38 @@ import { getUser, getUserInbody } from '../../redux/slice/userSlice';
 import { setUser } from '../../redux/slice/authSlice';
 import { getPtschedule } from '../../redux/slice/paymentSlice';
 import { getScheduleRecord } from '../../redux/slice/scheduleSlice';
+import { createChatRoom } from '../../redux/thunks/chatThunks';
 
-// 중복 트레이너 제거 함수
 const getUniqueTrainers = (schedule) => {
   const uniqueTrainers = [];
-  const trainerNames = new Set();
+  const trainerIds = new Set(); // trainer_number로 중복을 관리
 
   for (const item of schedule) {
-    if (!trainerNames.has(item.trainer_name)) {
-      uniqueTrainers.push(item);
-      trainerNames.add(item.trainer_name);
+    if (item.trainer_number !== null && !trainerIds.has(item.trainer_number)) {
+      uniqueTrainers.push({
+        trainer_name: item.trainer_name,
+        trainer_number: item.trainer_number,
+      });
+      trainerIds.add(item.trainer_number);
     }
   }
 
   return uniqueTrainers;
 };
-import { createChatRoom } from "../../redux/thunks/chatThunks";
 
 function UserMypage() {
+  const [showCompleted, setShowCompleted] = useState(false);
   const dispatch = useDispatch();
   const { openModal } = useModal();
   const navigate = useNavigate();
   const user_number = useSelector((state) => state.auth?.user?.user_number);
-
   const inbodyData = useSelector((state) => {
     const userInbodyData = Array.isArray(state.user?.inbodyData)
       ? state.user.inbodyData
       : [];
     return userInbodyData.filter((data) => data.user_number === user_number);
   });
+
   const [scheduleRecords, setScheduleRecords] = useState([]);
   const [isFetched, setIsFetched] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
@@ -104,8 +107,25 @@ function UserMypage() {
     }
   }, [ptNumbers, isFetched]);
 
+  const handleCheckboxChange = (e) => {
+    setShowCompleted(e.target.checked);
+  };
+
   const filteredScheduleRecord = scheduleRecords.filter(
     (schedule) => schedule.status !== 'deleted'
+  );
+
+  const displayedClassItems = filteredScheduleRecord.filter((schedule) =>
+    showCompleted
+      ? schedule.status === 'completed'
+      : schedule.status !== 'completed'
+  );
+  const filteredClassTotalPages = Math.ceil(
+    displayedClassItems.length / itemsPerPage
+  );
+  const paginatedClassItems = displayedClassItems.slice(
+    (classPage - 1) * itemsPerPage,
+    classPage * itemsPerPage
   );
 
   const filteredItems = inbodyData.filter((inbody) => inbody.status);
@@ -120,7 +140,6 @@ function UserMypage() {
     trainerPage * itemsPerPage
   );
   const trainerTotalPages = Math.ceil(uniqueTrainers.length / itemsPerPage);
-
   const classItems = filteredScheduleRecord.slice(
     (classPage - 1) * itemsPerPage,
     classPage * itemsPerPage
@@ -159,42 +178,39 @@ function UserMypage() {
     return pageNumbers;
   };
 
-  // console.log(userId);
-  // console.log(profile);
-  // navigate("/userptschedule");
   const handleRefundPage = () => {
-    navigate("/userptschedule", { state: { pt_schedule } });
+    navigate('/userptschedule', { state: { pt_schedule } });
   };
-
   const handleMyInfoUpdate = () => {
-    navigate("/userprofile", { state: { userInfo } });
+    navigate('/userprofile', { state: { userInfo } });
   };
 
   const handleChat = async (trainer_number) => {
+    if (!user_number || !trainer_number) {
+      console.error('user_number 또는 trainer_number가 정의되지 않았습니다.', {
+        user_number,
+        trainer_number,
+      });
+      return;
+    }
+
     try {
-      if (!user_number || !trainer_number) {
-        console.log("pt_schedule:", pt_schedule);
-        console.error("user_number 또는 trainer_number가 정의되지 않았습니다.", { user_number, trainer_number });
-        return; // 값이 없으면 함수 종료
-      }
-  
-      // 채팅방 생성/확인 요청
       const response = await dispatch(
         createChatRoom({ user_number, trainer_number })
       );
-      
+
       if (response?.payload?.room_id) {
-        console.log("채팅방 생성 성공, room_id:", response.payload.room_id);
         navigate(`/chatRoom/${response.payload.room_id}`);
       } else {
-        console.warn("API 응답에서 room_id가 반환되지 않았습니다.", response.payload);
+        console.warn(
+          'API 응답에서 room_id가 반환되지 않았습니다.',
+          response.payload
+        );
       }
     } catch (error) {
-      console.error("채팅방 생성 중 오류 발생:", error);
+      console.error('채팅방 생성 중 오류 발생:', error);
     }
   };
-  
-
   return (
     <div className="max-w-[390px] mx-auto bg-gray-100 p-4">
       <div className="bg-white rounded-lg shadow-md p-4 mb-4 relative">
@@ -235,12 +251,12 @@ function UserMypage() {
             className="flex items-center justify-between bg-gray-300 p-1 mb-2"
           >
             <p className="text-base text-sm">{trainer.trainer_name}</p>
-             <button
-                  onClick={() => handleChat(trainer.trainer_number)}
-                  className="px-3 py-1 bg-pink-300 text-sm rounded-md"
-                >
-                  1:1 채팅하기
-                </button>
+            <button
+              onClick={() => handleChat(trainer.trainer_number)}
+              className="px-3 py-1 bg-pink-300 text-sm rounded-md"
+            >
+              1:1 채팅하기
+            </button>
           </div>
         ))}
         <div className="flex justify-center mt-4">
@@ -276,8 +292,17 @@ function UserMypage() {
 
       <div className="bg-white rounded-lg shadow-md p-2 mb-4">
         <h2 className="text-lg font-semibold p-2">예약된 수업</h2>
-        {classItems.length > 0 ? (
-          classItems.map((schedule) => (
+        <div className="flex items-center mb-4">
+          <label className="text-sm mr-2">완료된 수업만 보기</label>
+          <input
+            type="checkbox"
+            checked={showCompleted}
+            onChange={handleCheckboxChange}
+            className="form-checkbox"
+          />
+        </div>
+        {paginatedClassItems.length > 0 ? (
+          paginatedClassItems.map((schedule) => (
             <div
               key={schedule.schedule_number}
               className="flex items-center justify-between bg-gray-300 p-1 mb-2"
@@ -300,8 +325,10 @@ function UserMypage() {
             </div>
           ))
         ) : (
-          <p>예약된 수업이 없습니다.</p>
+          <p>해당 조건의 수업이 없습니다.</p>
         )}
+
+        {/* Pagination controls */}
         <div className="flex justify-center mt-4">
           <button
             onClick={handleClassPrev}
@@ -310,7 +337,7 @@ function UserMypage() {
           >
             이전
           </button>
-          {getPageNumbers(classTotalPages).map((pageNumber) => (
+          {getPageNumbers(filteredClassTotalPages).map((pageNumber) => (
             <button
               key={pageNumber}
               onClick={() => handleClassPageChange(pageNumber)}
@@ -325,14 +352,13 @@ function UserMypage() {
           ))}
           <button
             onClick={handleClassNext}
-            disabled={classPage === classTotalPages}
+            disabled={classPage === filteredClassTotalPages}
             className="mx-1 px-2 py-1 bg-gray-300 rounded-md"
           >
             다음
           </button>
         </div>
       </div>
-
       <div className="bg-white rounded-lg shadow-md p-2 mb-4">
         <div className="flex justify-between p-2">
           <h2 className="text-lg font-semibold">나의 체성분 기록</h2>

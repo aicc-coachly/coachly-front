@@ -1,16 +1,17 @@
 // src/pages/RefundListPage.js
-import React, { useEffect, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { deleteRefund, getAllRefunds } from "../../redux/slice/refundSlice";
-import { useModal } from "../common/ModalProvider";
-import { RefundPTModal } from "./RefundPTModal";
-import { getPtschedule } from "../../redux/slice/paymentSlice";
+import React, { useEffect, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { deleteRefund, getAllRefunds } from '../../redux/slice/refundSlice';
+import { useModal } from '../common/ModalProvider';
+import { RefundPTModal } from './RefundPTModal';
+import { getPtschedule } from '../../redux/slice/paymentSlice';
 
 const RefundListPage = () => {
   const dispatch = useDispatch();
   const { openModal } = useModal();
 
-  const user_type = localStorage.getItem("userType");
+  const user_type = localStorage.getItem('userType');
+  console.log(user_type);
   const storedUserData = JSON.parse(localStorage.getItem(user_type));
   const user_number = storedUserData?.user_number;
   const trainer_number = storedUserData?.trainer_number;
@@ -20,19 +21,19 @@ const RefundListPage = () => {
 
   // PT 스케줄 가져오기
   useEffect(() => {
-    const payload = user_type === "user" ? { user_number } : { trainer_number };
+    const payload = user_type === 'user' ? { user_number } : { trainer_number };
     dispatch(getPtschedule(payload))
       .unwrap()
       .then((schedules) => {
         const filteredSchedules = schedules.filter((schedule) =>
-          user_type === "user"
+          user_type === 'user'
             ? schedule.user_number === user_number
             : schedule.trainer_number === trainer_number
         );
         setPtSchedules(filteredSchedules); // 전체 스케줄 객체 저장
       })
       .catch((error) => {
-        console.error("PT 스케줄을 불러오는 중 오류가 발생했습니다:", error);
+        console.error('PT 스케줄을 불러오는 중 오류가 발생했습니다:', error);
       });
   }, [dispatch, user_number, user_type, trainer_number]);
 
@@ -45,7 +46,7 @@ const RefundListPage = () => {
         .then((fetchedRefunds) => {
           const activeRefunds = fetchedRefunds.filter(
             (refund) =>
-              refund.status !== "delete" &&
+              refund.status !== 'delete' &&
               ptSchedules.some(
                 (schedule) => schedule.pt_number === refund.pt_number
               )
@@ -53,7 +54,7 @@ const RefundListPage = () => {
           setLocalRefunds(activeRefunds);
         })
         .catch((error) => {
-          console.error("환불 목록을 불러오는 중 오류가 발생했습니다:", error);
+          console.error('환불 목록을 불러오는 중 오류가 발생했습니다:', error);
         });
     }
   }, [dispatch, ptSchedules]);
@@ -68,7 +69,7 @@ const RefundListPage = () => {
         );
       })
       .catch((error) => {
-        console.error("환불을 취소하는 중 오류가 발생했습니다:", error);
+        console.error('환불을 취소하는 중 오류가 발생했습니다:', error);
       });
   };
 
@@ -94,7 +95,7 @@ const RefundListPage = () => {
       <RefundPTModal
         refundData={refund}
         scheduleAmount={associatedSchedule?.amount} // 스케줄의 amount를 전달
-        isEditMode={user_type === "user"} // 유저일 때만 수정 모드로
+        isEditMode={user_type === 'user'} // 유저일 때만 수정 모드로
         onEditSuccess={onEditSuccess}
       />
     );
@@ -115,7 +116,7 @@ const RefundListPage = () => {
               >
                 <p className="font-semibold text-[#081f5c]">
                   환불 등록 일시:
-                  {new Date(refund.refund_date).toISOString().split("T")[0]}
+                  {new Date(refund.refund_date).toISOString().split('T')[0]}
                 </p>
                 <p className="font-semibold text-[#081f5c]">
                   환불 사유: {refund.refund_reason}
@@ -124,15 +125,15 @@ const RefundListPage = () => {
                   환불 상태:
                   <span
                     className={`font-semibold ${
-                      refund.status === "completed"
-                        ? "text-green-500"
-                        : "text-yellow-500"
+                      refund.status === 'completed'
+                        ? 'text-green-500'
+                        : 'text-yellow-500'
                     }`}
                   >
-                    {refund.status === "completed" ? "완료" : "진행 중"}
+                    {refund.status === 'completed' ? '완료' : '진행 중'}
                   </span>
                 </p>
-                {user_type === "user" && refund.status !== "completed" && (
+                {user_type === 'user' && refund.status !== 'completed' && (
                   <div className="flex mt-4 space-x-2">
                     <button
                       className="px-4 py-2 w-1/2 bg-[#081f5c] text-white rounded hover:bg-[#4831D4]"

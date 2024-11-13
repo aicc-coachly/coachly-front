@@ -1,15 +1,15 @@
-import React, { useEffect, useState } from "react";
-import { useNavigate, Link } from "react-router-dom";
-import axios from "axios";
-import Buttons from "../../components/common/Buttons";
-import { useDispatch, useSelector } from "react-redux";
-import { trainerLogin, userLogin } from "../../redux/slice/authSlice";
+import React, { useEffect, useState } from 'react';
+import { useNavigate, Link } from 'react-router-dom';
+import axios from 'axios';
+import Buttons from '../../components/common/Buttons';
+import { useDispatch, useSelector } from 'react-redux';
+import { trainerLogin, userLogin } from '../../redux/slice/authSlice';
 
 function Login() {
   const navigate = useNavigate();
-  const [userType, setUserType] = useState("trainer");
-  const [id, setId] = useState("");
-  const [password, setPassword] = useState("");
+  const [userType, setUserType] = useState('trainer');
+  const [id, setId] = useState('');
+  const [password, setPassword] = useState('');
   const dispatch = useDispatch();
 
   const {
@@ -21,28 +21,28 @@ function Login() {
   useEffect(() => {
     // 로그인 상태가 설정되었고, 'data'와 'loggedInUserType'이 모두 유효할 때만 리디렉션을 실행
     if (data && loggedInUserType) {
-      if (loggedInUserType === "trainer") {
-        navigate("/trainermypage");
-      } else if (loggedInUserType === "user") {
-        navigate("/usermypage");
+      if (loggedInUserType === 'trainer') {
+        navigate('/trainermypage');
+      } else if (loggedInUserType === 'user') {
+        navigate('/usermypage');
       }
     }
 
     // 로그인 실패 메시지 처리
     if (error && !data) {
-      alert("로그인에 실패했습니다.");
+      alert('로그인에 실패했습니다.');
     }
   }, [data, error, loggedInUserType, navigate]);
 
   const handleLogin = () => {
     const loginData =
-      userType === "trainer"
+      userType === 'trainer'
         ? { trainer_id: id, pass: password }
         : { user_id: id, pass: password };
-    localStorage.removeItem("trainer");
-    localStorage.removeItem("user");
+    localStorage.removeItem('trainer');
+    localStorage.removeItem('user');
 
-    if (userType === "trainer") {
+    if (userType === 'trainer') {
       dispatch(trainerLogin(loginData));
     } else {
       dispatch(userLogin(loginData));
@@ -59,21 +59,21 @@ function Login() {
 
         <div className="flex w-full max-w-xs mb-4">
           <button
-            onClick={() => setUserType("trainer")}
+            onClick={() => setUserType('trainer')}
             className={`flex-1 py-2 rounded-l-lg ${
-              userType === "trainer"
-                ? "bg-[#4831D4] text-white"
-                : "bg-[#CCF381] text-[#081f5c]"
+              userType === 'trainer'
+                ? 'bg-[#4831D4] text-white'
+                : 'bg-[#CCF381] text-[#081f5c]'
             }`}
           >
             트레이너
           </button>
           <button
-            onClick={() => setUserType("user")}
+            onClick={() => setUserType('user')}
             className={`flex-1 py-2 rounded-r-lg ${
-              userType === "user"
-                ? "bg-[#4831D4] text-white"
-                : "bg-[#CCF381] text-[#081f5c]"
+              userType === 'user'
+                ? 'bg-[#4831D4] text-white'
+                : 'bg-[#CCF381] text-[#081f5c]'
             }`}
           >
             유저

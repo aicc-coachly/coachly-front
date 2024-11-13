@@ -141,13 +141,13 @@ const TrainerProfile = () => {
   };
 
   return (
-    <div className="max-w-[390px] mx-auto h-auto bg-gray-100 p-4">
-      <div className="mb-4">
-        <h2 className="text-lg font-semibold">내 정보</h2>
+    <div className="max-w-[390px] mx-auto bg-gray-50 p-6 rounded-lg shadow-lg">
+      <div className="text-center mb-6">
+        <h2 className="text-2xl font-bold text-gray-800 mb-4">내 정보</h2>
       </div>
 
       {/* 프로필 사진 */}
-      <div className="w-[16rem] h-[16rem] bg-gray-200 mx-auto mb-4 overflow-hidden">
+      <div className="w-40 h-40 bg-gray-200 mx-auto mb-6 rounded-full overflow-hidden shadow-md">
         {trainerImage ? (
           <img
             src={`${path}/${profile.image}`}
@@ -155,42 +155,54 @@ const TrainerProfile = () => {
             className="object-cover w-full h-full"
           />
         ) : (
-          <p className="text-center text-gray-400">이미지 없음</p>
+          <p className="text-center text-gray-500 pt-16">이미지 없음</p>
         )}
       </div>
 
       {/* 이미지 수정 */}
-      <input type="file" onChange={handleImageChange} className="mb-4" />
-
-      {/* 이름, 전화번호, 소개 */}
-      <div className="text-start px-[2rem] mb-4">
-        <p className="text-base font-medium">이름</p>
+      <div className="mb-6 text-center">
         <input
-          type="text"
-          value={name}
-          onChange={(e) => setName(e.target.value)}
-          className="text-sm text-gray-500 mb-2"
-        />
-        <p className="text-base font-medium">전화번호</p>
-        <input
-          type="text"
-          value={phone}
-          onChange={(e) => setPhone(e.target.value)}
-          className="text-sm text-gray-500 mb-2"
-        />
-        <p className="text-base font-medium">소개</p>
-        <textarea
-          value={resume}
-          onChange={(e) => setResume(e.target.value)}
-          className="text-sm text-gray-500 mb-2 w-full border rounded px-2 py-1"
-          rows="4"
+          type="file"
+          onChange={handleImageChange}
+          className="text-sm text-gray-500 border border-gray-300 rounded-md py-1 px-2 focus:outline-none"
         />
       </div>
 
+      {/* 이름, 전화번호, 소개 */}
+      <div className="text-start px-4 mb-6 space-y-4">
+        <div>
+          <p className="text-base font-medium text-gray-700">이름</p>
+          <input
+            type="text"
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+            className="w-full text-sm text-gray-600 border border-gray-300 rounded-md py-2 px-3 focus:outline-none focus:ring-2 focus:ring-blue-200"
+          />
+        </div>
+        <div>
+          <p className="text-base font-medium text-gray-700">전화번호</p>
+          <input
+            type="text"
+            value={phone}
+            onChange={(e) => setPhone(e.target.value)}
+            className="w-full text-sm text-gray-600 border border-gray-300 rounded-md py-2 px-3 focus:outline-none focus:ring-2 focus:ring-blue-200"
+          />
+        </div>
+        <div>
+          <p className="text-base font-medium text-gray-700">소개</p>
+          <textarea
+            value={resume}
+            onChange={(e) => setResume(e.target.value)}
+            className="w-full text-sm text-gray-600 border border-gray-300 rounded-md py-2 px-3 focus:outline-none focus:ring-2 focus:ring-blue-200"
+            rows="4"
+          />
+        </div>
+      </div>
+
       {/* 주소 관리 */}
-      <div className="mb-4">
-        <h2 className="text-lg font-semibold mb-2">주소 관리</h2>
-        <div className="flex justify-between px-4 mb-4">
+      <div className="mb-6 px-4">
+        <h2 className="text-lg font-semibold text-gray-800 mb-3">주소 관리</h2>
+        <div className="flex flex-col space-y-3">
           <input
             type="text"
             placeholder="주소"
@@ -201,7 +213,7 @@ const TrainerProfile = () => {
                 trainer_address: e.target.value,
               }))
             }
-            className="text-sm text-gray-500 border rounded px-2 py-1 mr-1 w-1/3"
+            className="w-full text-sm text-gray-600 border border-gray-300 rounded-md py-2 px-3 focus:outline-none focus:ring-2 focus:ring-blue-200"
           />
           <input
             type="text"
@@ -213,15 +225,15 @@ const TrainerProfile = () => {
                 trainer_detail_address: e.target.value,
               }))
             }
-            className="text-sm text-gray-500 border rounded px-2 py-1 mr-1 w-1/3"
+            className="w-full text-sm text-gray-600 border border-gray-300 rounded-md py-2 px-3 focus:outline-none focus:ring-2 focus:ring-blue-200"
           />
         </div>
       </div>
 
       {/* 계좌 정보 */}
-      <div className="mb-4">
-        <h2 className="text-lg font-semibold mb-2">계좌 정보</h2>
-        <div className="flex justify-between px-4 mb-4">
+      <div className="mb-6 px-4">
+        <h2 className="text-lg font-semibold text-gray-800 mb-3">계좌 정보</h2>
+        <div className="flex flex-col space-y-3">
           <input
             type="text"
             placeholder="은행"
@@ -229,7 +241,7 @@ const TrainerProfile = () => {
             onChange={(e) =>
               setBankAccount({ ...bankAccount, bank_name: e.target.value })
             }
-            className="text-sm text-gray-500 border rounded px-2 py-1 mr-1 w-1/3"
+            className="w-full text-sm text-gray-600 border border-gray-300 rounded-md py-2 px-3 focus:outline-none focus:ring-2 focus:ring-blue-200"
           />
           <input
             type="text"
@@ -238,7 +250,7 @@ const TrainerProfile = () => {
             onChange={(e) =>
               setBankAccount({ ...bankAccount, account: e.target.value })
             }
-            className="text-sm text-gray-500 border rounded px-2 py-1 mr-1 w-1/3"
+            className="w-full text-sm text-gray-600 border border-gray-300 rounded-md py-2 px-3 focus:outline-none focus:ring-2 focus:ring-blue-200"
           />
           <input
             type="text"
@@ -247,35 +259,39 @@ const TrainerProfile = () => {
             onChange={(e) =>
               setBankAccount({ ...bankAccount, account_name: e.target.value })
             }
-            className="text-sm text-gray-500 border rounded px-2 py-1 w-1/3"
+            className="w-full text-sm text-gray-600 border border-gray-300 rounded-md py-2 px-3 focus:outline-none focus:ring-2 focus:ring-blue-200"
           />
         </div>
       </div>
 
       {/* PT 비용 옵션 */}
-      <div className="mb-4">
-        <h2 className="text-lg font-semibold mb-2">PT 비용 옵션</h2>
+      <div className="mb-6 px-4">
+        <h2 className="text-lg font-semibold text-gray-800 mb-3">
+          PT 비용 옵션
+        </h2>
         {ptCostOptions.map((option, index) => (
           <div key={index} className="mb-4">
-            <p className="font-medium">{option.option}</p>
-            <input
-              type="number"
-              placeholder="가격"
-              value={option.amount}
-              onChange={(e) =>
-                handlePtCostChange(index, 'amount', e.target.value)
-              }
-              className="text-sm text-gray-500 border rounded px-2 py-1 mb-2 w-full"
-            />
-            <input
-              type="number"
-              placeholder="횟수"
-              value={option.frequency}
-              onChange={(e) =>
-                handlePtCostChange(index, 'frequency', e.target.value)
-              }
-              className="text-sm text-gray-500 border rounded px-2 py-1 w-full"
-            />
+            <p className="font-medium text-gray-700 mb-2">{option.option}</p>
+            <div className="flex space-x-3">
+              <input
+                type="number"
+                placeholder="가격"
+                value={option.amount}
+                onChange={(e) =>
+                  handlePtCostChange(index, 'amount', e.target.value)
+                }
+                className="w-1/2 text-sm text-gray-600 border border-gray-300 rounded-md py-2 px-3 focus:outline-none focus:ring-2 focus:ring-blue-200"
+              />
+              <input
+                type="number"
+                placeholder="횟수"
+                value={option.frequency}
+                onChange={(e) =>
+                  handlePtCostChange(index, 'frequency', e.target.value)
+                }
+                className="w-1/2 text-sm text-gray-600 border border-gray-300 rounded-md py-2 px-3 focus:outline-none focus:ring-2 focus:ring-blue-200"
+              />
+            </div>
           </div>
         ))}
       </div>
@@ -283,7 +299,7 @@ const TrainerProfile = () => {
       {/* 저장하기 버튼 */}
       <button
         onClick={handleSave}
-        className="w-full py-2 bg-pink-300 text-sm font-medium rounded-md"
+        className="w-full py-3 bg-pink-400 text-white text-sm font-semibold rounded-md shadow hover:bg-pink-500 transition duration-200"
       >
         저장하기
       </button>
