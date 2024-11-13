@@ -23,10 +23,10 @@ function Header() {
 
   // 특정 페이지에서 메뉴바 숨김
   const hideMenuBar = [
-    "/",
-    "/sortsignup",
-    "/trainersignup",
-    "/usersignup",
+    '/',
+    '/sortsignup',
+    '/trainersignup',
+    '/usersignup',
   ].includes(location.pathname);
 
   return (
@@ -35,7 +35,16 @@ function Header() {
       <div className="w-8"></div>
 
       {/* 가운데 로고 */}
-      <Link to="/" className="flex justify-center flex-grow">
+      <Link
+        to={
+          userType === 'user'
+            ? '/usermypage'
+            : userType === 'trainer'
+            ? '/trainermypage'
+            : '/'
+        }
+        className="flex justify-center flex-grow"
+      >
         <img src={logo} alt="로고" className="w-12 sm:w-16 h-auto" />
       </Link>
 
@@ -43,7 +52,7 @@ function Header() {
       {!hideMenuBar && isLoggedIn && (
         <>
           <button onClick={toggleMenu} className="text-2xl">
-            {menuOpen ? "✕" : "≡"}
+            {menuOpen ? '✕' : '≡'}
           </button>
           {menuOpen && (
             <div className="absolute right-4 z-50 top-16 bg-white shadow-md rounded-lg p-4 flex flex-col space-y-2">

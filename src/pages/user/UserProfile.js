@@ -1,11 +1,11 @@
-import React, { useState, useEffect } from "react";
-import { useLocation, useNavigate } from "react-router-dom";
-import { useDispatch, useSelector } from "react-redux";
+import React, { useState, useEffect } from 'react';
+import { useLocation, useNavigate } from 'react-router-dom';
+import { useDispatch, useSelector } from 'react-redux';
 import {
   getUser,
   updateUserInfo,
   updateUserAddress,
-} from "../../redux/slice/userSlice";
+} from '../../redux/slice/userSlice';
 
 const UserProfile = () => {
   const location = useLocation();
@@ -20,11 +20,11 @@ const UserProfile = () => {
   const user_number = userInfo?.user_number || storedUserNumber;
 
   // 유저 프로필 정보 상태 관리
-  const [name, setName] = useState("");
-  const [phone, setPhone] = useState("");
-  const [email, setEmail] = useState("");
-  const [address, setAddress] = useState("");
-  const [detailAddress, setDetailAddress] = useState("");
+  const [name, setName] = useState('');
+  const [phone, setPhone] = useState('');
+  const [email, setEmail] = useState('');
+  const [address, setAddress] = useState('');
+  const [detailAddress, setDetailAddress] = useState('');
 
   // 유저 정보를 처음 불러올 때 상태 초기화
   useEffect(() => {
@@ -37,11 +37,11 @@ const UserProfile = () => {
 
     // Redux 상태에 유저 정보가 있을 때 로컬 상태 초기화
     if (userInfo) {
-      setName(userInfo.name || "");
-      setPhone(userInfo.phone || "");
-      setEmail(userInfo.email || "");
-      setAddress(userInfo.user_address || "");
-      setDetailAddress(userInfo.user_detail_address || "");
+      setName(userInfo.name || '');
+      setPhone(userInfo.phone || '');
+      setEmail(userInfo.email || '');
+      setAddress(userInfo.user_address || '');
+      setDetailAddress(userInfo.user_detail_address || '');
     }
   }, [dispatch, user_number, userInfo]);
 
@@ -67,7 +67,7 @@ const UserProfile = () => {
     );
 
     // 저장 후 마이페이지로 돌아가기
-    navigate("/usermypage");
+    navigate('/usermypage');
   };
 
   return (

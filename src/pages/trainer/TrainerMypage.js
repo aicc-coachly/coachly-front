@@ -1,83 +1,63 @@
-import React, { useEffect, useState } from "react";
-import { useModal } from "../../components/common/ModalProvider";
-import { EditScheduleModal } from "../../components/trainer/EditScheduleModal";
-import { CreateScheduleModal } from "../../components/trainer/CreateScheduleModal";
-import { UserModal } from "../../components/user/UserModal";
-import { useNavigate } from "react-router-dom";
-import { useDispatch, useSelector } from "react-redux";
+import React, { useEffect, useState } from 'react';
+import { useModal } from '../../components/common/ModalProvider';
+import { EditScheduleModal } from '../../components/trainer/EditScheduleModal';
+import { CreateScheduleModal } from '../../components/trainer/CreateScheduleModal';
+import { UserModal } from '../../components/user/UserModal';
+import { useNavigate } from 'react-router-dom';
+import { useDispatch, useSelector } from 'react-redux';
 import {
   getTrainer,
   updateTrainerStatus,
-} from "../../redux/slice/trainerSlice";
-import { setTrainer } from "../../redux/slice/authSlice";
-import { getPtschedule } from "../../redux/slice/paymentSlice";
+} from '../../redux/slice/trainerSlice';
+import { setTrainer } from '../../redux/slice/authSlice';
+import { getPtschedule } from '../../redux/slice/paymentSlice';
 import {
   deletePtSchedule,
   getScheduleRecord,
   patchPtSchedule,
-} from "../../redux/slice/scheduleSlice";
-import { getUser } from "../../redux/slice/userSlice";
-import { CheckScheduleModal } from "../../components/trainer/CheckScheduleModal";
+} from '../../redux/slice/scheduleSlice';
+import { getUser } from '../../redux/slice/userSlice';
+import { CheckScheduleModal } from '../../components/trainer/CheckScheduleModal';
 
 const TrainerMypage = () => {
   const { openModal } = useModal();
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const [paidUsers, setPaidUsers] = useState([]);
-  const [isFetched, setIsFetched] = useState(false);
-  const [selectedSchedule, setSelectedSchedule] = useState(null);
-  const [scheduleRecords, setScheduleRecords] = useState([]);
-  const [isChecked, setIsChecked] = useState(false);
 
+  const [scheduleRecords, setScheduleRecords] = useState([]);
+  const [isFetched, setIsFetched] = useState(false);
+  const [isChecked, setIsChecked] = useState(false);
   const trainer_number = useSelector(
     (state) => state.auth?.trainer?.trainer_number
   );
   const profile = useSelector((state) => state.trainer?.data);
-  const trainerInfo = useSelector((state) => state.trainer?.data);
-
   const pt_schedule = useSelector((state) => state.payment?.data) || [];
-  const path = "http://localhost:8000";
-  console.log(pt_schedule);
+
+  const path = 'http://localhost:8000';
+
   // Trainer 정보를 가져오는 useEffect
   useEffect(() => {
     if (trainer_number) {
-      dispatch(getTrainer(trainer_number)).then((response) => {
-        console.log("Trainer Profile Response:", response.payload);
-      });
+      dispatch(getTrainer(trainer_number));
     } else {
-      const storedTrainer = JSON.parse(localStorage.getItem("trainer"));
+      const storedTrainer = JSON.parse(localStorage.getItem('trainer'));
       if (storedTrainer) {
         dispatch(setTrainer(storedTrainer));
       }
     }
   }, [dispatch, trainer_number]);
 
-  // profile 상태에 따라 체크박스 초기 상태 설정
+  // 트레이너 상태 설정
   useEffect(() => {
     if (profile) {
-      setIsChecked(profile.status === "inactive");
+      setIsChecked(profile.status === 'inactive');
     }
   }, [profile]);
 
-  // PT 스케줄 가져오기 및 paidUsers 설정
+  // PT 스케줄 가져오기
   useEffect(() => {
     if (trainer_number) {
-      dispatch(getPtschedule({ trainer_number }))
-        .then((response) => {
-          if (response.payload) {
-            const users = response.payload.reduce((acc, curr) => {
-              if (!acc.some((user) => user.user_number === curr.user_number)) {
-                acc.push({
-                  user_number: curr.user_number,
-                  user_name: curr.user_name,
-                });
-              }
-              return acc;
-            }, []);
-            setPaidUsers(users);
-          }
-        })
-        .catch((error) => console.error("Error fetching PT schedule:", error));
+      dispatch(getPtschedule({ trainer_number }));
     }
   }, [dispatch, trainer_number]);
 
@@ -98,12 +78,12 @@ const TrainerMypage = () => {
       setScheduleRecords(mergedRecords);
       setIsFetched(true);
     } catch (error) {
-      console.error("Error fetching schedule records:", error);
+      console.error('Error fetching schedule records:', error);
     }
   };
 
   useEffect(() => {
-    if (!isFetched) {
+    if (!isFetched && pt_schedule.length > 0) {
       fetchScheduleRecords();
     }
   }, [isFetched, pt_schedule]);
@@ -113,15 +93,15 @@ const TrainerMypage = () => {
     pt_schedule.forEach((schedule) => {
       if (schedule.user_number) {
         dispatch(getUser(schedule.user_number)).catch((error) =>
-          console.error("Error fetching user info:", error)
+          console.error('Error fetching user info:', error)
         );
       }
     });
   }, [pt_schedule, dispatch]);
 
-  // 체크박스 상태 업데이트 핸들러
+  // 트레이너 상태 변경 핸들러
   const handleCheckboxChange = async (e) => {
-    const newStatus = e.target.checked ? "inactive" : "active";
+    const newStatus = e.target.checked ? 'inactive' : 'active';
     setIsChecked(e.target.checked);
 
     try {
@@ -130,14 +110,11 @@ const TrainerMypage = () => {
       );
       dispatch(getTrainer(trainer_number));
     } catch (error) {
-      console.error("Error updating trainer status:", error);
+      console.error('Error updating trainer status:', error);
     }
-  
   };
-    // console.log(trainerNumber);
-  // console.log(profile);
 
-  // 모달 관련 핸들러 함수들
+  // 모달 관련 핸들러
   const handleOpenUserModal = (pt_number) => {
     openModal(<UserModal pt_number={pt_number} />);
   };
@@ -149,7 +126,6 @@ const TrainerMypage = () => {
   };
 
   const handleOpenPtScheduleModal = (schedule) => {
-    setSelectedSchedule(schedule);
     openModal(
       <CheckScheduleModal
         schedule={schedule}
@@ -168,11 +144,12 @@ const TrainerMypage = () => {
   };
 
   const handleMyInfoUpdate = () => {
-    navigate("/trainerprofile", { state: { trainerInfo } });
+    navigate('/trainerprofile', { state: { profile } });
   };
 
+  // 중복된 유저 제거
   const uniqueSchedules = pt_schedule
-    .filter((schedule) => schedule.status !== "completed") // status가 "completed"인 항목 제외
+    .filter((schedule) => schedule.status !== 'completed')
     .reduce((acc, schedule) => {
       if (!acc.some((item) => item.user_number === schedule.user_number)) {
         acc.push(schedule);
@@ -185,7 +162,7 @@ const TrainerMypage = () => {
       <div className="bg-white rounded-lg shadow-md p-4 mb-4 relative">
         <h2 className="text-lg font-semibold mb-2">내 정보</h2>
         <button
-          onClick={() => handleMyInfoUpdate()}
+          onClick={handleMyInfoUpdate}
           className="absolute top-4 right-4 px-3 py-1 bg-gray-300 text-sm rounded-full"
         >
           수정하기
@@ -220,25 +197,21 @@ const TrainerMypage = () => {
               <p className="px-3 py-1 bg-gray-300 text-sm rounded-md">
                 {profile?.trainer_address}
                 {profile?.trainer_detail_address}
-
               </p>
-
             </div>
           </div>
         </div>
       </div>
 
-      {uniqueSchedules.length > 0 &&
-        uniqueSchedules.map((schedule) => (
-          <div
-            key={schedule.pt_number}
-            className="bg-white rounded-lg shadow-md p-4 mb-4"
-          >
-            <h2 className="text-lg font-semibold mb-2">내 회원 관리</h2>
-            <div className="flex items-center justify-between">
-              <div>
-                <p>{schedule.user_name} 회원님</p>
-              </div>
+      {uniqueSchedules.length > 0 && (
+        <div className="bg-white rounded-lg shadow-md p-4 mb-4">
+          <h2 className="text-lg font-semibold mb-2">내 회원 관리</h2>
+          {uniqueSchedules.map((schedule) => (
+            <div
+              key={schedule.pt_number}
+              className="flex items-center justify-between"
+            >
+              <p>{schedule.user_name} 회원님</p>
               <div className="flex gap-2">
                 <button
                   onClick={() => handleOpenUserModal(schedule)}
@@ -247,7 +220,7 @@ const TrainerMypage = () => {
                   유저 인바디 확인하기
                 </button>
                 <button
-                  onClick={() => navigate("/trainerChat")}
+                  onClick={() => navigate('/trainerChat')}
                   className="px-3 py-1 bg-pink-300 text-sm rounded-md"
                 >
                   1:1 채팅하기
@@ -260,12 +233,13 @@ const TrainerMypage = () => {
                 </button>
               </div>
             </div>
-          </div>
-        ))}
+          ))}
+        </div>
+      )}
 
       {scheduleRecords.length > 0 ? (
         scheduleRecords
-          .filter((schedule) => schedule.status !== "deleted")
+          .filter((schedule) => schedule.status !== 'deleted')
           .map((schedule) => (
             <div
               key={schedule.schedule_number}

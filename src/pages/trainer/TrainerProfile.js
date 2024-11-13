@@ -1,6 +1,6 @@
-import React, { useEffect, useState } from "react";
-import { useLocation, useNavigate } from "react-router-dom";
-import { useDispatch, useSelector } from "react-redux";
+import React, { useEffect, useState } from 'react';
+import { useLocation, useNavigate } from 'react-router-dom';
+import { useDispatch, useSelector } from 'react-redux';
 import {
   getTrainer,
   updateTrainerInfo,
@@ -8,63 +8,63 @@ import {
   updateTrainerAccount,
   updateTrainerPtCost,
   updateTrainerImage, // 새로 추가된 업데이트 함수
-} from "../../redux/slice/trainerSlice";
+} from '../../redux/slice/trainerSlice';
 
 const TrainerProfile = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const path = "http://localhost:8000";
-  const trainerInfo = location.state?.trainerInfo || {};
-  console.log(trainerInfo);
+  const path = 'http://localhost:8000';
+  const profile = location.state?.profile || {};
+  console.log(profile);
 
-  const [name, setName] = useState("");
-  const [phone, setPhone] = useState("");
-  const [resume, setResume] = useState("");
-  const [trainerImage, setTrainerImage] = useState("");
+  const [name, setName] = useState('');
+  const [phone, setPhone] = useState('');
+  const [resume, setResume] = useState('');
+  const [trainerImage, setTrainerImage] = useState('');
   const [newImage, setNewImage] = useState(null); // 새 이미지 파일
 
   const [addressSections, setAddressSections] = useState({
-    trainer_address: "",
-    trainer_detail_address: "",
-    trainer_zipcode: "",
+    trainer_address: '',
+    trainer_detail_address: '',
+    trainer_zipcode: '',
   });
 
   const [bankAccount, setBankAccount] = useState({
-    bank_name: "",
-    account: "",
-    account_name: "",
+    bank_name: '',
+    account: '',
+    account_name: '',
   });
 
   const [ptCostOptions, setPtCostOptions] = useState([]);
 
   useEffect(() => {
     // trainerInfo가 있을 때만 로컬 상태 초기화
-    if (trainerInfo) {
-      setName(trainerInfo.name || "");
-      setPhone(trainerInfo.phone || "");
-      setResume(trainerInfo.resume || "");
-      setTrainerImage(trainerInfo.image || "");
+    if (profile) {
+      setName(profile.name || '');
+      setPhone(profile.phone || '');
+      setResume(profile.resume || '');
+      setTrainerImage(profile.image || '');
 
       setAddressSections({
-        trainer_address: trainerInfo.trainer_address || "",
-        trainer_detail_address: trainerInfo.trainer_detail_address || "",
-        trainer_zipcode: trainerInfo.trainer_zipcode || "",
+        trainer_address: profile.trainer_address || '',
+        trainer_detail_address: profile.trainer_detail_address || '',
+        trainer_zipcode: profile.trainer_zipcode || '',
       });
 
-      if (trainerInfo.bank_account) {
+      if (profile.bank_account) {
         setBankAccount({
-          bank_name: trainerInfo.bank_account.bank_name || "",
-          account: trainerInfo.bank_account.account || "",
-          account_name: trainerInfo.bank_account.account_name || "",
+          bank_name: profile.bank_account.bank_name || '',
+          account: profile.bank_account.account || '',
+          account_name: profile.bank_account.account_name || '',
         });
       }
 
-      if (trainerInfo.pt_cost_options) {
-        setPtCostOptions(trainerInfo.pt_cost_options);
+      if (profile.pt_cost_options) {
+        setPtCostOptions(profile.pt_cost_options);
       }
     }
-  }, [trainerInfo]); // trainerInfo가 업데이트될 때만 실행
+  }, [profile]); // trainerInfo가 업데이트될 때만 실행
 
   const handleImageChange = (e) => {
     setNewImage(e.target.files[0]);
@@ -84,7 +84,7 @@ const TrainerProfile = () => {
     const trainerData = { name, phone };
     await dispatch(
       updateTrainerInfo({
-        trainer_number: trainerInfo.trainer_number,
+        trainer_number: profile.trainer_number,
         updateData: trainerData,
       })
     );
@@ -93,7 +93,7 @@ const TrainerProfile = () => {
     const addressData = addressSections;
     await dispatch(
       updateTrainerGymAddress({
-        trainer_number: trainerInfo.trainer_number,
+        trainer_number: profile.trainer_number,
         updateData: addressData,
       })
     );
@@ -101,7 +101,7 @@ const TrainerProfile = () => {
     const bankData = bankAccount;
     await dispatch(
       updateTrainerAccount({
-        trainer_number: trainerInfo.trainer_number,
+        trainer_number: profile.trainer_number,
         updateData: bankData,
       })
     );
@@ -109,7 +109,7 @@ const TrainerProfile = () => {
     for (const option of ptCostOptions) {
       await dispatch(
         updateTrainerPtCost({
-          trainer_number: trainerInfo.trainer_number,
+          trainer_number: profile.trainer_number,
           updateData: {
             amount: option.amount,
             frequency: option.frequency,
@@ -120,14 +120,14 @@ const TrainerProfile = () => {
     }
 
     const resumeAndImageData = new FormData();
-    resumeAndImageData.append("resume", resume);
+    resumeAndImageData.append('resume', resume);
     if (newImage) {
-      resumeAndImageData.append("trainer_image", newImage);
+      resumeAndImageData.append('trainer_image', newImage);
     }
 
     await dispatch(
       updateTrainerImage({
-        trainer_number: trainerInfo.trainer_number,
+        trainer_number: profile.trainer_number,
         resume: resume,
         trainer_image: newImage,
       })
@@ -137,7 +137,7 @@ const TrainerProfile = () => {
     await dispatch(getTrainer());
 
     // 페이지 이동
-    navigate("/TrainerMyPage");
+    navigate('/TrainerMyPage');
   };
 
   return (
@@ -150,7 +150,7 @@ const TrainerProfile = () => {
       <div className="w-[16rem] h-[16rem] bg-gray-200 mx-auto mb-4 overflow-hidden">
         {trainerImage ? (
           <img
-            src={`${path}/${trainerInfo.image}`}
+            src={`${path}/${profile.image}`}
             alt="프로필 사진"
             className="object-cover w-full h-full"
           />
@@ -263,7 +263,7 @@ const TrainerProfile = () => {
               placeholder="가격"
               value={option.amount}
               onChange={(e) =>
-                handlePtCostChange(index, "amount", e.target.value)
+                handlePtCostChange(index, 'amount', e.target.value)
               }
               className="text-sm text-gray-500 border rounded px-2 py-1 mb-2 w-full"
             />
@@ -272,7 +272,7 @@ const TrainerProfile = () => {
               placeholder="횟수"
               value={option.frequency}
               onChange={(e) =>
-                handlePtCostChange(index, "frequency", e.target.value)
+                handlePtCostChange(index, 'frequency', e.target.value)
               }
               className="text-sm text-gray-500 border rounded px-2 py-1 w-full"
             />
