@@ -3,15 +3,13 @@ import io from 'socket.io-client';
 import { useDispatch, useSelector } from 'react-redux';
 import { UserChatButtons, TrainerChatButtons } from '../../components/common/Buttons';
 import { useParams } from 'react-router-dom';
-
-// Redux Thunks
-import { leaveChatRoom, fetchChatMessages, fetchChatRoom } from '../../redux/thunks/chatThunks';
+import { leaveChatRoom, fetchChatRoom } from '../../redux/thunks/chatThunks';
 import { addMessage } from '../../redux/slice/chatSlice';
 
 const ChatRoom = () => {
   const { roomId } = useParams();
   const dispatch = useDispatch();
-  const socketRef = useRef(null); // useRef로 소켓 인스턴스를 저장
+  const socketRef = useRef(null);
 
   const [input, setInput] = useState("");
   const [isTrainer, setIsTrainer] = useState(false);
@@ -55,28 +53,31 @@ const ChatRoom = () => {
 
   useEffect(() => {
     if (!socketRef.current) {
-      socketRef.current = io(process.env.REACT_APP_API_URL || "http://localhost:8000");
-  
+      socketRef.current = io("http://localhost:8000");
+
       socketRef.current.on("connect", () => {
         console.log("Connected to server:", socketRef.current.id);
       });
-  
-      // messageReceived 이벤트 리스너가 중복 등록되지 않도록 한 번만 설정
+
       const handleMessageReceived = (message) => {
         console.log("Message received from server:", message);
         dispatch(addMessage(message));
       };
-  
+
       socketRef.current.on("messageReceived", handleMessageReceived);
-  
-      // Clean up to avoid multiple listeners
+
+      socketRef.current.emit("joinRoom", roomId);
+
       return () => {
-        socketRef.current.off("messageReceived", handleMessageReceived);
-        socketRef.current.disconnect();
-        socketRef.current = null;
+        if (socketRef.current) {
+          socketRef.current.off("messageReceived", handleMessageReceived);
+          socketRef.current.emit("leaveRoom", roomId);
+          socketRef.current.disconnect();
+          socketRef.current = null;
+        }
       };
     }
-  }, [roomId, dispatch, userType]);
+  }, [roomId, dispatch]);
 
   const sendMessage = useCallback(() => {
     if (input.trim()) {
