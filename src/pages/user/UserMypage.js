@@ -10,6 +10,7 @@ import { getUser, getUserInbody } from '../../redux/slice/userSlice';
 import { setUser } from '../../redux/slice/authSlice';
 import { getPtschedule } from '../../redux/slice/paymentSlice';
 import { getScheduleRecord } from '../../redux/slice/scheduleSlice';
+import { createChatRoom } from "../../redux/thunks/chatThunks";
 
 // 중복 트레이너 제거 함수
 const getUniqueTrainers = (schedule) => {
@@ -25,7 +26,7 @@ const getUniqueTrainers = (schedule) => {
 
   return uniqueTrainers;
 };
-import { createChatRoom } from "../../redux/thunks/chatThunks";
+
 
 function UserMypage() {
   const dispatch = useDispatch();
