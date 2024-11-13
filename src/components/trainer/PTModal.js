@@ -21,6 +21,7 @@ export const PTModal = ({
   const [isPaymentReady, setIsPaymentReady] = useState(false); // 결제 준비 상태 추가
   const trainerProfile = trainer || {};
   const trainerImage = trainerProfile.image;
+
   const path = 'http://localhost:8000';
 
   useEffect(() => {
@@ -28,7 +29,6 @@ export const PTModal = ({
       dispatch(getTrainer(trainer_number));
     }
   }, [trainer_number, dispatch]);
-  // console.log(pt_cost_option);
 
   const trainerPtCostData = pt_cost_option;
   const filteredPtCostData = trainerPtCostData
@@ -118,13 +118,13 @@ export const PTModal = ({
     try {
       const result = await dispatch(
         createPtPayment({
-          user_number,
+          user_number: user_number,
           trainer_number,
           payment_option: selectedOption,
           amount_number: selectedCost.amount_number,
         })
       ).unwrap();
-
+      // console.log(user_number);
       const { pt_number, payment_number } = result;
 
       await paymentWidgets.requestPayment({
@@ -143,8 +143,10 @@ export const PTModal = ({
   };
 
   return (
-       <div className="max-w-sm p-6 w-full rounded-lg relative bg-white">
-              {/* 트레이너 정보 섹션 */}
+
+    <div className="max-w-sm p-6 w-full rounded-lg relative bg-white">
+      {/* 트레이너 정보 섹션 */}
+
       <div className="flex gap-4 mb-6">
         <picture className="w-32 h-32 bg-gray-200 rounded-lg flex items-center justify-center">
           {trainerImage ? (
@@ -161,7 +163,10 @@ export const PTModal = ({
         <div className="flex flex-col gap-4">
           <p className="font-bold text-lg">{trainerProfile.name}</p>
           <p className="text-[#4831D4]">
-          {trainerProfile.trainer_address || '주소 없음'} {trainerProfile.trainer_detail_address || ''}          </p>
+            {trainerProfile.trainer_address || "주소 없음"}{" "}
+            {trainerProfile.trainer_detail_address || ""}{" "}
+          </p>
+
           <div className="flex gap-2">
             {trainer.service_options?.map((option, index) => (
               <span
@@ -174,7 +179,6 @@ export const PTModal = ({
           </div>
         </div>
       </div>
-
 
       {/* 가격 선택 섹션 */}
       <div className="flex flex-col gap-4 mb-6">
@@ -217,3 +221,4 @@ export default PTModal;
 PTModal.defaultProps = {
   trainer: {},
 };
+

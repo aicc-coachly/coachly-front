@@ -45,11 +45,12 @@ function UserMypage() {
   //   ? pt_schedule.map((item) => item.pt_number)
   //   : [];
   const userInfo = useSelector((state) => state.user?.userInfo);
-  // const aaa = useSelector((state) => state);
 
-  // console.log(aaa);
+  const aaa = useSelector((state) => state);
 
-  // console.log(pt_schedules);
+  console.log(aaa);
+
+  // console.log(schedule_record);
   // console.log(inbodyData);
   // console.log(schedule_record);
   // 측정 날짜가 유효한 경우만 포맷하고, 유효하지 않으면 빈 문자열을 반환
@@ -241,7 +242,7 @@ function UserMypage() {
               >
                 <p className="text-base text-sm">{trainer.trainer_name}</p>
                 <button
-                  onClick={() => navigate("/UserChat")}
+                  onClick={() => navigate("/chatroom")}
                   className="px-3 py-1 bg-pink-300 text-sm rounded-md"
                 >
                   1:1 채팅하기

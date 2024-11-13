@@ -39,7 +39,7 @@ function App() {
             {/* chat */}
             <Route path="/chatlist" element={<ChatList />} />
             <Route path="/Success" element={<Success />} />
-            <Route path="/chatroom" element={<ChatRoom />} />
+            <Route path="/chatroom:roomId" element={<ChatRoom />} />
 
             {/* 트레이너 메인 페이지 */}
             <Route path="/trainerprofile" element={<TrainerProfile />} />

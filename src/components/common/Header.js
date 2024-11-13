@@ -33,6 +33,7 @@ function Header() {
     "/userprofile",
     "/userptschedule",
     "/chatlist",
+    "/chatroom",
   ];
 
   const isTrainerPage = trainerPages.includes(location.pathname);
