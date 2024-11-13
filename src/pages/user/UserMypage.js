@@ -10,6 +10,7 @@ import { getUser, getUserInbody } from "../../redux/slice/userSlice";
 import { setUser } from "../../redux/slice/authSlice";
 import { getPtschedule } from "../../redux/slice/paymentSlice";
 import { getScheduleRecord } from "../../redux/slice/scheduleSlice";
+import { createChatRoom } from "../../redux/thunks/chatThunks";
 
 function UserMypage() {
   const dispatch = useDispatch();
@@ -178,6 +179,31 @@ function UserMypage() {
     navigate("/userprofile", { state: { userInfo } });
   };
 
+  const handleChat = async (trainer_number) => {
+    try {
+      if (!user_number || !trainer_number) {
+        console.log("pt_schedule:", pt_schedule);
+        console.error("user_number 또는 trainer_number가 정의되지 않았습니다.", { user_number, trainer_number });
+        return; // 값이 없으면 함수 종료
+      }
+  
+      // 채팅방 생성/확인 요청
+      const response = await dispatch(
+        createChatRoom({ user_number, trainer_number })
+      );
+      
+      if (response?.payload?.room_id) {
+        console.log("채팅방 생성 성공, room_id:", response.payload.room_id);
+        navigate(`/chatRoom/${response.payload.room_id}`);
+      } else {
+        console.warn("API 응답에서 room_id가 반환되지 않았습니다.", response.payload);
+      }
+    } catch (error) {
+      console.error("채팅방 생성 중 오류 발생:", error);
+    }
+  };
+  
+
   return (
     <div className="max-w-[390px] mx-auto bg-gray-100 p-4">
       {/* 내 정보 섹션 */}
@@ -242,7 +268,7 @@ function UserMypage() {
               >
                 <p className="text-base text-sm">{trainer.trainer_name}</p>
                 <button
-                  onClick={() => navigate("/chatroom")}
+                  onClick={() => handleChat(trainer.trainer_number)}
                   className="px-3 py-1 bg-pink-300 text-sm rounded-md"
                 >
                   1:1 채팅하기
