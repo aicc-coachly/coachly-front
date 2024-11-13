@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useCallback } from 'react';
+import React, { useEffect, useState, useCallback, useRef } from 'react';
 import io from 'socket.io-client';
 import { useDispatch, useSelector } from 'react-redux';
 import { UserChatButtons, TrainerChatButtons } from '../../components/common/Buttons';
@@ -11,18 +11,18 @@ import { addMessage } from '../../redux/slice/chatSlice';
 const ChatRoom = () => {
   const { roomId } = useParams();
   const dispatch = useDispatch();
+  const socketRef = useRef(null); // useRef로 소켓 인스턴스를 저장
+
   const [input, setInput] = useState("");
   const [isTrainer, setIsTrainer] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
-  const [otherPartyName, setOtherPartyName] = useState(""); // 상대방 이름 상태
+  const [otherPartyName, setOtherPartyName] = useState(""); 
 
-   // Redux 상태에서 필요한 정보 가져오기
-   const userType = useSelector((state) => state.auth.userType);
+  const userType = useSelector((state) => state.auth.userType);
   const userNumber = useSelector((state) => state.auth.user?.user_number);
   const trainerNumber = useSelector((state) => state.auth.trainer?.trainer_number);
   const messages = useSelector((state) => state.chat.messages);
 
-  // userType에 따라 user_number 또는 trainer_number 중 하나 선택
   const idToSend = userType === "user" ? userNumber : trainerNumber;
 
   useEffect(() => {
@@ -35,9 +35,9 @@ const ChatRoom = () => {
           response = await dispatch(fetchChatRoom({ roomId, trainerNumber })).unwrap();
         } else {
           console.warn("유효한 userNumber 또는 trainerNumber가 없습니다.");
-          return; // userNumber나 trainerNumber가 유효하지 않으면 실행 중지
+          return;
         }
-        
+
         if (response) {
           setOtherPartyName(response.other_party_name);
         }
@@ -45,42 +45,38 @@ const ChatRoom = () => {
         console.error("Error fetching chat room details:", error);
       }
     };
-  
-    console.log("userType:", userType);
-    console.log("userNumber:", userNumber);
-    console.log("trainerNumber:", trainerNumber);
-    console.log("idToSend:", idToSend);
-  
+
     fetchOtherPartyName();
-  
+
     return () => {
       dispatch(leaveChatRoom(roomId));
     };
   }, [dispatch, roomId, userType, userNumber, trainerNumber]);
-  
 
-  // Socket 연결 설정
-  const socket = io(process.env.REACT_APP_API_URL || "http://localhost:8000");
-
-  socket.on('connect', () => {
-    console.log('Connected to server:', socket.id);
-  });
-
-  
   useEffect(() => {
-    setIsTrainer(userType === "trainer");
-    socket.emit("joinRoom", roomId);
+    if (!socketRef.current) {
+      socketRef.current = io(process.env.REACT_APP_API_URL || "http://localhost:8000");
 
-    const handleReceivedMessage = (message) => {
-      dispatch(addMessage(message));
-    };
+      socketRef.current.on('connect', () => {
+        console.log('Connected to server:', socketRef.current.id);
+      });
 
-    socket.on('messageReceived', handleReceivedMessage);
-    dispatch(fetchChatMessages(roomId));
+      socketRef.current.emit("joinRoom", roomId);
+
+      socketRef.current.on("messageReceived", (message) => {
+        dispatch(addMessage(message));
+      });
+
+      dispatch(fetchChatMessages(roomId));
+    }
 
     return () => {
-      socket.off('messageReceived', handleReceivedMessage);
-      socket.emit('leaveRoom', roomId);
+      if (socketRef.current) {
+        socketRef.current.off("messageReceived");
+        socketRef.current.emit("leaveRoom", roomId);
+        socketRef.current.disconnect(); // 소켓 연결 해제
+        socketRef.current = null; // 소켓 인스턴스 초기화
+      }
     };
   }, [roomId, dispatch, userType]);
 
@@ -88,12 +84,12 @@ const ChatRoom = () => {
     if (input.trim()) {
       const message = { 
         roomId, 
-        userNumber: idToSend, // userType에 따라 선택된 userNumber 값 사용
+        userNumber: idToSend,
         content: input, 
         senderId: idToSend, 
         senderName: isTrainer ? "Trainer" : "User" 
       };
-      socket.emit("sendMessage", message);
+      socketRef.current.emit("sendMessage", message);
       dispatch(addMessage(message));
       setInput("");
     }
@@ -105,7 +101,6 @@ const ChatRoom = () => {
         <span>{otherPartyName} {isTrainer ? "회원" : "트레이너"}</span>
       </div>
 
-      {/* Chat Messages */}
       <div className="flex-1 p-4 space-y-4 mb-20 overflow-y-auto">
         {messages.map((msg, index) => (
           <div 
@@ -122,7 +117,6 @@ const ChatRoom = () => {
         ))}
       </div>
 
-      {/* Bottom Input Bar */}
       <div className="bg-gray-200 p-4 flex items-center justify-between fixed bottom-0 left-1/2 transform -translate-x-1/2 w-full max-w-[390px]">
         <button onClick={() => setMenuOpen(!menuOpen)} className="text-2xl">
           {menuOpen ? "✕" : "+"}
