@@ -1,5 +1,6 @@
 import React, { useEffect, useState, useCallback, useRef } from 'react';
 import io from 'socket.io-client';
+import { v4 as uuidv4 } from 'uuid';
 import { useDispatch, useSelector } from 'react-redux';
 import { UserChatButtons, TrainerChatButtons } from '../../components/common/Buttons';
 import { useParams } from 'react-router-dom';
@@ -14,7 +15,7 @@ const ChatRoom = () => {
   const [input, setInput] = useState("");
   const [isTrainer, setIsTrainer] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
-  const [otherPartyName, setOtherPartyName] = useState(""); 
+  const [otherPartyName, setOtherPartyName] = useState("");
 
   const userType = useSelector((state) => state.auth.userType);
   const userNumber = useSelector((state) => state.auth.user?.user_number);
@@ -61,7 +62,7 @@ const ChatRoom = () => {
 
       const handleMessageReceived = (message) => {
         console.log("Message received from server:", message);
-        dispatch(addMessage(message));
+        dispatch(addMessage(message)); // 서버에서 받은 메시지만 추가
       };
 
       socketRef.current.on("messageReceived", handleMessageReceived);
@@ -81,19 +82,20 @@ const ChatRoom = () => {
 
   const sendMessage = useCallback(() => {
     if (input.trim()) {
+      const messageId = uuidv4(); // 메시지마다 고유 ID 생성
       console.log("Sending message from client:", input);
       const message = { 
         roomId, 
         userNumber: idToSend,
         content: input, 
         senderId: idToSend, 
-        senderName: isTrainer ? "Trainer" : "User" 
+        senderName: isTrainer ? "Trainer" : "User", 
+        messageId // 고유 ID 추가
       };
-      socketRef.current.emit("sendMessage", message);
-      dispatch(addMessage(message));
-      setInput("");
+      socketRef.current.emit("sendMessage", message); // 메시지 전송만, dispatch 제거
+      setInput(""); // 입력창 초기화
     }
-  }, [input, roomId, idToSend, isTrainer, dispatch]);
+  }, [input, roomId, idToSend, isTrainer]);
 
   return (
     <div className="max-w-[390px] mx-auto bg-gray-100 min-h-screen flex flex-col relative">
@@ -104,7 +106,7 @@ const ChatRoom = () => {
       <div className="flex-1 p-4 space-y-4 mb-20 overflow-y-auto">
         {messages.map((msg, index) => (
           <div 
-            key={index} 
+            key={msg.messageId || index} 
             className={`flex ${msg.senderId === idToSend ? "justify-end" : "justify-start"}`}
           >
             <div
