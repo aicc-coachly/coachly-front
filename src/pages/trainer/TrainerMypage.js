@@ -144,8 +144,8 @@ const TrainerMypage = () => {
     }
   };
 
-  const handleOpenUserModal = (pt_number) =>
-    openModal(<UserModal pt_number={pt_number} />);
+  const handleOpenUserModal = (schedule) =>
+    openModal(<UserModal schedule={schedule} />);
   const handleOpenScheduleModal = (schedule) =>
     openModal(<CreateScheduleModal schedule={schedule} />);
   const handleOpenPtScheduleModal = (schedule) =>
@@ -270,7 +270,7 @@ const TrainerMypage = () => {
               </p>
               <div className="flex gap-2">
                 <button
-                  onClick={() => handleOpenUserModal(schedule.pt_number)}
+                  onClick={() => handleOpenUserModal(schedule)}
                   className="px-3 py-1 bg-blue-100 text-sm text-blue-700 rounded-md hover:bg-blue-200"
                 >
                   인바디 확인
