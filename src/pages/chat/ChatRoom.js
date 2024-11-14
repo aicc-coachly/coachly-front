@@ -108,21 +108,21 @@ const ChatRoom = () => {
       </div>
 
       <div className="flex-1 p-4 space-y-4 mb-20 overflow-y-auto chat-messages-container">
-  {messages.map((msg, index) => (
-    <div 
-      key={msg.messageId || index} 
-      className={`flex ${msg.sender_name === "Trainer" ? "justify-end" : "justify-start"}`}
-    >
-      <div
-        className={`relative ${msg.sender_name === "Trainer" ? "bg-blue-500 text-white" : "bg-gray-300 text-black"} 
-          p-4 rounded-lg w-2/3 ${msg.sender_name === "Trainer" ? "mr-2" : "ml-2"}`}
-      >
-        <p>{msg.message || msg.content}</p> {/* msg.message 또는 msg.content */}
+        {messages.map((msg, index) => (
+          <div 
+          key={msg.messageId || index} 
+          className={`flex ${msg.sender_name && userType && msg.sender_name.toLowerCase() === userType.toLowerCase() ? "justify-end" : "justify-start"}`}
+          >
+            <div
+              className={`relative ${msg.sender_name && userType && msg.sender_name.toLowerCase() === userType.toLowerCase() ? "bg-blue-500 text-white" : "bg-gray-300 text-black"} 
+                p-4 rounded-lg w-2/3 ${msg.sender_name && userType && msg.sender_name.toLowerCase() === userType.toLowerCase() ? "mr-2" : "ml-2"}`}
+            >
+              <p>{msg.message || msg.content}</p> {/* msg.message 또는 msg.content */}
+            </div>
+          </div>
+        ))}
       </div>
-    </div>
-  ))}
-</div>
-채
+
 
 
       <div className="bg-gray-200 p-4 flex items-center justify-between fixed bottom-0 left-1/2 transform -translate-x-1/2 w-full max-w-[390px]">
