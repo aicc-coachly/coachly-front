@@ -120,7 +120,7 @@ export const TrainerInfoModal = ({ trainer, user_number, user_name }) => {
             ))}
           </div>
           <p className="text-sm mt-2">{}</p>
-          <div className="flex flex-col gap-2 mt-2">
+          <div className="flex flex-col justify-center gap-2 mt-2 items-center">
             {trainer.pt_cost_options && trainer.pt_cost_options.length > 0 ? (
               trainer.pt_cost_options.map((option, index) => (
                 <p key={index} className="text-sm">
@@ -131,7 +131,7 @@ export const TrainerInfoModal = ({ trainer, user_number, user_name }) => {
                 </p>
               ))
             ) : (
-              <p className="text-sm">가격 정보가 없습니다.</p>
+              <p className="text-sm text-center">가격 정보가 없습니다.</p>
             )}
           </div>
 
