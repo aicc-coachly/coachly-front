@@ -18,6 +18,7 @@ const ChatRoom = () => {
   const [otherPartyName, setOtherPartyName] = useState("");
 
   const userType = useSelector((state) => state.auth.userType);
+  // console.log(userType)
   const userNumber = useSelector((state) => state.auth.user?.user_number);
   const trainerNumber = useSelector((state) => state.auth.trainer?.trainer_number);
   const messages = useSelector((state) => state.chat.messages);
@@ -93,13 +94,13 @@ const ChatRoom = () => {
         userNumber: idToSend,
         content: input, 
         senderId: idToSend, 
-        senderName: isTrainer ? "Trainer" : "User", 
+        sender_name: userType,
         messageId // 고유 ID 추가
       };
       socketRef.current.emit("sendMessage", message); // 메시지 전송만, dispatch 제거
       setInput(""); // 입력창 초기화
     }
-  }, [input, roomId, idToSend, isTrainer]);
+  }, [input, roomId, idToSend, userType]);
 
   return (
     <div className="max-w-[390px] mx-auto bg-gray-100 min-h-screen flex flex-col relative">
