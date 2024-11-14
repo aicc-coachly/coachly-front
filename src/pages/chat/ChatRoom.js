@@ -25,6 +25,8 @@ const ChatRoom = () => {
 
   const idToSend = userType === "user" ? userNumber : trainerNumber;
 
+  const url = process.env.REACT_APP_API_URL;
+
   useEffect(() => {
     const fetchChatData = async () => {
       try {
@@ -59,7 +61,7 @@ const ChatRoom = () => {
 
   useEffect(() => {
     if (!socketRef.current) {
-      socketRef.current = io("http://localhost:8000");
+      socketRef.current = io(url);
 
       socketRef.current.on("connect", () => {
         console.log("Connected to server:", socketRef.current.id);

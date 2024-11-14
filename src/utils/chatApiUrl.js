@@ -1,4 +1,5 @@
 const url = process.env.REACT_APP_API_URL; // 백엔드 서버 URL에 맞게 설정
+const AIurl = process.env.FAST_AI_API_URL; // 백엔드 서버 URL에 맞게 설정
 
 // 채팅방 생성
 export const CREATE_CHAT_ROOM_URL = `${url}/chat-room`;
@@ -42,8 +43,8 @@ export const GET_MESSAGES_URL = (room_id) =>
 export const LEAVE_CHAT_ROOM_URL = (room_id) =>
   `${url}/chat-room/${room_id}/leave`;
 
-// // AI 채팅 요청
-// export const AI_CHAT_REQUEST_URL = `${url}/aichat`;
+// AI 채팅 요청
+export const AI_CHAT_REQUEST_URL = `${AIurl}/ws/chat`;
 
 // // 메시지 읽음 처리
 // export const READ_MESSAGE_URL = (message_number) =>

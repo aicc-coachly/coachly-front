@@ -6,14 +6,14 @@ import {
   GET_CHAT_ROOM_URL,
   GET_CHAT_ROOMS_URL,
   LEAVE_CHAT_ROOM_URL,
-  // AI_CHAT_REQUEST_URL,
+  AI_CHAT_REQUEST_URL,
   // READ_MESSAGE_URL,
   // DELETE_MESSAGE_URL,
   // DEACTIVATE_CHAT_ROOM_URL,
 } from '../../utils/chatApiUrl';
 
-import { deleteRequest, getRequest, patchRequest, postRequest } from '../../utils/requestMethod';
-import { addMessage, setMessages, clearChatData } from '../slice/chatSlice';
+import { getRequest, postRequest } from '../../utils/requestMethod';
+import { addMessage } from '../slice/chatSlice';
 
 // 채팅방 생성
 export const createChatRoom = createAsyncThunk(
@@ -122,87 +122,58 @@ export const leaveChatRoom = createAsyncThunk(
 );
 
 
+// AI 채팅을 위한 WebSocket 연결 설정
+export const startAIChat = () => {
+  const socket = new WebSocket(AI_CHAT_REQUEST_URL);
 
+  socket.onopen = () => {
+    console.log('AI 채팅 서버에 연결되었습니다.');
+  };
 
-// // 메시지 삭제
-// export const deleteMessage = createAsyncThunk(
-//   'chat/deleteMessage',
-//   async (messageNumber, { rejectWithValue }) => {
-//     try {
-//       await deleteRequest(DELETE_MESSAGE_URL(messageNumber), {});
-//       return messageNumber;
-//     } catch (error) {
-//       return rejectWithValue(error.message || '메시지 삭제 실패');
-//     }
-//   }
-// );
+  socket.onmessage = (event) => {
+    const response = JSON.parse(event.data);
+    console.log('AI 응답:', response.response);
+    // 메시지 상태를 업데이트하도록 액션을 dispatch할 수 있습니다.
+  };
 
-// // 메시지 읽음 처리
-// export const readMessage = createAsyncThunk(
-//   'chat/readMessage',
-//   async (messageNumber, { rejectWithValue }) => {
-//     try {
-//       const response = await patchRequest(READ_MESSAGE_URL(messageNumber), {});
-//       return response;
-//     } catch (error) {
-//       return rejectWithValue(error.message || '메시지 읽음 처리 실패');
-//     }
-//   }
-// );
+  socket.onerror = (error) => {
+    console.error('WebSocket 오류:', error);
+  };
 
-// // 채팅방 비활성화
-// export const deleteChatRoom = createAsyncThunk(
-//   'chat/deleteChatRoom',
-//   async (roomId, { dispatch, rejectWithValue }) => {
-//     try {
-//       await deleteRequest(DEACTIVATE_CHAT_ROOM_URL(roomId), {});
-//       dispatch(clearChatData());
-//       return roomId;
-//     } catch (error) {
-//       return rejectWithValue(error.message || '채팅방 비활성화 실패');
-//     }
-//   }
-// );
+  socket.onclose = () => {
+    console.log('AI 채팅 서버와의 연결이 종료되었습니다.');
+  };
 
-// // AI 챗 요청
-// export const aiChatRequest = createAsyncThunk(
-//   'chat/aiChatRequest',
-//   async (requestData, { rejectWithValue }) => {
-//     try {
-//       const response = await postRequest(AI_CHAT_REQUEST_URL, {
-//         body: JSON.stringify(requestData),
-//       });
-//       return response;
-//     } catch (error) {
-//       return rejectWithValue(error.message || 'AI 채팅 요청 실패');
-//     }
-//   }
-// );
-// // 채팅방 비활성화
-// export const deleteChatRoom = createAsyncThunk(
-//   'chat/deleteChatRoom',
-//   async (roomId, { dispatch, rejectWithValue }) => {
-//     try {
-//       await deleteRequest(DEACTIVATE_CHAT_ROOM_URL(roomId), {});
-//       dispatch(clearChatData());
-//       return roomId;
-//     } catch (error) {
-//       return rejectWithValue(error.message || '채팅방 비활성화 실패');
-//     }
-//   }
-// );
+  return socket;
+};
 
-// // AI 챗 요청
-// export const aiChatRequest = createAsyncThunk(
-//   'chat/aiChatRequest',
-//   async (requestData, { rejectWithValue }) => {
-//     try {
-//       const response = await postRequest(AI_CHAT_REQUEST_URL, {
-//         body: JSON.stringify(requestData),
-//       });
-//       return response;
-//     } catch (error) {
-//       return rejectWithValue(error.message || 'AI 채팅 요청 실패');
-//     }
-//   }
-// );
+// AI 메시지 전송
+export const aiSendMessage = createAsyncThunk(
+  'chat/aiSendMessage',
+  async ({ roomId, message }, { rejectWithValue }) => {
+    try {
+      const socket = startAIChat();
+      
+      socket.send(
+        JSON.stringify({
+          room_id: roomId,
+          question: message,
+        })
+      );
+
+      socket.onmessage = (event) => {
+        const response = JSON.parse(event.data);
+        // AI 응답 처리
+        console.log('AI 응답:', response.response);
+        return response;
+      };
+
+      socket.onclose = () => {
+        console.log('WebSocket 연결이 종료되었습니다.');
+      };
+      
+    } catch (error) {
+      return rejectWithValue(error.message || 'AI 메시지 전송 실패');
+    }
+  }
+);
