@@ -58,6 +58,7 @@ function TrainerSearch() {
               ) && trainer.status !== 'inactive' // "inactive" 상태 제외
         );
         setTrainers(uniqueTrainers);
+        setFilteredTrainers(uniqueTrainers); // 초기 화면에 모든 트레이너 표시
       })
       .catch((error) => console.error('Error fetching trainers:', error));
   }, []);
@@ -149,7 +150,7 @@ function TrainerSearch() {
           onClick={handleSearch}
           className={`px-4 py-3 w-full rounded-lg font-semibold transition-colors ${
             isSearching
-              ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
+              ? 'bg-gray-400 text-gray-600 cursor-not-allowed'
               : 'bg-blue-700 text-white hover:bg-blue-800'
           }`}
           disabled={isSearching}
