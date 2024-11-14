@@ -11,7 +11,6 @@ import {
 } from '../../utils/requestMethod';
 
 // PT 결제 생성
-// PT 결제 생성
 export const createPtPayment = createAsyncThunk(
   'payment/createPtPayment',
   async (

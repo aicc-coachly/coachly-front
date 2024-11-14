@@ -18,6 +18,7 @@ import {
 } from '../../redux/slice/scheduleSlice';
 import { getUser } from '../../redux/slice/userSlice';
 import { CheckScheduleModal } from '../../components/trainer/CheckScheduleModal';
+import { createChatRoom } from '../../redux/thunks/chatThunks';
 
 // 페이지네이션 컴포넌트 정의
 const Pagination = ({ currentPage, totalPages, onPageChange }) => {
@@ -181,6 +182,33 @@ const TrainerMypage = () => {
     .filter((schedule) => schedule.status !== 'deleted')
     .slice((classPage - 1) * itemsPerPage, classPage * itemsPerPage);
 
+  const handleChat = async (user_number) => {
+    if (!user_number || !trainer_number) {
+      console.error('user_number 또는 trainer_number가 정의되지 않았습니다.', {
+        user_number,
+        trainer_number,
+      });
+      return;
+    }
+
+    try {
+      const response = await dispatch(
+        createChatRoom({ user_number, trainer_number })
+      );
+
+      if (response?.payload?.room_id) {
+        navigate(`/chatRoom/${response.payload.room_id}`);
+      } else {
+        console.warn(
+          'API 응답에서 room_id가 반환되지 않았습니다.',
+          response.payload
+        );
+      }
+    } catch (error) {
+      console.error('채팅방 생성 중 오류 발생:', error);
+    }
+  };
+
   return (
     <div className="max-w-[390px] mx-auto bg-gray-50 p-6">
       <div className="bg-white rounded-lg shadow-lg p-6 mb-6 relative">
@@ -248,7 +276,7 @@ const TrainerMypage = () => {
                   인바디 확인
                 </button>
                 <button
-                  onClick={() => navigate('/trainerChat')}
+                  onClick={() => handleChat(schedule.user_number)}
                   className="px-3 py-1 bg-red-100 text-sm text-red-700 rounded-md hover:bg-pink-200"
                 >
                   1:1 채팅

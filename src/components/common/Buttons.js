@@ -50,10 +50,9 @@ function Buttons({ size, color = '#4831D4', children, onClick }) {
 
 // src/components/common/Buttons.js
 
-export function UserMenuButtons({ user_number, onClick }) {
+export function UserMenuButtons({ onClick }) {
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  console.log(user_number);
   const handleLogout = async () => {
     await dispatch(authLogout());
     await dispatch(chatLogout());
@@ -69,36 +68,15 @@ export function UserMenuButtons({ user_number, onClick }) {
 
   return (
     <>
-      <MenuButton
-        label="마이페이지"
-        to={{
-          pathname: '/usermypage',
-          state: { user_number: user_number },
-        }}
-        onClick={onClick}
-      />
-      <MenuButton
-        label="트레이너 찾기"
-        to={{
-          pathname: '/trainersearch',
-          state: { user_number: user_number },
-        }}
-        onClick={onClick}
-      />
-      <MenuButton
-        label="내 채팅방"
-        to={{
-          pathname: '/chatlist',
-          state: { user_number: user_number },
-        }}
-        onClick={onClick}
-      />
+      <MenuButton label="마이페이지" to="/usermypage" onClick={onClick} />
+      <MenuButton label="트레이너 찾기" to="/trainersearch" onClick={onClick} />
+      <MenuButton label="내 채팅방" to="/chatlist" onClick={onClick} />
       <MenuButton label="로그아웃" to="/" onClick={handleLogout} />
     </>
   );
 }
 
-export function TrainerMenuButtons({ trainer_number, onClick }) {
+export function TrainerMenuButtons({ onClick }) {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
@@ -117,22 +95,8 @@ export function TrainerMenuButtons({ trainer_number, onClick }) {
 
   return (
     <>
-      <MenuButton
-        label="마이페이지"
-        to={{
-          pathname: '/trainermypage',
-          state: { trainer_number: trainer_number },
-        }}
-        onClick={onClick}
-      />
-      <MenuButton
-        label="내 채팅방"
-        to={{
-          pathname: '/chatlist',
-          state: { trainer_number: trainer_number },
-        }}
-        onClick={onClick}
-      />
+      <MenuButton label="마이페이지" to="/trainermypage" onClick={onClick} />
+      <MenuButton label="내 채팅방" to="/chatlist" onClick={onClick} />
       <MenuButton label="로그아웃" to="/" onClick={handleLogout} />
     </>
   );

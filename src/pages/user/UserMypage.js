@@ -207,10 +207,6 @@ function UserMypage() {
     navigate('/userprofile', { state: { userInfo } });
   };
 
-  const handledasdasd = () => {
-    navigate('/trainerserch', { state: { user_number } });
-  };
-
   const handleChat = async (trainer_number) => {
     if (!user_number || !trainer_number) {
       console.error('user_number 또는 trainer_number가 정의되지 않았습니다.', {
@@ -266,7 +262,9 @@ function UserMypage() {
             </p>
             <p className="text-sm text-gray-500">{profile?.email}</p>
             <p className="text-sm text-gray-500">{profile?.phone}</p>
-            <p className="text-sm text-gray-500">{profile?.gender}</p>
+            <p className="text-sm text-gray-500">
+              {profile?.gender === 'male' ? '남' : '여'}
+            </p>
           </div>
         </div>
       </div>

@@ -12,7 +12,7 @@ function TrainerSearch() {
   const data = storedData?.data;
   const userType = storedData?.userType;
   const user_number = userType === 'user' ? data?.user_number : null;
-  const user_name = userType === 'user' ? data?.user_name : null;
+  // const user_name = userType === 'user' ? data?.user_name : null;
 
   const path = 'http://localhost:8000';
   const [trainers, setTrainers] = useState([]);

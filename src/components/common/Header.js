@@ -77,16 +77,10 @@ function Header() {
           {menuOpen && (
             <div className="text-center absolute right-4 top-16 bg-white shadow-lg rounded-lg p-4 z-50 flex flex-col space-y-2 animate-fadeIn">
               {userType === 'trainer' && (
-                <TrainerMenuButtons
-                  trainer_number={trainer_number}
-                  onClick={() => setMenuOpen(false)}
-                />
+                <TrainerMenuButtons onClick={() => setMenuOpen(false)} />
               )}
               {userType === 'user' && (
-                <UserMenuButtons
-                  user_number={user_number}
-                  onClick={() => setMenuOpen(false)}
-                />
+                <UserMenuButtons onClick={() => setMenuOpen(false)} />
               )}
             </div>
           )}
