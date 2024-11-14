@@ -2,17 +2,23 @@ import React, { useEffect, useState } from 'react';
 import Buttons from '../../components/common/Buttons';
 import { useModal } from '../../components/common/ModalProvider';
 import { TrainerInfoModal } from '../../components/trainer/TrainerInfoModal';
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { CREATE_CHAT_ROOM_URL } from '../../utils/chatApiUrl';
 import { useSelector } from 'react-redux';
 
 function TrainerSearch() {
+  const storedData = JSON.parse(sessionStorage.getItem('userData'));
+  const data = storedData?.data;
+  const userType = storedData?.userType;
+  const user_number = userType === 'user' ? data?.user_number : null;
+  const user_name = userType === 'user' ? data?.user_name : null;
+
   const path = 'http://localhost:8000';
   const [trainers, setTrainers] = useState([]);
   const [filteredTrainers, setFilteredTrainers] = useState([]);
   const [isSearching, setIsSearching] = useState(false);
-
+  console.log(user_number);
   const navigate = useNavigate();
   const { openModal } = useModal();
 
@@ -23,14 +29,13 @@ function TrainerSearch() {
   });
 
   // Redux에서 userNumber 가져오기
-  const userNumber = useSelector((state) => state.auth?.user?.user_number);
-  console.log('Redux에서 가져온 userNumber:', userNumber);
-
+  console.log('Redux에서 가져온 user_number:', user_number);
+  console.log(user_number);
   const handleCreateChatRoom = async (trainerNumber) => {
     try {
-      console.log('Creating chat room with:', { userNumber, trainerNumber });
+      console.log('Creating chat room with:', { user_number, trainerNumber });
       const response = await axios.post(CREATE_CHAT_ROOM_URL, {
-        user_number: userNumber,
+        user_number: user_number,
         trainer_number: trainerNumber,
         type: 'trainer', // 트레이너와의 채팅방 생성
       });

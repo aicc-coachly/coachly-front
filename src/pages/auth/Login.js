@@ -21,11 +21,13 @@ function Login() {
   useEffect(() => {
     // 로그인 상태가 설정되었고, 'data'와 'loggedInUserType'이 모두 유효할 때만 리디렉션을 실행
     if (data && loggedInUserType) {
-      if (loggedInUserType === 'trainer') {
-        navigate('/trainermypage');
-      } else if (loggedInUserType === 'user') {
-        navigate('/usermypage');
-      }
+      const destination =
+        loggedInUserType === 'trainer' ? '/trainermypage' : '/usermypage';
+      sessionStorage.setItem(
+        'userData',
+        JSON.stringify({ data, userType: loggedInUserType })
+      );
+      navigate(destination);
     }
 
     // 로그인 실패 메시지 처리

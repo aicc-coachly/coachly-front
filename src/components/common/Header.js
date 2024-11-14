@@ -7,7 +7,13 @@ import logo from '../../assets/images/newlogo.png';
 function Header() {
   const location = useLocation();
   const [menuOpen, setMenuOpen] = useState(false);
-  const { userType } = useSelector((state) => state.auth);
+
+  const storedData = JSON.parse(sessionStorage.getItem('userData'));
+  const data = storedData?.data;
+  const userType = storedData?.userType;
+  // userType에 따른 user_number 또는 trainer_number 할당
+  const user_number = userType === 'user' ? data?.user_number : null;
+  const trainer_number = userType === 'trainer' ? data?.trainer_number : null;
 
   // 새로고침 후에도 isLoggedIn 상태를 유지하기 위해
   const isLoggedIn = userType === 'user' || userType === 'trainer';
@@ -36,13 +42,19 @@ function Header() {
 
       {/* 가운데 로고 */}
       <Link
-        to={
-          userType === 'user'
-            ? '/usermypage'
-            : userType === 'trainer'
-            ? '/trainermypage'
-            : '/'
-        }
+        to={{
+          pathname:
+            userType === 'user'
+              ? '/usermypage'
+              : userType === 'trainer'
+              ? '/trainermypage'
+              : '/',
+          state: {
+            user_number: user_number,
+            trainer_number: trainer_number,
+            userType: userType,
+          },
+        }}
         className="flex justify-center flex-grow"
       >
         <img
@@ -66,10 +78,16 @@ function Header() {
           {menuOpen && (
             <div className="text-center absolute right-4 top-16 bg-white shadow-lg rounded-lg p-4 z-50 flex flex-col space-y-2 animate-fadeIn">
               {userType === 'trainer' && (
-                <TrainerMenuButtons onClick={() => setMenuOpen(false)} />
+                <TrainerMenuButtons
+                  trainer_number={trainer_number}
+                  onClick={() => setMenuOpen(false)}
+                />
               )}
               {userType === 'user' && (
-                <UserMenuButtons onClick={() => setMenuOpen(false)} />
+                <UserMenuButtons
+                  user_number={user_number}
+                  onClick={() => setMenuOpen(false)}
+                />
               )}
             </div>
           )}

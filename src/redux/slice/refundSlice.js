@@ -33,7 +33,7 @@ export const getAllRefunds = createAsyncThunk(
   'refund/getAllRefunds',
   async (_, { rejectWithValue }) => {
     try {
-      const response = await getRequest(GET_ALL_REFUNDS_URL);
+      const response = await getRequest(GET_ALL_REFUNDS_URL());
       return response;
     } catch (error) {
       return rejectWithValue(error.message || '환불 사유 조회 실패');

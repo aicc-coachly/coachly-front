@@ -78,6 +78,18 @@ function UserMypage() {
   useEffect(() => {
     if (user_number) {
       dispatch(getPtschedule({ user_number }));
+    } else {
+      console.warn('user_number가 존재하지 않습니다.');
+    }
+  }, [dispatch, user_number]);
+
+  useEffect(() => {
+    console.log('pt_schedule 데이터:', pt_schedule);
+  }, [pt_schedule]);
+
+  useEffect(() => {
+    if (user_number) {
+      dispatch(getPtschedule({ user_number }));
     }
   }, [dispatch, user_number]);
 
@@ -116,6 +128,12 @@ function UserMypage() {
   const totalPages = Math.ceil(filteredItems.length / itemsPerPage);
 
   const getUniqueTrainers = (schedule) => {
+    // schedule이 배열인지 확인하여, 배열이 아닌 경우 빈 배열로 처리
+    if (!Array.isArray(schedule)) {
+      console.warn('Expected an array for schedule, but got:', schedule);
+      schedule = [];
+    }
+
     const uniqueTrainers = [];
     const trainerIds = new Set(); // trainer_number로 중복을 관리
 
@@ -134,10 +152,10 @@ function UserMypage() {
 
     return uniqueTrainers;
   };
-
   // 중복을 제거한 트레이너 목록 생성
   const uniqueTrainers = getUniqueTrainers(pt_schedule);
-
+  console.log(getUniqueTrainers);
+  console.log(uniqueTrainers);
   // 각 섹션의 페이지네이션 계산
   const trainerItems = uniqueTrainers.slice(
     (trainerPage - 1) * itemsPerPage,
@@ -183,10 +201,14 @@ function UserMypage() {
   };
 
   const handleRefundPage = () => {
-    navigate('/userptschedule', { state: { pt_schedule } });
+    navigate('/userptschedule', { state: { user_number } });
   };
   const handleMyInfoUpdate = () => {
     navigate('/userprofile', { state: { userInfo } });
+  };
+
+  const handledasdasd = () => {
+    navigate('/trainerserch', { state: { user_number } });
   };
 
   const handleChat = async (trainer_number) => {
