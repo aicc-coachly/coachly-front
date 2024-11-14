@@ -19,6 +19,7 @@ import UserProfile from "./pages/user/UserProfile";
 import ChatList from "./pages/chat/ChatList";
 import Success from "./components/common/Success";
 import ChatRoom from "./pages/chat/ChatRoom";
+import ChatAI from "./pages/chat/ChatAI";
 import PtScheduleList from "./components/user/PtScheduleList";
 import RefundListPage from "./components/user/RefundListPage";
 
@@ -40,6 +41,7 @@ function App() {
             <Route path="/chatlist" element={<ChatList />} />
             <Route path="/Success" element={<Success />} />
             <Route path="/chatroom/:roomId" element={<ChatRoom />} />
+            <Route path="/chatroom/:roomId" element={<ChatAI />} />
 
             {/* 트레이너 메인 페이지 */}
             <Route path="/trainerprofile" element={<TrainerProfile />} />
