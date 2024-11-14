@@ -104,7 +104,9 @@ function Login() {
           아직 계정이 없으신가요?
         </p>
         <Link to="/sortsignup">
-          <Buttons size="middle">회원가입</Buttons>
+          <Buttons size="middle" className="text-white">
+            회원가입
+          </Buttons>
         </Link>
       </div>
     </div>

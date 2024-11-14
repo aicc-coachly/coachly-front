@@ -5,6 +5,7 @@ import { getPtschedule } from '../../redux/slice/paymentSlice';
 import { createRefund } from '../../redux/slice/refundSlice';
 import { useModal } from '../common/ModalProvider';
 import { RefundPTModal } from './RefundPTModal';
+import { Link } from 'react-router-dom';
 
 const PtScheduleList = () => {
   const dispatch = useDispatch();
@@ -16,9 +17,10 @@ const PtScheduleList = () => {
   const [ptSchedules, setPtSchedules] = useState([]);
   const [showCompleted, setShowCompleted] = useState(false); // 완료된 스케줄 보기 토글
   const [showInProgress, setShowInProgress] = useState(true); // 진행 중인 스케줄 보기 토글
+  const [currentPage, setCurrentPage] = useState(1); // 현재 페이지
+  const itemsPerPage = 3; // 페이지 당 항목 수
 
   useEffect(() => {
-    // 유저가 신청한 PT 스케줄을 가져옴
     dispatch(getPtschedule({ user_number }))
       .unwrap()
       .then((schedules) => {
@@ -53,6 +55,17 @@ const PtScheduleList = () => {
     return false;
   });
 
+  // 페이지네이션
+  const totalPages = Math.ceil(filteredSchedules.length / itemsPerPage);
+  const paginatedSchedules = filteredSchedules.slice(
+    (currentPage - 1) * itemsPerPage,
+    currentPage * itemsPerPage
+  );
+
+  const handlePageChange = (pageNumber) => {
+    setCurrentPage(pageNumber);
+  };
+
   return (
     <div className="w-full min-h-screen bg-[#edf1f6] flex flex-col items-center p-4">
       <div className="w-full max-w-[390px] mt-4">
@@ -83,9 +96,9 @@ const PtScheduleList = () => {
         </div>
 
         {/* 필터링된 PT 스케줄 목록 */}
-        {filteredSchedules.length > 0 ? (
+        {paginatedSchedules.length > 0 ? (
           <ul className="space-y-4">
-            {filteredSchedules.map((schedule) => (
+            {paginatedSchedules.map((schedule) => (
               <li
                 key={schedule.pt_number}
                 className="p-4 bg-white border border-[#d0e3ff] rounded-lg shadow-md"
@@ -128,6 +141,49 @@ const PtScheduleList = () => {
             조건에 맞는 스케줄이 없습니다.
           </p>
         )}
+
+        {/* 페이지네이션 버튼 */}
+        <div className="flex justify-center mt-6 space-x-2">
+          <button
+            onClick={() => handlePageChange(currentPage - 1)}
+            disabled={currentPage === 1}
+            className="px-3 py-1 bg-gray-300 rounded-md text-sm"
+          >
+            이전
+          </button>
+          {[...Array(totalPages)].map((_, index) => (
+            <button
+              key={index + 1}
+              onClick={() => handlePageChange(index + 1)}
+              className={`px-3 py-1 ${
+                currentPage === index + 1
+                  ? 'bg-blue-500 text-white'
+                  : 'bg-gray-300'
+              } rounded-md text-sm`}
+            >
+              {index + 1}
+            </button>
+          ))}
+          <button
+            onClick={() => handlePageChange(currentPage + 1)}
+            disabled={currentPage === totalPages}
+            className="px-3 py-1 bg-gray-300 rounded-md text-sm"
+          >
+            다음
+          </button>
+        </div>
+      </div>
+
+      <div className="p-4 bg-gray-100 rounded-md shadow-md mt-4 mb-4">
+        <p className="text-gray-700">
+          환불 내역을 확인하려면 아래 링크를 클릭하세요.
+        </p>
+        <Link
+          to="/userrefund"
+          className="text-blue-500 font-semibold hover:underline block mt-2"
+        >
+          환불 신청 내역
+        </Link>
       </div>
     </div>
   );

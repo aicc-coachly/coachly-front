@@ -11,23 +11,7 @@ import { setUser } from '../../redux/slice/authSlice';
 import { getPtschedule } from '../../redux/slice/paymentSlice';
 import { getScheduleRecord } from '../../redux/slice/scheduleSlice';
 import { createChatRoom } from '../../redux/thunks/chatThunks';
-
-const getUniqueTrainers = (schedule) => {
-  const uniqueTrainers = [];
-  const trainerIds = new Set(); // trainer_number로 중복을 관리
-
-  for (const item of schedule) {
-    if (item.trainer_number !== null && !trainerIds.has(item.trainer_number)) {
-      uniqueTrainers.push({
-        trainer_name: item.trainer_name,
-        trainer_number: item.trainer_number,
-      });
-      trainerIds.add(item.trainer_number);
-    }
-  }
-
-  return uniqueTrainers;
-};
+import img from '../../assets/images/newlogo.png';
 
 function UserMypage() {
   const [showCompleted, setShowCompleted] = useState(false);
@@ -131,6 +115,26 @@ function UserMypage() {
   const filteredItems = inbodyData.filter((inbody) => inbody.status);
   const totalPages = Math.ceil(filteredItems.length / itemsPerPage);
 
+  const getUniqueTrainers = (schedule) => {
+    const uniqueTrainers = [];
+    const trainerIds = new Set(); // trainer_number로 중복을 관리
+
+    for (const item of schedule) {
+      if (
+        item.trainer_number !== null &&
+        !trainerIds.has(item.trainer_number)
+      ) {
+        uniqueTrainers.push({
+          trainer_name: item.trainer_name,
+          trainer_number: item.trainer_number,
+        });
+        trainerIds.add(item.trainer_number);
+      }
+    }
+
+    return uniqueTrainers;
+  };
+
   // 중복을 제거한 트레이너 목록 생성
   const uniqueTrainers = getUniqueTrainers(pt_schedule);
 
@@ -213,8 +217,9 @@ function UserMypage() {
   };
   return (
     <div className="max-w-[390px] mx-auto bg-gray-100 p-4">
+      {/* 내 정보 섹션 */}
       <div className="bg-white rounded-lg shadow-md p-4 mb-4 relative">
-        <h2 className="text-lg font-semibold mb-2">내 정보</h2>
+        <h2 className="text-lg font-semibold mb-2 text-gray-700">내 정보</h2>
         <button
           onClick={handleRefundPage}
           className="absolute top-4 right-[100px] px-3 py-1 bg-gray-300 text-sm rounded-full"
@@ -228,14 +233,15 @@ function UserMypage() {
           수정하기
         </button>
         <div className="flex items-start mt-4 space-x-4">
-          <div className="w-[8rem] h-[8rem] bg-gray-200 overflow-hidden"></div>
           <div className="flex-1">
             <div className="flex justify-end">
-              <p className="px-3 py-1 bg-gray-300 text-sm rounded-md">
+              <p className="px-3 py-1 bg-gray-300 text-sm rounded-md text-gray-500">
                 {profile?.user_detail_address}
               </p>
             </div>
-            <p className="mt-2 text-base font-medium">{profile?.name}</p>
+            <p className="mt-2 text-base font-medium text-gray-700">
+              {profile?.name}
+            </p>
             <p className="text-sm text-gray-500">{profile?.email}</p>
             <p className="text-sm text-gray-500">{profile?.phone}</p>
             <p className="text-sm text-gray-500">{profile?.gender}</p>
@@ -243,27 +249,32 @@ function UserMypage() {
         </div>
       </div>
 
-      <div className="bg-white rounded-lg shadow-md p-2 mb-4">
-        <h2 className="text-lg font-semibold p-2">담당 트레이너</h2>
+      {/* 담당 트레이너 섹션 */}
+      <div className="bg-white rounded-lg shadow-md p-4 mb-4">
+        <h2 className="text-lg font-semibold mb-2 text-gray-700">
+          담당 트레이너
+        </h2>
         {trainerItems.map((trainer, index) => (
           <div
             key={index}
-            className="flex items-center justify-between bg-gray-300 p-1 mb-2"
+            className="flex items-center justify-between bg-gray-100 p-2 rounded-lg mb-2 shadow-sm"
           >
-            <p className="text-base text-sm">{trainer.trainer_name}</p>
+            <p className="text-sm font-medium text-gray-600">
+              {trainer.trainer_name}
+            </p>
             <button
               onClick={() => handleChat(trainer.trainer_number)}
-              className="px-3 py-1 bg-pink-300 text-sm rounded-md"
+              className="px-3 py-1 bg-blue-500 text-sm rounded-md text-white font-semibold"
             >
               1:1 채팅하기
             </button>
           </div>
         ))}
-        <div className="flex justify-center mt-4">
+        <div className="flex justify-center mt-4 space-x-2">
           <button
             onClick={handleTrainerPrev}
             disabled={trainerPage === 1}
-            className="mx-1 px-2 py-1 bg-gray-300 rounded-md"
+            className="px-3 py-1 bg-gray-300 rounded-md text-sm"
           >
             이전
           </button>
@@ -271,11 +282,11 @@ function UserMypage() {
             <button
               key={pageNumber}
               onClick={() => handleTrainerPageChange(pageNumber)}
-              className={`mx-1 px-2 py-1 ${
+              className={`px-3 py-1 ${
                 trainerPage === pageNumber
                   ? 'bg-blue-500 text-white'
                   : 'bg-gray-300'
-              } rounded-md`}
+              } rounded-md text-sm`}
             >
               {pageNumber}
             </button>
@@ -283,17 +294,22 @@ function UserMypage() {
           <button
             onClick={handleTrainerNext}
             disabled={trainerPage === trainerTotalPages}
-            className="mx-1 px-2 py-1 bg-gray-300 rounded-md"
+            className="px-3 py-1 bg-gray-300 rounded-md text-sm"
           >
             다음
           </button>
         </div>
       </div>
 
-      <div className="bg-white rounded-lg shadow-md p-2 mb-4">
-        <h2 className="text-lg font-semibold p-2">예약된 수업</h2>
+      {/* 예약된 수업 섹션 */}
+      <div className="bg-white rounded-lg shadow-md p-4 mb-4">
+        <h2 className="text-lg font-semibold mb-2 text-gray-700">
+          예약된 수업
+        </h2>
         <div className="flex items-center mb-4">
-          <label className="text-sm mr-2">완료된 수업만 보기</label>
+          <label className="text-sm mr-2 text-gray-600">
+            완료된 수업만 보기
+          </label>
           <input
             type="checkbox"
             checked={showCompleted}
@@ -305,9 +321,11 @@ function UserMypage() {
           paginatedClassItems.map((schedule) => (
             <div
               key={schedule.schedule_number}
-              className="flex items-center justify-between bg-gray-300 p-1 mb-2"
+              className="flex items-center justify-between bg-gray-100 p-2 rounded-lg mb-2 shadow-sm"
             >
-              <p className="text-base text-sm">{schedule.trainer_name}</p>
+              <p className="text-sm font-medium text-gray-600">
+                {schedule.trainer_name}
+              </p>
               <span className="text-sm text-gray-500">
                 {new Date(schedule.class_date).toLocaleDateString()}
                 {schedule.status === 'completed' && (
@@ -318,22 +336,22 @@ function UserMypage() {
                 onClick={() =>
                   openModal(<CheckScheduleModal schedule={schedule} />)
                 }
-                className="text-center px-3 py-1 bg-pink-300 text-sm rounded-md"
+                className="px-3 py-1 bg-blue-500 text-sm rounded-md text-white font-semibold"
               >
                 자세히 보기
               </button>
             </div>
           ))
         ) : (
-          <p>해당 조건의 수업이 없습니다.</p>
+          <p className="text-center text-gray-500">
+            해당 조건의 수업이 없습니다.
+          </p>
         )}
-
-        {/* Pagination controls */}
-        <div className="flex justify-center mt-4">
+        <div className="flex justify-center mt-4 space-x-2">
           <button
             onClick={handleClassPrev}
             disabled={classPage === 1}
-            className="mx-1 px-2 py-1 bg-gray-300 rounded-md"
+            className="px-3 py-1 bg-gray-300 rounded-md text-sm"
           >
             이전
           </button>
@@ -341,11 +359,11 @@ function UserMypage() {
             <button
               key={pageNumber}
               onClick={() => handleClassPageChange(pageNumber)}
-              className={`mx-1 px-2 py-1 ${
+              className={`px-3 py-1 ${
                 classPage === pageNumber
                   ? 'bg-blue-500 text-white'
                   : 'bg-gray-300'
-              } rounded-md`}
+              } rounded-md text-sm`}
             >
               {pageNumber}
             </button>
@@ -353,18 +371,22 @@ function UserMypage() {
           <button
             onClick={handleClassNext}
             disabled={classPage === filteredClassTotalPages}
-            className="mx-1 px-2 py-1 bg-gray-300 rounded-md"
+            className="px-3 py-1 bg-gray-300 rounded-md text-sm"
           >
             다음
           </button>
         </div>
       </div>
-      <div className="bg-white rounded-lg shadow-md p-2 mb-4">
-        <div className="flex justify-between p-2">
-          <h2 className="text-lg font-semibold">나의 체성분 기록</h2>
+
+      {/* 체성분 기록 섹션 */}
+      <div className="bg-white rounded-lg shadow-md p-4 mb-4">
+        <div className="flex justify-between items-center mb-4">
+          <h2 className="text-lg font-semibold text-gray-700">
+            나의 체성분 기록
+          </h2>
           <button
             onClick={() => openModal(<BodyCompositionModal />)}
-            className="text-center px-3 py-1 bg-pink-300 text-sm rounded-md"
+            className="px-3 py-1 bg-blue-500 text-sm rounded-md text-white font-semibold"
           >
             추가하기
           </button>
@@ -375,27 +397,27 @@ function UserMypage() {
           .map((inbody, index) => (
             <div
               key={index}
-              className="flex items-center justify-between bg-gray-300 p-1 mb-2"
+              className="flex items-center justify-between bg-gray-100 p-2 rounded-lg mb-2 shadow-sm"
             >
-              <p className="text-base text-sm">
+              <p className="text-sm font-medium text-gray-600">
                 측정날짜: {formatDate(inbody.user_measurement_date)}
               </p>
               <button
                 onClick={() =>
                   openModal(<EditBodyCompositionModal inbodyData={inbody} />)
                 }
-                className="text-center px-3 py-1 bg-pink-300 text-sm rounded-md"
+                className="px-3 py-1 bg-blue-500 text-sm rounded-md text-white font-semibold"
               >
                 더보기
               </button>
             </div>
           ))}
 
-        <div className="flex justify-center mt-4">
+        <div className="flex justify-center mt-4 space-x-2">
           <button
             onClick={handlePrev}
             disabled={currentPage === 1}
-            className="mx-1 px-2 py-1 bg-gray-300 rounded-md"
+            className="px-3 py-1 bg-gray-300 rounded-md text-sm"
           >
             이전
           </button>
@@ -403,11 +425,11 @@ function UserMypage() {
             <button
               key={pageNumber}
               onClick={() => handlePageChange(pageNumber)}
-              className={`mx-1 px-2 py-1 ${
+              className={`px-3 py-1 ${
                 currentPage === pageNumber
                   ? 'bg-blue-500 text-white'
                   : 'bg-gray-300'
-              } rounded-md`}
+              } rounded-md text-sm`}
             >
               {pageNumber}
             </button>
@@ -415,7 +437,7 @@ function UserMypage() {
           <button
             onClick={handleNext}
             disabled={currentPage === totalPages}
-            className="mx-1 px-2 py-1 bg-gray-300 rounded-md"
+            className="px-3 py-1 bg-gray-300 rounded-md text-sm"
           >
             다음
           </button>

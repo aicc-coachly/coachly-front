@@ -64,7 +64,7 @@ function Header() {
 
           {/* 메뉴 드롭다운 */}
           {menuOpen && (
-            <div className="absolute right-4 top-16 bg-white shadow-lg rounded-lg p-4 z-50 flex flex-col space-y-2 animate-fadeIn">
+            <div className="text-center absolute right-4 top-16 bg-white shadow-lg rounded-lg p-4 z-50 flex flex-col space-y-2 animate-fadeIn">
               {userType === 'trainer' && (
                 <TrainerMenuButtons onClick={() => setMenuOpen(false)} />
               )}
