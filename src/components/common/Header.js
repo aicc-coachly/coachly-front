@@ -38,7 +38,6 @@ function Header() {
   return (
     <header className="relative flex justify-between items-center p-4 bg-[#edf1f6] shadow-md max-w-[390px] mx-auto rounded-b-lg">
       {/* 왼쪽 빈 공간으로 로고 가운데 정렬 */}
-      <div className="w-8"></div>
 
       {/* 가운데 로고 */}
       <Link
@@ -69,7 +68,7 @@ function Header() {
         <>
           <button
             onClick={toggleMenu}
-            className="text-2xl text-gray-600 hover:text-gray-800 transition-colors"
+            className="absolute right-4 text-2xl text-gray-600 hover:text-gray-800 transition-colors"
           >
             {menuOpen ? '✕' : '≡'}
           </button>
