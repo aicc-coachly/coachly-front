@@ -1,9 +1,9 @@
-import React, { useEffect, useState } from 'react';
-import { useModal } from '../../components/common/ModalProvider';
-import { useNavigate } from 'react-router-dom';
-import { CheckScheduleModal } from '../../components/trainer/CheckScheduleModal';
-import { BodyCompositionModal } from '../../components/user/BodyCompositionModal';
-import { EditBodyCompositionModal } from '../../components/user/EditBodyCompositionModal';
+import React, { useEffect, useState } from "react";
+import { useModal } from "../../components/common/ModalProvider";
+import { useNavigate } from "react-router-dom";
+import { CheckScheduleModal } from "../../components/trainer/CheckScheduleModal";
+import { BodyCompositionModal } from "../../components/user/BodyCompositionModal";
+import { EditBodyCompositionModal } from "../../components/user/EditBodyCompositionModal";
 
 import { useDispatch, useSelector } from 'react-redux';
 import { getUser, getUserInbody } from '../../redux/slice/userSlice';
@@ -348,7 +348,7 @@ function UserMypage() {
               </p>
               <span className="text-sm text-gray-500">
                 {new Date(schedule.class_date).toLocaleDateString()}
-                {schedule.status === 'completed' && (
+                {schedule.status === "completed" && (
                   <span className="text-green-500 ml-2">완료됨</span>
                 )}
               </span>

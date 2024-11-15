@@ -18,13 +18,13 @@ const ChatRoom = () => {
   const { roomId } = useParams();
   const dispatch = useDispatch();
   const socketRef = useRef(null);
-
   const [input, setInput] = useState('');
   const [isTrainer, setIsTrainer] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
   const [otherPartyName, setOtherPartyName] = useState('');
 
   const userType = useSelector((state) => state.auth.userType);
+  // console.log(userType)
   // console.log(userType)
   const userNumber = useSelector((state) => state.auth.user?.user_number);
   const trainerNumber = useSelector(
@@ -35,6 +35,7 @@ const ChatRoom = () => {
   const idToSend = userType === 'user' ? userNumber : trainerNumber;
 
   useEffect(() => {
+    const fetchChatData = async () => {
     const fetchChatData = async () => {
       try {
         // 채팅방 정보 로드
@@ -64,6 +65,7 @@ const ChatRoom = () => {
     };
 
     fetchChatData();
+    fetchChatData();
 
     return () => {
       dispatch(leaveChatRoom(roomId));
@@ -71,6 +73,7 @@ const ChatRoom = () => {
   }, [dispatch, roomId, userType, userNumber, trainerNumber]);
 
   useEffect(() => {
+
     if (!socketRef.current) {
       socketRef.current = io('http://localhost:8000');
 
@@ -97,6 +100,16 @@ const ChatRoom = () => {
       };
     }
   }, [roomId, dispatch]);
+      return () => {
+        if (socketRef.current) {
+          socketRef.current.off('messageReceived', handleMessageReceived);
+          socketRef.current.emit('leaveRoom', roomId);
+          socketRef.current.disconnect();
+          socketRef.current = null;
+        }
+      };
+    }
+  }, [roomId, dispatch]);
 
   const sendMessage = useCallback(() => {
     if (input.trim()) {
@@ -107,12 +120,16 @@ const ChatRoom = () => {
         userNumber: idToSend,
         content: input,
         senderId: idToSend,
+        content: input,
+        senderId: idToSend,
         sender_name: userType,
+        messageId, // 고유 ID 추가
         messageId, // 고유 ID 추가
       };
       socketRef.current.emit('sendMessage', message); // 메시지 전송만, dispatch 제거
       setInput(''); // 입력창 초기화
     }
+  }, [input, roomId, idToSend, userType]);
   }, [input, roomId, idToSend, userType]);
 
   return (
@@ -123,6 +140,7 @@ const ChatRoom = () => {
         </span>
       </div>
 
+      <div className="flex-1 p-4 space-y-4 mb-20 overflow-y-auto chat-messages-container">
       <div className="flex-1 p-4 space-y-4 mb-20 overflow-y-auto chat-messages-container">
         {messages.map((msg, index) => (
           <div

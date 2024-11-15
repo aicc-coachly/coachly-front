@@ -27,6 +27,11 @@ function Header() {
     setMenuOpen(false);
   }, [isLoggedIn]);
 
+  useEffect(() => {
+    // 로그인 상태가 변경될 때마다 메뉴를 닫음
+    setMenuOpen(false);
+  }, [isLoggedIn]);
+
   // 특정 페이지에서 메뉴바 숨김
   const hideMenuBar = [
     '/',
@@ -64,6 +69,7 @@ function Header() {
       </Link>
 
       {/* 오른쪽 메뉴 버튼 */}
+      {!hideMenuBar && isLoggedIn && (
       {!hideMenuBar && isLoggedIn && (
         <>
           <button

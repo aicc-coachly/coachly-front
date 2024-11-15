@@ -61,7 +61,9 @@ const TrainerMypage = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
+
   const [scheduleRecords, setScheduleRecords] = useState([]);
+  const [isFetched, setIsFetched] = useState(false);
   const [isFetched, setIsFetched] = useState(false);
   const [isChecked, setIsChecked] = useState(false);
   const [trainerPage, setTrainerPage] = useState(1);
@@ -76,6 +78,7 @@ const TrainerMypage = () => {
 
   useEffect(() => {
     if (trainer_number) {
+      dispatch(getTrainer(trainer_number));
       dispatch(getTrainer(trainer_number));
     } else {
       const storedTrainer = JSON.parse(localStorage.getItem('trainer'));
@@ -93,6 +96,7 @@ const TrainerMypage = () => {
 
   useEffect(() => {
     if (trainer_number) {
+      dispatch(getPtschedule({ trainer_number }));
       dispatch(getPtschedule({ trainer_number }));
     }
   }, [dispatch, trainer_number]);
@@ -116,6 +120,7 @@ const TrainerMypage = () => {
   };
 
   useEffect(() => {
+    if (!isFetched && pt_schedule.length > 0) {
     if (!isFetched && pt_schedule.length > 0) {
       fetchScheduleRecords();
     }
@@ -164,7 +169,7 @@ const TrainerMypage = () => {
     navigate('/trainerprofile', { state: { profile } });
 
   const uniqueSchedules = pt_schedule
-    .filter((schedule) => schedule.status !== 'completed')
+    .filter((schedule) => schedule.status !== "completed")
     .reduce((acc, schedule) => {
       if (!acc.some((item) => item.user_number === schedule.user_number)) {
         acc.push(schedule);

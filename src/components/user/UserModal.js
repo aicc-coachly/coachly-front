@@ -41,7 +41,7 @@ export const UserModal = ({ schedule }) => {
   };
 
   const age = calculateAge(userInfo?.birth);
-  console.log('User age:', age);
+  console.log("User age:", age);
 
   // console.log(userInfo);
 
@@ -78,7 +78,7 @@ export const UserModal = ({ schedule }) => {
         <p className="text-gray-600">
           <strong>연령:</strong> 만{age}
           <span className="ml-4">
-            <strong>성별:</strong> {userInfo?.gender === 'male' ? '남' : '여'}
+            <strong>성별:</strong> {userInfo?.gender === "male" ? "남" : "여"}
           </span>
         </p>
         <p className="text-gray-600">

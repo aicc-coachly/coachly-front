@@ -154,7 +154,7 @@ export const TrainerInfoModal = ({ trainer }) => {
               PT 신청하기
             </button>
             <button
-              onClick={() => navigate('/chatroom')}
+              onClick={() => navigate("/chatroom")}
               className="bg-[#4831D4] text-white rounded-md py-2 text-sm"
             >
               1:1 상담 받기
