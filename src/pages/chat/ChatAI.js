@@ -18,7 +18,7 @@ const ChatAI = () => {
 
   // WebSocket 연결 설정
   useEffect(() => {
-    const ws = new WebSocket("ws://localhost:6000/ws/chat");
+    const ws = new WebSocket("ws://localhost:9000/ws/chat");
     setSocket(ws);
 
     // WebSocket 이벤트 핸들러

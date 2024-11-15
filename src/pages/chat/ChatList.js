@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
-import { fetchChatRooms } from '../../redux/thunks/chatThunks';
+import { fetchChatRooms, createOrGetChatRoom } from '../../redux/thunks/chatThunks';
 import { selectChatRooms } from '../../redux/slice/chatSlice';
 
 const ChatList = () => {
@@ -23,8 +23,18 @@ const ChatList = () => {
     }
   }, [dispatch, userType, userNumber, trainerNumber]);
 
-  const handleClick = (roomId) => {
-    navigate(`/chatRoom/${roomId}`);
+  const handleClick = async (roomId) => {
+    if (roomId === 'ai') {
+      try {
+        const result = await dispatch(createOrGetChatRoom(userNumber)).unwrap();
+        const aiRoomId = result.chat_room_id;
+        navigate(`/chatRoom/${aiRoomId}`);
+      } catch (error) {
+        console.error("AI 채팅방 생성/조회 실패:", error);
+      }
+    } else {
+      navigate(`/chatRoom/${roomId}`);
+    }
   };
 
   return (
@@ -35,7 +45,7 @@ const ChatList = () => {
           onClick={() => handleClick('ai')}
           style={{ backgroundColor: '#e0e0e0', padding: '10px', marginBottom: '10px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderRadius: '5px', cursor: 'pointer' }}
         >
-          <span>AI 트레이너</span>
+          <span>AI 코치리</span>
           <span
             style={{
               backgroundColor: "#fff",
@@ -45,7 +55,6 @@ const ChatList = () => {
               fontSize: "0.8rem",
             }}
           >
-            new
           </span>
         </div>
       )}

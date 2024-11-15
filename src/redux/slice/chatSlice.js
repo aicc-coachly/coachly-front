@@ -16,6 +16,8 @@ const chatSlice = createSlice({
     chatRooms: [],
     error: null,
     loading: false, // 로딩 상태 추가
+    aiLoading: false, // AI 채팅 로딩 상태
+    aiMessages: [], // AI 채팅 메시지
   },
   reducers: {
     clearChatData: (state) => {

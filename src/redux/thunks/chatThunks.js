@@ -7,6 +7,7 @@ import {
   GET_CHAT_ROOMS_URL,
   LEAVE_CHAT_ROOM_URL,
   AI_CHAT_REQUEST_URL,
+  CREATE_AI_CHAT_ROOM_URL
   // READ_MESSAGE_URL,
   // DELETE_MESSAGE_URL,
   // DEACTIVATE_CHAT_ROOM_URL,
@@ -14,6 +15,8 @@ import {
 
 import { getRequest, postRequest } from '../../utils/requestMethod';
 import { addMessage } from '../slice/chatSlice';
+
+let aiChatSocket = null; // WebSocket 전역 변수로 관리
 
 // 채팅방 생성
 export const createChatRoom = createAsyncThunk(
@@ -123,55 +126,62 @@ export const leaveChatRoom = createAsyncThunk(
 
 
 // AI 채팅을 위한 WebSocket 연결 설정
-export const startAIChat = () => {
-  const socket = new WebSocket(AI_CHAT_REQUEST_URL);
+export const startAIChat = (dispatch) => {
+  aiChatSocket = new WebSocket(AI_CHAT_REQUEST_URL);
 
-  socket.onopen = () => {
+  aiChatSocket.onopen = () => {
     console.log('AI 채팅 서버에 연결되었습니다.');
   };
 
-  socket.onmessage = (event) => {
+  aiChatSocket.onmessage = (event) => {
     const response = JSON.parse(event.data);
     console.log('AI 응답:', response.response);
-    // 메시지 상태를 업데이트하도록 액션을 dispatch할 수 있습니다.
+    dispatch(addMessage({ sender_name: 'AI', content: response.response })); // Redux 상태 업데이트
   };
 
-  socket.onerror = (error) => {
+  aiChatSocket.onerror = (error) => {
     console.error('WebSocket 오류:', error);
   };
 
-  socket.onclose = () => {
+  aiChatSocket.onclose = () => {
     console.log('AI 채팅 서버와의 연결이 종료되었습니다.');
+    aiChatSocket = null; // WebSocket 연결 종료 후 초기화
   };
-
-  return socket;
 };
+
+// AI 채팅방 생성
+export const createOrGetChatRoom = createAsyncThunk(
+  'chat/createOrGetChatRoom',
+  async (userNumber, { dispatch, rejectWithValue }) => {
+    try {
+      const response = await postRequest(CREATE_AI_CHAT_ROOM_URL, {
+        body: JSON.stringify({ user_number: userNumber }),
+      });
+
+      if (!aiChatSocket) startAIChat(dispatch); // WebSocket 연결이 없을 경우 시작
+
+      return response; // chat_room_id 반환
+    } catch (error) {
+      return rejectWithValue(error.message || 'AI 채팅방 생성/조회 실패');
+    }
+  }
+);
 
 // AI 메시지 전송
 export const aiSendMessage = createAsyncThunk(
   'chat/aiSendMessage',
   async ({ roomId, message }, { rejectWithValue }) => {
     try {
-      const socket = startAIChat();
-      
-      socket.send(
+      if (!aiChatSocket) throw new Error('WebSocket is not connected');
+
+      aiChatSocket.send(
         JSON.stringify({
           room_id: roomId,
           question: message,
         })
       );
 
-      socket.onmessage = (event) => {
-        const response = JSON.parse(event.data);
-        // AI 응답 처리
-        console.log('AI 응답:', response.response);
-        return response;
-      };
-
-      socket.onclose = () => {
-        console.log('WebSocket 연결이 종료되었습니다.');
-      };
-      
+      return { sender_name: 'User', content: message }; // 전송된 메시지 반환
     } catch (error) {
       return rejectWithValue(error.message || 'AI 메시지 전송 실패');
     }

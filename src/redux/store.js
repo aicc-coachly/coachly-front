@@ -1,4 +1,3 @@
-// redux/store.js
 import { configureStore } from "@reduxjs/toolkit";
 import storage from "redux-persist/lib/storage"; // 로컬 스토리지 사용
 import { persistReducer, persistStore } from "redux-persist";
@@ -85,6 +84,10 @@ const persistedReducer = persistReducer(persistConfig, rootReducer);
 
 const store = configureStore({
   reducer: persistedReducer,
+  middleware: (getDefaultMiddleware) =>
+    getDefaultMiddleware({
+      serializableCheck: false, // 만약 비직렬화 가능 오류를 피하고자 할 경우
+    }),
 });
 
 export const persistor = persistStore(store);
