@@ -8,11 +8,11 @@ import { useDispatch, useSelector } from 'react-redux';
 import { getTrainerPtCost } from '../../redux/slice/trainerSlice';
 
 export const TrainerInfoModal = ({ trainer }) => {
-  const storedData = JSON.parse(sessionStorage.getItem("userData"));
+  const storedData = JSON.parse(sessionStorage.getItem('userData'));
   const data = storedData?.data;
   const userType = storedData?.userType;
-  const user_number = userType === "user" ? data?.user_number : null;
-  const user_name = userType === "user" ? data?.user_name : null;
+  const user_number = userType === 'user' ? data?.user_number : null;
+  const user_name = userType === 'user' ? data?.user_name : null;
   const dispatch = useDispatch();
   const { closeModal, openModal } = useModal();
   const trainer_number = trainer?.trainer_id;
@@ -28,13 +28,13 @@ export const TrainerInfoModal = ({ trainer }) => {
     loading,
     error,
   } = useSelector((state) => state.trainer);
-  console.log("현재 Redux의 trainerPtCostData:", trainerPtCostData);
+  console.log('현재 Redux의 trainerPtCostData:', trainerPtCostData);
 
   // PT 비용 정보 가져오기
   useEffect(() => {
     if (trainer && trainer.trainer_number) {
       dispatch(getTrainerPtCost(trainer.trainer_number));
-      console.log("데이터 가져오기 :", trainer.trainer_number);
+      console.log('데이터 가져오기 :', trainer.trainer_number);
     }
   }, [trainer, dispatch]);
 
@@ -51,8 +51,8 @@ export const TrainerInfoModal = ({ trainer }) => {
         )
       : [];
 
-  console.log("트레이너 PT 비용 정보:", filteredPtCostData);
-  console.log("trainerPtCostData:", trainerPtCostData);
+  console.log('트레이너 PT 비용 정보:', filteredPtCostData);
+  console.log('trainerPtCostData:', trainerPtCostData);
 
   // trainer_id로 트레이너 이미지를 가져오기
   useEffect(() => {

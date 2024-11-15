@@ -1,16 +1,16 @@
-import React, { useEffect, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { getUser } from "../../redux/slice/userSlice"; // 적절한 경로로 설정
-import { postPtSchedule } from "../../redux/slice/scheduleSlice"; // postPtSchedule 불러오기
-import { useModal } from "../common/ModalProvider";
+import React, { useEffect, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { getUser } from '../../redux/slice/userSlice'; // 적절한 경로로 설정
+import { postPtSchedule } from '../../redux/slice/scheduleSlice'; // postPtSchedule 불러오기
+import { useModal } from '../common/ModalProvider';
 
 export const CreateScheduleModal = ({ schedule }) => {
   const { closeModal } = useModal();
   const dispatch = useDispatch();
   // const userInfo = useSelector((state) => state.user.userInfo);
-  const [classDate, setClassDate] = useState("");
-  const [classTime, setClassTime] = useState("");
-  const [classAddress, setClassAddress] = useState(""); // 주소를 입력받을 상태
+  const [classDate, setClassDate] = useState('');
+  const [classTime, setClassTime] = useState('');
+  const [classAddress, setClassAddress] = useState(''); // 주소를 입력받을 상태
   const [isSubmitting, setIsSubmitting] = useState(false);
   const user_number = schedule.user_number;
   useEffect(() => {
@@ -18,7 +18,7 @@ export const CreateScheduleModal = ({ schedule }) => {
   }, [dispatch, user_number]);
 
   // pt_number 값 출력해서 제대로 받았는지 확인
-  console.log("PT Number:", schedule); // pt_number 값 출력
+  console.log('PT Number:', schedule); // pt_number 값 출력
 
   const handleSubmit = async () => {
     // POST 요청으로 서버에 수업 예약 데이터 보내기
@@ -36,11 +36,11 @@ export const CreateScheduleModal = ({ schedule }) => {
       if (response.error) {
         throw new Error(response.error.message); // 오류 처리
       }
-      console.log("Schedule created successfully:", response.payload);
+      console.log('Schedule created successfully:', response.payload);
       setIsSubmitting(false);
       closeModal(); // 모달 닫기
     } catch (error) {
-      console.error("Failed to create schedule:", error);
+      console.error('Failed to create schedule:', error);
       setIsSubmitting(false);
       // 실패 처리 로직 (예: 에러 메시지 표시)
     }
@@ -55,7 +55,7 @@ export const CreateScheduleModal = ({ schedule }) => {
         <span className="text-sm font-semibold">회원명</span>
         <input
           type="text"
-          value={schedule ? `${schedule.user_name}` : ""}
+          value={schedule ? `${schedule.user_name}` : ''}
           readOnly
           className="bg-gray-200 text-sm p-1 rounded text-center"
         />
@@ -97,10 +97,10 @@ export const CreateScheduleModal = ({ schedule }) => {
         onClick={handleSubmit}
         disabled={isSubmitting}
         className={`w-full py-2 rounded text-black font-semibold mt-4 ${
-          isSubmitting ? "bg-gray-300" : "bg-pink-200"
+          isSubmitting ? 'bg-gray-300' : 'bg-pink-200'
         }`}
       >
-        {isSubmitting ? "수업 예약 중..." : "저장하기"}
+        {isSubmitting ? '수업 예약 중...' : '저장하기'}
       </button>
     </div>
   );

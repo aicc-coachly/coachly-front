@@ -10,23 +10,8 @@ import { getUser, getUserInbody } from '../../redux/slice/userSlice';
 import { setUser } from '../../redux/slice/authSlice';
 import { getPtschedule } from '../../redux/slice/paymentSlice';
 import { getScheduleRecord } from '../../redux/slice/scheduleSlice';
-import { createChatRoom } from "../../redux/thunks/chatThunks";
-
-// 중복 트레이너 제거 함수
-const getUniqueTrainers = (schedule) => {
-  const uniqueTrainers = [];
-  const trainerNames = new Set();
-
-  for (const item of schedule) {
-    if (!trainerNames.has(item.trainer_name)) {
-      uniqueTrainers.push(item);
-      trainerNames.add(item.trainer_name);
-    }
-  }
-
-  return uniqueTrainers;
-};
-
+import { createChatRoom } from '../../redux/thunks/chatThunks';
+import img from '../../assets/images/newlogo.png';
 
 function UserMypage() {
   const [showCompleted, setShowCompleted] = useState(false);
@@ -34,7 +19,6 @@ function UserMypage() {
   const { openModal } = useModal();
   const navigate = useNavigate();
   const user_number = useSelector((state) => state.auth?.user?.user_number);
-
   const inbodyData = useSelector((state) => {
     const userInbodyData = Array.isArray(state.user?.inbodyData)
       ? state.user.inbodyData
@@ -95,12 +79,12 @@ function UserMypage() {
     if (user_number) {
       dispatch(getPtschedule({ user_number }));
     } else {
-      console.warn("user_number가 존재하지 않습니다.");
+      console.warn('user_number가 존재하지 않습니다.');
     }
   }, [dispatch, user_number]);
 
   useEffect(() => {
-    console.log("pt_schedule 데이터:", pt_schedule);
+    console.log('pt_schedule 데이터:', pt_schedule);
   }, [pt_schedule]);
 
   useEffect(() => {
@@ -124,13 +108,13 @@ function UserMypage() {
   };
 
   const filteredScheduleRecord = scheduleRecords.filter(
-    (schedule) => schedule.status !== "deleted"
+    (schedule) => schedule.status !== 'deleted'
   );
 
   const displayedClassItems = filteredScheduleRecord.filter((schedule) =>
     showCompleted
-      ? schedule.status === "completed"
-      : schedule.status !== "completed"
+      ? schedule.status === 'completed'
+      : schedule.status !== 'completed'
   );
   const filteredClassTotalPages = Math.ceil(
     displayedClassItems.length / itemsPerPage
@@ -146,7 +130,7 @@ function UserMypage() {
   const getUniqueTrainers = (schedule) => {
     // schedule이 배열인지 확인하여, 배열이 아닌 경우 빈 배열로 처리
     if (!Array.isArray(schedule)) {
-      console.warn("Expected an array for schedule, but got:", schedule);
+      console.warn('Expected an array for schedule, but got:', schedule);
       schedule = [];
     }
 
@@ -217,40 +201,15 @@ function UserMypage() {
   };
 
   const handleRefundPage = () => {
-    navigate("/userptschedule", { state: { user_number } });
+    navigate('/userptschedule', { state: { user_number } });
   };
   const handleMyInfoUpdate = () => {
-    navigate("/userprofile", { state: { userInfo } });
+    navigate('/userprofile', { state: { userInfo } });
   };
-
-  const handleChat = async (trainer_number) => {
-    try {
-      if (!user_number || !trainer_number) {
-        console.log("pt_schedule:", pt_schedule);
-        console.error("user_number 또는 trainer_number가 정의되지 않았습니다.", { user_number, trainer_number });
-        return; // 값이 없으면 함수 종료
-      }
-  
-      // 채팅방 생성/확인 요청
-      const response = await dispatch(
-        createChatRoom({ user_number, trainer_number })
-      );
-      
-      if (response?.payload?.room_id) {
-        console.log("채팅방 생성 성공, room_id:", response.payload.room_id);
-        navigate(`/chatRoom/${response.payload.room_id}`);
-      } else {
-        console.warn("API 응답에서 room_id가 반환되지 않았습니다.", response.payload);
-      }
-    } catch (error) {
-      console.error("채팅방 생성 중 오류 발생:", error);
-    }
-  };
-  
 
   const handleChat = async (trainer_number) => {
     if (!user_number || !trainer_number) {
-      console.error("user_number 또는 trainer_number가 정의되지 않았습니다.", {
+      console.error('user_number 또는 trainer_number가 정의되지 않았습니다.', {
         user_number,
         trainer_number,
       });
@@ -266,16 +225,17 @@ function UserMypage() {
         navigate(`/chatRoom/${response.payload.room_id}`);
       } else {
         console.warn(
-          "API 응답에서 room_id가 반환되지 않았습니다.",
+          'API 응답에서 room_id가 반환되지 않았습니다.',
           response.payload
         );
       }
     } catch (error) {
-      console.error("채팅방 생성 중 오류 발생:", error);
+      console.error('채팅방 생성 중 오류 발생:', error);
     }
   };
   return (
     <div className="max-w-[390px] mx-auto bg-gray-100 p-4">
+      {/* 내 정보 섹션 */}
       <div className="bg-white rounded-lg shadow-md p-4 mb-4 relative">
         <h2 className="text-lg font-semibold mb-2 text-gray-700">내 정보</h2>
         <button
@@ -291,16 +251,6 @@ function UserMypage() {
           수정하기
         </button>
         <div className="flex items-start mt-4 space-x-4">
-          {/* 프로필 사진 */}
-          <div className="w-[8rem] h-[8rem] bg-gray-200 overflow-hidden">
-            {/* <img 
-                    // src="https://via.placeholder.com/64" // 프로필 사진 URL 또는 경로로 대체
-                    alt="프로필 사진" 
-                    className="object-cover w-full h-full"
-                  /> */}
-          </div>
-
-          {/* 텍스트 정보와 체크박스 */}
           <div className="flex-1">
             <div className="flex justify-end">
               <p className="px-3 py-1 bg-gray-300 text-sm rounded-md text-gray-500">
@@ -313,7 +263,7 @@ function UserMypage() {
             <p className="text-sm text-gray-500">{profile?.email}</p>
             <p className="text-sm text-gray-500">{profile?.phone}</p>
             <p className="text-sm text-gray-500">
-              {profile?.gender === "male" ? "남" : "여"}
+              {profile?.gender === 'male' ? '남' : '여'}
             </p>
           </div>
         </div>
@@ -354,8 +304,8 @@ function UserMypage() {
               onClick={() => handleTrainerPageChange(pageNumber)}
               className={`px-3 py-1 ${
                 trainerPage === pageNumber
-                  ? "bg-blue-500 text-white"
-                  : "bg-gray-300"
+                  ? 'bg-blue-500 text-white'
+                  : 'bg-gray-300'
               } rounded-md text-sm`}
             >
               {pageNumber}
@@ -431,8 +381,8 @@ function UserMypage() {
               onClick={() => handleClassPageChange(pageNumber)}
               className={`px-3 py-1 ${
                 classPage === pageNumber
-                  ? "bg-blue-500 text-white"
-                  : "bg-gray-300"
+                  ? 'bg-blue-500 text-white'
+                  : 'bg-gray-300'
               } rounded-md text-sm`}
             >
               {pageNumber}
@@ -497,8 +447,8 @@ function UserMypage() {
               onClick={() => handlePageChange(pageNumber)}
               className={`px-3 py-1 ${
                 currentPage === pageNumber
-                  ? "bg-blue-500 text-white"
-                  : "bg-gray-300"
+                  ? 'bg-blue-500 text-white'
+                  : 'bg-gray-300'
               } rounded-md text-sm`}
             >
               {pageNumber}

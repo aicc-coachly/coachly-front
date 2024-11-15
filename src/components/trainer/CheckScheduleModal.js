@@ -1,20 +1,20 @@
-import React, { useEffect, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { useModal } from "../../components/common/ModalProvider";
-import DatePicker from "react-datepicker";
-import TimePicker from "react-time-picker";
-import "react-datepicker/dist/react-datepicker.css"; // 날짜 선택을 위한 스타일
+import React, { useEffect, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { useModal } from '../../components/common/ModalProvider';
+import DatePicker from 'react-datepicker';
+import TimePicker from 'react-time-picker';
+import 'react-datepicker/dist/react-datepicker.css'; // 날짜 선택을 위한 스타일
 import {
   patchPtSchedule,
   deletePtSchedule,
   completePtSchedule, // 완료 액션 임포트
-} from "../../redux/slice/scheduleSlice"; // Redux 액션 임포트
+} from '../../redux/slice/scheduleSlice'; // Redux 액션 임포트
 
 export const CheckScheduleModal = ({ schedule, onUpdate, onDelete }) => {
   const { closeModal } = useModal(); // 모달 닫기 함수
   const dispatch = useDispatch(); // Redux dispatch
-  const [newAddress, setNewAddress] = useState(schedule?.address || ""); // 수정 가능한 장소
-  const [newClassTime, setNewClassTime] = useState(schedule?.class_time || ""); // 수정 가능한 시간
+  const [newAddress, setNewAddress] = useState(schedule?.address || ''); // 수정 가능한 장소
+  const [newClassTime, setNewClassTime] = useState(schedule?.class_time || ''); // 수정 가능한 시간
   const [newClassDate, setNewClassDate] = useState(
     schedule ? new Date(schedule.class_date) : new Date()
   ); // 수정 가능한 날짜
@@ -46,7 +46,7 @@ export const CheckScheduleModal = ({ schedule, onUpdate, onDelete }) => {
       // 상태 업데이트가 성공한 후 모달을 닫음
       closeModal();
     } catch (error) {
-      console.error("업데이트 실패", error);
+      console.error('업데이트 실패', error);
     }
   };
 
@@ -57,7 +57,7 @@ export const CheckScheduleModal = ({ schedule, onUpdate, onDelete }) => {
       await dispatch(completePtSchedule(schedule.schedule_number));
       closeModal(); // 완료 후 모달 닫기
     } catch (error) {
-      console.error("완료 처리 실패", error);
+      console.error('완료 처리 실패', error);
       // 실패 처리 (예: 알림 표시)
     }
   };
@@ -65,7 +65,7 @@ export const CheckScheduleModal = ({ schedule, onUpdate, onDelete }) => {
   // 일정 삭제 처리
   const handleDelete = () => {
     const updateData = {
-      status: "deleted",
+      status: 'deleted',
       class_date: null,
       class_time: null,
       address: null,

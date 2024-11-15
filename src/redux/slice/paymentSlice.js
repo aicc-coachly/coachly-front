@@ -1,18 +1,18 @@
-import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
+import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import {
   CREATE_PT_PAYMENT_URL,
   COMPLETE_PT_PAYMENT_URL,
   GET_PT_SCHEDULE_URL,
-} from "../../utils/paymentApiUrl";
+} from '../../utils/paymentApiUrl';
 import {
   getRequest,
   postRequest,
   postRequestTwo,
-} from "../../utils/requestMethod";
+} from '../../utils/requestMethod';
 
 // PT 결제 생성
 export const createPtPayment = createAsyncThunk(
-  "payment/createPtPayment",
+  'payment/createPtPayment',
   async (
     { user_number, trainer_number, payment_option, amount_number },
     { rejectWithValue }
@@ -28,14 +28,14 @@ export const createPtPayment = createAsyncThunk(
       });
       return response;
     } catch (error) {
-      return rejectWithValue(error.message || "결제 생성 실패");
+      return rejectWithValue(error.message || '결제 생성 실패');
     }
   }
 );
 
 // PT 결제 완료 처리
 export const completePtPayment = createAsyncThunk(
-  "payment/completePtPayment",
+  'payment/completePtPayment',
   async (
     { payment_number, paymentKey, orderId, amount, ptNumber },
     { rejectWithValue }
@@ -51,20 +51,20 @@ export const completePtPayment = createAsyncThunk(
             ptNumber,
           }),
           headers: {
-            "Content-Type": "application/json", // 헤더 설정
+            'Content-Type': 'application/json', // 헤더 설정
           },
         }
       );
       return response;
     } catch (error) {
-      return rejectWithValue(error.message || "결제 완료 처리 실패");
+      return rejectWithValue(error.message || '결제 완료 처리 실패');
     }
   }
 );
 
 // getPtschedule에서 query를 직접 생성하지 않고 객체 그대로 전달
 export const getPtschedule = createAsyncThunk(
-  "payment/getPtschedule",
+  'payment/getPtschedule',
   async ({ user_number, trainer_number }, { rejectWithValue }) => {
     try {
       const response = await getRequest(
@@ -72,7 +72,7 @@ export const getPtschedule = createAsyncThunk(
       );
       return response;
     } catch (error) {
-      return rejectWithValue(error.message || "PT 스케줄 조회 실패");
+      return rejectWithValue(error.message || 'PT 스케줄 조회 실패');
     }
   }
 );
@@ -94,7 +94,7 @@ export const getPtschedule = createAsyncThunk(
 // );
 
 const paymentSlice = createSlice({
-  name: "payment",
+  name: 'payment',
   initialState: {
     data: null,
     error: null,

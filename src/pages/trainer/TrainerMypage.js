@@ -15,10 +15,10 @@ import {
   deletePtSchedule,
   getScheduleRecord,
   patchPtSchedule,
-} from "../../redux/slice/scheduleSlice";
-import { getUser } from "../../redux/slice/userSlice";
-import { CheckScheduleModal } from "../../components/trainer/CheckScheduleModal";
-import { createChatRoom } from "../../redux/thunks/chatThunks";
+} from '../../redux/slice/scheduleSlice';
+import { getUser } from '../../redux/slice/userSlice';
+import { CheckScheduleModal } from '../../components/trainer/CheckScheduleModal';
+import { createChatRoom } from '../../redux/thunks/chatThunks';
 
 // 페이지네이션 컴포넌트 정의
 const Pagination = ({ currentPage, totalPages, onPageChange }) => {
@@ -39,7 +39,7 @@ const Pagination = ({ currentPage, totalPages, onPageChange }) => {
           key={index}
           onClick={() => onPageChange(index + 1)}
           className={`mx-1 px-2 py-1 ${
-            currentPage === index + 1 ? "bg-blue-500 text-white" : "bg-gray-300"
+            currentPage === index + 1 ? 'bg-blue-500 text-white' : 'bg-gray-300'
           } rounded-md`}
         >
           {index + 1}
@@ -74,7 +74,7 @@ const TrainerMypage = () => {
   );
   const profile = useSelector((state) => state.trainer?.data);
   const pt_schedule = useSelector((state) => state.payment?.data) || [];
-  const path = "http://localhost:8000";
+  const path = 'http://localhost:8000';
 
   useEffect(() => {
     if (trainer_number) {
@@ -166,9 +166,8 @@ const TrainerMypage = () => {
   const handleUpdateSchedule = (updatedSchedule) =>
     dispatch(patchPtSchedule(updatedSchedule));
   const handleMyInfoUpdate = () =>
-    navigate("/trainerprofile", { state: { profile } });
+    navigate('/trainerprofile', { state: { profile } });
 
-  // 중복된 유저 제거
   const uniqueSchedules = pt_schedule
     .filter((schedule) => schedule.status !== "completed")
     .reduce((acc, schedule) => {
@@ -185,12 +184,12 @@ const TrainerMypage = () => {
   );
   const classTotalPages = Math.ceil(scheduleRecords.length / itemsPerPage);
   const classItems = scheduleRecords
-    .filter((schedule) => schedule.status !== "deleted")
+    .filter((schedule) => schedule.status !== 'deleted')
     .slice((classPage - 1) * itemsPerPage, classPage * itemsPerPage);
 
   const handleChat = async (user_number) => {
     if (!user_number || !trainer_number) {
-      console.error("user_number 또는 trainer_number가 정의되지 않았습니다.", {
+      console.error('user_number 또는 trainer_number가 정의되지 않았습니다.', {
         user_number,
         trainer_number,
       });
@@ -206,12 +205,12 @@ const TrainerMypage = () => {
         navigate(`/chatRoom/${response.payload.room_id}`);
       } else {
         console.warn(
-          "API 응답에서 room_id가 반환되지 않았습니다.",
+          'API 응답에서 room_id가 반환되지 않았습니다.',
           response.payload
         );
       }
     } catch (error) {
-      console.error("채팅방 생성 중 오류 발생:", error);
+      console.error('채팅방 생성 중 오류 발생:', error);
     }
   };
 

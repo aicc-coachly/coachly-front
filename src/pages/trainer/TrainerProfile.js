@@ -288,7 +288,7 @@ const TrainerProfile = () => {
                 placeholder="가격"
                 value={option.amount}
                 onChange={(e) =>
-                  handlePtCostChange(index, "amount", e.target.value)
+                  handlePtCostChange(index, 'amount', e.target.value)
                 }
                 className="w-1/2 text-sm text-gray-600 border border-gray-300 rounded-md py-2 px-3 focus:outline-none focus:ring-2 focus:ring-blue-200"
               />
@@ -297,7 +297,7 @@ const TrainerProfile = () => {
                 placeholder="횟수"
                 value={option.frequency}
                 onChange={(e) =>
-                  handlePtCostChange(index, "frequency", e.target.value)
+                  handlePtCostChange(index, 'frequency', e.target.value)
                 }
                 className="w-1/2 text-sm text-gray-600 border border-gray-300 rounded-md py-2 px-3 focus:outline-none focus:ring-2 focus:ring-blue-200"
               />

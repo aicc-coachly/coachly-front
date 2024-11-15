@@ -12,6 +12,8 @@ export const UserModal = ({ schedule }) => {
   const user_number = schedule.user_number; // 유저 번호
   const inbodyInfo = useSelector((state) => state.user?.inbodyData); // Redux에서 인바디 정보 가져오기
   const userInfo = useSelector((state) => state.user?.userInfo);
+  console.log(userInfo?.birth);
+  console.log(user_number);
 
   const calculateAge = (birthDate) => {
     if (!birthDate) return null;

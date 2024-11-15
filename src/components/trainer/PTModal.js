@@ -1,11 +1,11 @@
 // PTModal.js
-import React, { useEffect, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import Buttons from "../common/Buttons";
-import { loadTossPayments } from "@tosspayments/tosspayments-sdk";
-import { createPtPayment } from "../../redux/slice/paymentSlice";
-import { getTrainer } from "../../redux/slice/trainerSlice";
-import { useModal } from "../common/ModalProvider";
+import React, { useEffect, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import Buttons from '../common/Buttons';
+import { loadTossPayments } from '@tosspayments/tosspayments-sdk';
+import { createPtPayment } from '../../redux/slice/paymentSlice';
+import { getTrainer } from '../../redux/slice/trainerSlice';
+import { useModal } from '../common/ModalProvider';
 
 export const PTModal = ({
   trainer,
@@ -17,11 +17,10 @@ export const PTModal = ({
 }) => {
   const dispatch = useDispatch();
   const { openModal, closeModal } = useModal();
-  const [selectedOption, setSelectedOption] = useState("");
+  const [selectedOption, setSelectedOption] = useState('');
   const [isPaymentReady, setIsPaymentReady] = useState(false); // 결제 준비 상태 추가
   const trainerProfile = trainer || {};
   const trainerImage = trainerProfile.image;
-
   const path = 'http://localhost:8000';
 
   useEffect(() => {
@@ -49,7 +48,7 @@ export const PTModal = ({
 
   const handleWidgetRender = async () => {
     if (!selectedOption) {
-      alert("결제 옵션을 선택해 주세요.");
+      alert('결제 옵션을 선택해 주세요.');
       return;
     }
 
@@ -58,7 +57,7 @@ export const PTModal = ({
     );
 
     if (!selectedCost) {
-      alert("선택한 결제 옵션이 유효하지 않습니다.");
+      alert('선택한 결제 옵션이 유효하지 않습니다.');
       return;
     }
 
@@ -66,9 +65,9 @@ export const PTModal = ({
 
     try {
       const tossPayments = await loadTossPayments(widgetClientKey);
-      const paymentWidgets = tossPayments.widgets({ customerKey: "ANONYMOUS" });
+      const paymentWidgets = tossPayments.widgets({ customerKey: 'ANONYMOUS' });
 
-      await paymentWidgets.setAmount({ currency: "KRW", value: amount });
+      await paymentWidgets.setAmount({ currency: 'KRW', value: amount });
       setIsPaymentReady(true);
 
       openModal(
@@ -96,21 +95,21 @@ export const PTModal = ({
 
       setTimeout(() => {
         paymentWidgets.renderPaymentMethods({
-          selector: "#payment-method",
+          selector: '#payment-method',
         });
         paymentWidgets.renderAgreement({
-          selector: "#agreement",
+          selector: '#agreement',
         });
       }, 0);
     } catch (error) {
-      console.error("위젯 렌더링 중 오류 발생:", error);
-      alert("위젯 렌더링에 실패했습니다.");
+      console.error('위젯 렌더링 중 오류 발생:', error);
+      alert('위젯 렌더링에 실패했습니다.');
     }
   };
 
   const handlePaymentRequest = async (paymentWidgets, selectedCost) => {
     if (!paymentWidgets) {
-      alert("결제 정보를 선택한 후에 시도해 주세요.");
+      alert('결제 정보를 선택한 후에 시도해 주세요.');
       return;
     }
 
@@ -119,13 +118,13 @@ export const PTModal = ({
     try {
       const result = await dispatch(
         createPtPayment({
-          user_number: user_number,
+          user_number,
           trainer_number,
           payment_option: selectedOption,
           amount_number: selectedCost.amount_number,
         })
       ).unwrap();
-      // console.log(user_number);
+
       const { pt_number, payment_number } = result;
 
       await paymentWidgets.requestPayment({
@@ -133,18 +132,17 @@ export const PTModal = ({
         orderName: selectedCost.option,
         successUrl: `${window.location.origin}/Success?status=completed&paymentNumber=${payment_number}&ptNumber=${pt_number}`,
         failUrl: `${window.location.origin}/payment-fail`,
-        customerName: user_name || "유저이름",
+        customerName: user_name || '유저이름',
       });
 
-      console.log("결제 요청 성공");
+      console.log('결제 요청 성공');
     } catch (error) {
-      console.error("결제 요청 중 오류 발생:", error);
-      alert("결제 요청에 실패했습니다. 잠시 후 다시 시도해 주세요.");
+      console.error('결제 요청 중 오류 발생:', error);
+      alert('결제 요청에 실패했습니다. 잠시 후 다시 시도해 주세요.');
     }
   };
 
   return (
-
     <div className="max-w-sm p-6 w-full rounded-lg relative bg-white">
       {/* 트레이너 정보 섹션 */}
 
@@ -164,8 +162,8 @@ export const PTModal = ({
         <div className="flex flex-col gap-4">
           <p className="font-bold text-lg">{trainerProfile.name}</p>
           <p className="text-[#4831D4]">
-            {trainerProfile.trainer_address || "주소 없음"}{" "}
-            {trainerProfile.trainer_detail_address || ""}{" "}
+            {trainerProfile.trainer_address || '주소 없음'}{' '}
+            {trainerProfile.trainer_detail_address || ''}{' '}
           </p>
 
           <div className="flex gap-2">
@@ -222,4 +220,3 @@ export default PTModal;
 PTModal.defaultProps = {
   trainer: {},
 };
-

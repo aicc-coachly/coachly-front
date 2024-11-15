@@ -1,20 +1,20 @@
-import React, { useEffect, useState } from "react";
-import Buttons from "../../components/common/Buttons";
-import { useModal } from "../../components/common/ModalProvider";
-import { TrainerInfoModal } from "../../components/trainer/TrainerInfoModal";
-import { useLocation, useNavigate } from "react-router-dom";
-import axios from "axios";
-import { CREATE_CHAT_ROOM_URL } from "../../utils/chatApiUrl";
-import { useSelector } from "react-redux";
+import React, { useEffect, useState } from 'react';
+import Buttons from '../../components/common/Buttons';
+import { useModal } from '../../components/common/ModalProvider';
+import { TrainerInfoModal } from '../../components/trainer/TrainerInfoModal';
+import { useLocation, useNavigate } from 'react-router-dom';
+import axios from 'axios';
+import { CREATE_CHAT_ROOM_URL } from '../../utils/chatApiUrl';
+import { useSelector } from 'react-redux';
 
 function TrainerSearch() {
-  const storedData = JSON.parse(sessionStorage.getItem("userData"));
+  const storedData = JSON.parse(sessionStorage.getItem('userData'));
   const data = storedData?.data;
   const userType = storedData?.userType;
-  const user_number = userType === "user" ? data?.user_number : null;
+  const user_number = userType === 'user' ? data?.user_number : null;
   // const user_name = userType === 'user' ? data?.user_name : null;
 
-  const path = "http://localhost:8000";
+  const path = 'http://localhost:8000';
   const [trainers, setTrainers] = useState([]);
   const [filteredTrainers, setFilteredTrainers] = useState([]);
   const [isSearching, setIsSearching] = useState(false);
@@ -23,48 +23,49 @@ function TrainerSearch() {
   const { openModal } = useModal();
 
   const [filters, setFilters] = useState({
-    searchTerm: "",
-    gender: "",
-    service_option: "",
+    searchTerm: '',
+    gender: '',
+    service_option: '',
   });
 
   // Redux에서 userNumber 가져오기
-  console.log("Redux에서 가져온 user_number:", user_number);
+  console.log('Redux에서 가져온 user_number:', user_number);
   console.log(user_number);
   const handleCreateChatRoom = async (trainerNumber) => {
     try {
-      console.log("Creating chat room with:", { userNumber, trainerNumber });
+      console.log('Creating chat room with:', { user_number, trainerNumber });
       const response = await axios.post(CREATE_CHAT_ROOM_URL, {
-        user_number: userNumber,
+        user_number: user_number,
         trainer_number: trainerNumber,
-        type: "trainer", // 트레이너와의 채팅방 생성
+        type: 'trainer', // 트레이너와의 채팅방 생성
       });
 
       if (response.status === 200 || response.status === 201) {
         const { room_id } = response.data;
-        console.log("채팅방으로 이동합니다. 방 ID:", room_id);
+        console.log('채팅방으로 이동합니다. 방 ID:', room_id);
         navigate(`/chatroom/${room_id}`);
       }
     } catch (error) {
-      console.error("채팅방 생성 중 오류가 발생했습니다:", error);
+      console.error('채팅방 생성 중 오류가 발생했습니다:', error);
     }
   };
 
   // 모든 트레이너 데이터 가져오기
   useEffect(() => {
     axios
-      .get("http://localhost:8000/trainers")
+      .get('http://localhost:8000/trainers')
       .then((response) => {
         const uniqueTrainers = response.data.filter(
           (trainer, index, self) =>
             index ===
-            self.findIndex((t) => t.trainer_number === trainer.trainer_number) &&
-          trainer.status !== "inactive" // "inactive" 상태 제외
+              self.findIndex(
+                (t) => t.trainer_number === trainer.trainer_number
+              ) && trainer.status !== 'inactive' // "inactive" 상태 제외
         );
         setTrainers(uniqueTrainers);
         setFilteredTrainers(uniqueTrainers); // 초기 화면에 모든 트레이너 표시
       })
-      .catch((error) => console.error("Error fetching trainers:", error));
+      .catch((error) => console.error('Error fetching trainers:', error));
   }, []);
 
   // 필터 적용
@@ -88,7 +89,7 @@ function TrainerSearch() {
   const handleFilterChange = (key, value) => {
     setFilters((prevFilters) => ({
       ...prevFilters,
-      [key]: prevFilters[key] === value ? "" : value,
+      [key]: prevFilters[key] === value ? '' : value,
     }));
   };
 
@@ -108,16 +109,16 @@ function TrainerSearch() {
       <div className="w-full max-w-[390px] mt-6">
         {/* 서비스 옵션 필터 버튼들 */}
         <div className="grid grid-cols-2 gap-2 mb-6">
-          {["여성전문", "재활전문", "실버전문", "선수/대회전문"].map(
+          {['여성전문', '재활전문', '실버전문', '선수/대회전문'].map(
             (option) => (
               <button
                 key={option}
                 className={`px-4 py-2 text-sm font-semibold rounded-lg transition-colors ${
                   filters.service_option === option
-                    ? "bg-blue-600 text-white"
-                    : "bg-gray-200 text-gray-700"
+                    ? 'bg-blue-600 text-white'
+                    : 'bg-gray-200 text-gray-700'
                 }`}
-                onClick={() => handleFilterChange("service_option", option)}
+                onClick={() => handleFilterChange('service_option', option)}
               >
                 {option}
               </button>
@@ -131,20 +132,20 @@ function TrainerSearch() {
             type="text"
             placeholder="주소를 입력하세요 (예: 홍대)"
             value={filters.searchTerm}
-            onChange={(e) => handleFilterChange("searchTerm", e.target.value)}
+            onChange={(e) => handleFilterChange('searchTerm', e.target.value)}
             className="flex-1 px-4 py-2 text-sm bg-white text-gray-800 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400"
           />
-          {["male", "female"].map((gender) => (
+          {['male', 'female'].map((gender) => (
             <button
               key={gender}
               className={`px-4 py-2 text-sm font-semibold rounded-lg transition-colors ${
                 filters.gender === gender
-                  ? "bg-blue-600 text-white"
-                  : "bg-gray-200 text-gray-700"
+                  ? 'bg-blue-600 text-white'
+                  : 'bg-gray-200 text-gray-700'
               }`}
-              onClick={() => handleFilterChange("gender", gender)}
+              onClick={() => handleFilterChange('gender', gender)}
             >
-              {gender === "male" ? "남성" : "여성"}
+              {gender === 'male' ? '남성' : '여성'}
             </button>
           ))}
         </div>
@@ -154,8 +155,8 @@ function TrainerSearch() {
           onClick={handleSearch}
           className={`px-4 py-3 w-full rounded-lg font-semibold transition-colors ${
             isSearching
-              ? "bg-gray-400 text-gray-600 cursor-not-allowed"
-              : "bg-blue-700 text-white hover:bg-blue-800"
+              ? 'bg-gray-400 text-gray-600 cursor-not-allowed'
+              : 'bg-blue-700 text-white hover:bg-blue-800'
           }`}
           disabled={isSearching}
         >
