@@ -4,21 +4,31 @@ const url = process.env.REACT_APP_API_URL; // 백엔드 서버 URL에 맞게 설
 export const CREATE_CHAT_ROOM_URL = `${url}/chat-room`;
 
 // 채팅방 조회
-export const GET_CHAT_ROOM_URL = (roomId, userNumber) =>
-  `${url}/chat-room?roomId=${roomId}&userNumber=${userNumber}`;
+export const GET_CHAT_ROOM_URL = (roomId, userNumber = null, trainerNumber = null) => {
+  let url = `${process.env.REACT_APP_API_URL}/chat-room/${roomId}`;
 
-// 채팅방 리스트 조회
+  if (userNumber) {
+    url += `?userNumber=${userNumber}`;
+  } else if (trainerNumber) {
+    url += `?trainerNumber=${trainerNumber}`;
+  } else {
+    throw new Error("userNumber 또는 trainerNumber 중 하나는 제공되어야 합니다.");
+  }
+
+  return url;
+};
+
+
+// 채팅방 리스트 조회 
 export const GET_CHAT_ROOMS_URL = (userNumber, trainerNumber) => {
   if (userNumber) {
     return `${url}/chat-rooms?userNumber=${userNumber}`;
   } else if (trainerNumber) {
     return `${url}/chat-rooms?trainerNumber=${trainerNumber}`;
   } else {
-    throw new Error(
-      "userNumber 또는 trainerNumber 중 하나는 제공되어야 합니다."
-    );
+    throw new Error('userNumber 또는 trainerNumber 중 하나는 제공되어야 합니다.');
   }
-};
+}
 
 // 메시지 전송
 export const SEND_MESSAGE_URL = (room_id) =>
@@ -28,7 +38,7 @@ export const SEND_MESSAGE_URL = (room_id) =>
 export const GET_MESSAGES_URL = (room_id) =>
   `${url}/chat-room/${room_id}/messages`;
 
-// 채팅방 화면에서 나가기
+// 채팅방 화면에서 나가기 
 export const LEAVE_CHAT_ROOM_URL = (room_id) =>
   `${url}/chat-room/${room_id}/leave`;
 

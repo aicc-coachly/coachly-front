@@ -33,9 +33,9 @@ function TrainerSearch() {
   console.log(user_number);
   const handleCreateChatRoom = async (trainerNumber) => {
     try {
-      console.log("Creating chat room with:", { user_number, trainerNumber });
+      console.log("Creating chat room with:", { userNumber, trainerNumber });
       const response = await axios.post(CREATE_CHAT_ROOM_URL, {
-        user_number: user_number,
+        user_number: userNumber,
         trainer_number: trainerNumber,
         type: "trainer", // 트레이너와의 채팅방 생성
       });
@@ -58,9 +58,8 @@ function TrainerSearch() {
         const uniqueTrainers = response.data.filter(
           (trainer, index, self) =>
             index ===
-              self.findIndex(
-                (t) => t.trainer_number === trainer.trainer_number
-              ) && trainer.status !== "inactive" // "inactive" 상태 제외
+            self.findIndex((t) => t.trainer_number === trainer.trainer_number) &&
+          trainer.status !== "inactive" // "inactive" 상태 제외
         );
         setTrainers(uniqueTrainers);
         setFilteredTrainers(uniqueTrainers); // 초기 화면에 모든 트레이너 표시

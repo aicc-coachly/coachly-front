@@ -21,6 +21,7 @@ const persistTransform = createTransform(
         return {
           user_number: inboundState?.user?.user_number,
           trainer_number: inboundState?.trainer?.trainer_number,
+          userType: inboundState?.userType, // 유저 타입 유지
         };
       case "payment":
         return {

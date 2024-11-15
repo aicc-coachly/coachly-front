@@ -1,46 +1,49 @@
-import React, { useState, useEffect } from "react";
-import { useLocation, useNavigate } from "react-router-dom";
-import { useDispatch, useSelector } from "react-redux";
+import React, { useState, useEffect } from 'react';
+import { useLocation, useNavigate } from 'react-router-dom';
+import { useDispatch, useSelector } from 'react-redux';
 import {
   getUser,
   updateUserInfo,
   updateUserAddress,
-} from "../../redux/slice/userSlice";
+} from '../../redux/slice/userSlice';
 
 const UserProfile = () => {
   const location = useLocation();
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
+  // 최상위에서 userInfo와 Redux 상태에서 user_number를 가져옵니다.
   const { userInfo } = location.state || {};
-  // console.log(userInfo);
-  // Redux에서 유저 정보 가져오기
-  // const user = useSelector((state) => state.user.userInfo);
-  // const userId = useSelector((state) => state.auth?.user?.user_id);
+  const storedUserNumber = useSelector((state) => state.auth.user_number);
 
-  // console.log(userId);
+  // location.state에 userInfo가 없으면 Redux의 user_number 사용
+  const user_number = userInfo?.user_number || storedUserNumber;
 
   // 유저 프로필 정보 상태 관리
-  const [name, setName] = useState("");
-  const [phone, setPhone] = useState("");
-  const [email, setEmail] = useState("");
-  const [address, setAddress] = useState("");
-  const [detailAddress, setDetailAddress] = useState("");
+  const [name, setName] = useState('');
+  const [phone, setPhone] = useState('');
+  const [email, setEmail] = useState('');
+  const [address, setAddress] = useState('');
+  const [detailAddress, setDetailAddress] = useState('');
 
   // 유저 정보를 처음 불러올 때 상태 초기화
   useEffect(() => {
-    // 유저 정보 디스패치
-    dispatch(getUser(userInfo.user_number));
+    console.log("user_number:", user_number);
+
+    if (user_number) {
+      // 유저 정보 디스패치
+      dispatch(getUser(user_number));
+    }
 
     // Redux 상태에 유저 정보가 있을 때 로컬 상태 초기화
     if (userInfo) {
-      setName(userInfo.name || "");
-      setPhone(userInfo.phone || "");
-      setEmail(userInfo.email || "");
-      setAddress(userInfo.user_address || "");
-      setDetailAddress(userInfo.user_detail_address || "");
+      setName(userInfo.name || '');
+      setPhone(userInfo.phone || '');
+      setEmail(userInfo.email || '');
+      setAddress(userInfo.user_address || '');
+      setDetailAddress(userInfo.user_detail_address || '');
     }
-  }, [dispatch]);
+  }, [dispatch, user_number, userInfo]);
 
   const handleSave = () => {
     const updatedUserInfo = { name, phone, email };
@@ -52,21 +55,19 @@ const UserProfile = () => {
     // 유저 정보 및 주소 업데이트 액션 호출
     dispatch(
       updateUserInfo({
-        user_number: userInfo?.user_number,
+        user_number: user_number,
         updateData: updatedUserInfo,
       })
     );
     dispatch(
       updateUserAddress({
-        user_number: userInfo?.user_number,
+        user_number: user_number,
         updateData: updatedAddress,
       })
     );
-    // console.log(updatedUserInfo);
-    // console.log(updatedAddress);
 
     // 저장 후 마이페이지로 돌아가기
-    navigate("/usermypage");
+    navigate('/usermypage');
   };
 
   return (

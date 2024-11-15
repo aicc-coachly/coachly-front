@@ -1,9 +1,9 @@
-import React, { useEffect, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { useModal } from "../common/ModalProvider";
-import { BodyCompositionModal } from "./BodyCompositionModal";
-import { InbodyDetailModal } from "./InbodyDetailModal"; // 새로운 모달 임포트
-import { getUser, getUserInbody } from "../../redux/slice/userSlice"; // 인바디 정보 조회 함수 임포트
+import React, { useEffect, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { useModal } from '../common/ModalProvider';
+import { BodyCompositionModal } from './BodyCompositionModal';
+import { InbodyDetailModal } from './InbodyDetailModal'; // 새로운 모달 임포트
+import { getUser, getUserInbody } from '../../redux/slice/userSlice'; // 인바디 정보 조회 함수 임포트
 
 export const UserModal = ({ schedule }) => {
   const { openModal } = useModal();
@@ -12,8 +12,6 @@ export const UserModal = ({ schedule }) => {
   const user_number = schedule.user_number; // 유저 번호
   const inbodyInfo = useSelector((state) => state.user?.inbodyData); // Redux에서 인바디 정보 가져오기
   const userInfo = useSelector((state) => state.user?.userInfo);
-  console.log(userInfo?.birth);
-  console.log(user_number);
 
   const calculateAge = (birthDate) => {
     if (!birthDate) return null;
@@ -22,7 +20,7 @@ export const UserModal = ({ schedule }) => {
     const today = new Date();
 
     if (isNaN(birth)) {
-      console.error("Invalid birth date", birthDate);
+      console.error('Invalid birth date', birthDate);
       return null;
     }
 

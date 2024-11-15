@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { useLocation, Link } from "react-router-dom";
+import { useSelector } from "react-redux";
 import { useSelector } from "react-redux";
 import { UserMenuButtons, TrainerMenuButtons } from "./Buttons";
 import logo from "../../assets/images/newlogo.png";
@@ -27,12 +29,17 @@ function Header() {
     setMenuOpen(false);
   }, [isLoggedIn]);
 
+  useEffect(() => {
+    // 로그인 상태가 변경될 때마다 메뉴를 닫음
+    setMenuOpen(false);
+  }, [isLoggedIn]);
+
   // 특정 페이지에서 메뉴바 숨김
   const hideMenuBar = [
-    "/",
-    "/sortsignup",
-    "/trainersignup",
-    "/usersignup",
+    '/',
+    '/sortsignup',
+    '/trainersignup',
+    '/usersignup',
   ].includes(location.pathname);
 
   return (
@@ -65,6 +72,7 @@ function Header() {
 
       {/* 오른쪽 메뉴 버튼 */}
       {!hideMenuBar && isLoggedIn && (
+      {!hideMenuBar && isLoggedIn && (
         <>
           <button
             onClick={toggleMenu}
@@ -79,6 +87,7 @@ function Header() {
               {userType === "trainer" && (
                 <TrainerMenuButtons onClick={() => setMenuOpen(false)} />
               )}
+              {userType === "user" && (
               {userType === "user" && (
                 <UserMenuButtons onClick={() => setMenuOpen(false)} />
               )}

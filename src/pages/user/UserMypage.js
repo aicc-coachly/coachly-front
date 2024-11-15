@@ -5,13 +5,28 @@ import { CheckScheduleModal } from "../../components/trainer/CheckScheduleModal"
 import { BodyCompositionModal } from "../../components/user/BodyCompositionModal";
 import { EditBodyCompositionModal } from "../../components/user/EditBodyCompositionModal";
 
-import { useDispatch, useSelector } from "react-redux";
-import { getUser, getUserInbody } from "../../redux/slice/userSlice";
-import { setUser } from "../../redux/slice/authSlice";
-import { getPtschedule } from "../../redux/slice/paymentSlice";
-import { getScheduleRecord } from "../../redux/slice/scheduleSlice";
+import { useDispatch, useSelector } from 'react-redux';
+import { getUser, getUserInbody } from '../../redux/slice/userSlice';
+import { setUser } from '../../redux/slice/authSlice';
+import { getPtschedule } from '../../redux/slice/paymentSlice';
+import { getScheduleRecord } from '../../redux/slice/scheduleSlice';
 import { createChatRoom } from "../../redux/thunks/chatThunks";
-import img from "../../assets/images/newlogo.png";
+
+// 중복 트레이너 제거 함수
+const getUniqueTrainers = (schedule) => {
+  const uniqueTrainers = [];
+  const trainerNames = new Set();
+
+  for (const item of schedule) {
+    if (!trainerNames.has(item.trainer_name)) {
+      uniqueTrainers.push(item);
+      trainerNames.add(item.trainer_name);
+    }
+  }
+
+  return uniqueTrainers;
+};
+
 
 function UserMypage() {
   const [showCompleted, setShowCompleted] = useState(false);
@@ -19,6 +34,7 @@ function UserMypage() {
   const { openModal } = useModal();
   const navigate = useNavigate();
   const user_number = useSelector((state) => state.auth?.user?.user_number);
+
   const inbodyData = useSelector((state) => {
     const userInbodyData = Array.isArray(state.user?.inbodyData)
       ? state.user.inbodyData
@@ -40,7 +56,7 @@ function UserMypage() {
   const [classPage, setClassPage] = useState(1);
 
   const formatDate = (date) => {
-    return date ? new Date(date).toISOString().split("T")[0] : "";
+    return date ? new Date(date).toISOString().split('T')[0] : '';
   };
 
   useEffect(() => {
@@ -48,7 +64,7 @@ function UserMypage() {
       dispatch(getUser(user_number));
       dispatch(getUserInbody(user_number));
     } else {
-      const storedUser = JSON.parse(localStorage.getItem("user"));
+      const storedUser = JSON.parse(localStorage.getItem('user'));
       if (storedUser) {
         dispatch(setUser(storedUser));
       }
@@ -71,7 +87,7 @@ function UserMypage() {
       setScheduleRecords(mergedRecords);
       setIsFetched(true);
     } catch (error) {
-      console.error("Error fetching schedule records:", error);
+      console.error('Error fetching schedule records:', error);
     }
   };
 
@@ -208,6 +224,31 @@ function UserMypage() {
   };
 
   const handleChat = async (trainer_number) => {
+    try {
+      if (!user_number || !trainer_number) {
+        console.log("pt_schedule:", pt_schedule);
+        console.error("user_number 또는 trainer_number가 정의되지 않았습니다.", { user_number, trainer_number });
+        return; // 값이 없으면 함수 종료
+      }
+  
+      // 채팅방 생성/확인 요청
+      const response = await dispatch(
+        createChatRoom({ user_number, trainer_number })
+      );
+      
+      if (response?.payload?.room_id) {
+        console.log("채팅방 생성 성공, room_id:", response.payload.room_id);
+        navigate(`/chatRoom/${response.payload.room_id}`);
+      } else {
+        console.warn("API 응답에서 room_id가 반환되지 않았습니다.", response.payload);
+      }
+    } catch (error) {
+      console.error("채팅방 생성 중 오류 발생:", error);
+    }
+  };
+  
+
+  const handleChat = async (trainer_number) => {
     if (!user_number || !trainer_number) {
       console.error("user_number 또는 trainer_number가 정의되지 않았습니다.", {
         user_number,
@@ -235,7 +276,6 @@ function UserMypage() {
   };
   return (
     <div className="max-w-[390px] mx-auto bg-gray-100 p-4">
-      {/* 내 정보 섹션 */}
       <div className="bg-white rounded-lg shadow-md p-4 mb-4 relative">
         <h2 className="text-lg font-semibold mb-2 text-gray-700">내 정보</h2>
         <button
@@ -251,6 +291,16 @@ function UserMypage() {
           수정하기
         </button>
         <div className="flex items-start mt-4 space-x-4">
+          {/* 프로필 사진 */}
+          <div className="w-[8rem] h-[8rem] bg-gray-200 overflow-hidden">
+            {/* <img 
+                    // src="https://via.placeholder.com/64" // 프로필 사진 URL 또는 경로로 대체
+                    alt="프로필 사진" 
+                    className="object-cover w-full h-full"
+                  /> */}
+          </div>
+
+          {/* 텍스트 정보와 체크박스 */}
           <div className="flex-1">
             <div className="flex justify-end">
               <p className="px-3 py-1 bg-gray-300 text-sm rounded-md text-gray-500">

@@ -19,22 +19,26 @@ const ChatRoom = () => {
   const dispatch = useDispatch();
   const socketRef = useRef(null);
 
+  const socketRef = useRef(null);
+
   const [input, setInput] = useState("");
   const [isTrainer, setIsTrainer] = useState(false);
+  const [menuOpen, setMenuOpen] = useState(false);
+  const [otherPartyName, setOtherPartyName] = useState("");
   const [menuOpen, setMenuOpen] = useState(false);
   const [otherPartyName, setOtherPartyName] = useState("");
 
   const userType = useSelector((state) => state.auth.userType);
   // console.log(userType)
+  // console.log(userType)
   const userNumber = useSelector((state) => state.auth.user?.user_number);
-  const trainerNumber = useSelector(
-    (state) => state.auth.trainer?.trainer_number
-  );
+  const trainerNumber = useSelector((state) => state.auth.trainer?.trainer_number);
   const messages = useSelector((state) => state.chat.messages);
 
   const idToSend = userType === "user" ? userNumber : trainerNumber;
 
   useEffect(() => {
+    const fetchChatData = async () => {
     const fetchChatData = async () => {
       try {
         // 채팅방 정보 로드
@@ -60,17 +64,31 @@ const ChatRoom = () => {
         await dispatch(fetchChatMessages(roomId)).unwrap();
       } catch (error) {
         console.error("Error fetching chat data:", error);
+        console.error("Error fetching chat data:", error);
       }
     };
 
+    fetchChatData();
     fetchChatData();
 
     return () => {
       dispatch(leaveChatRoom(roomId));
     };
   }, [dispatch, roomId, userType, userNumber, trainerNumber]);
+  }, [dispatch, roomId, userType, userNumber, trainerNumber]);
 
   useEffect(() => {
+    if (!socketRef.current) {
+      socketRef.current = io("http://localhost:8000");
+
+      socketRef.current.on("connect", () => {
+        console.log("Connected to server:", socketRef.current.id);
+      });
+
+      const handleMessageReceived = (message) => {
+        console.log("Message received from server:", message);
+        dispatch(addMessage(message)); // 서버에서 받은 메시지만 추가
+      };
     if (!socketRef.current) {
       socketRef.current = io("http://localhost:8000");
 
@@ -86,7 +104,20 @@ const ChatRoom = () => {
       socketRef.current.on("messageReceived", handleMessageReceived);
 
       socketRef.current.emit("joinRoom", roomId);
+      socketRef.current.on("messageReceived", handleMessageReceived);
 
+      socketRef.current.emit("joinRoom", roomId);
+
+      return () => {
+        if (socketRef.current) {
+          socketRef.current.off("messageReceived", handleMessageReceived);
+          socketRef.current.emit("leaveRoom", roomId);
+          socketRef.current.disconnect();
+          socketRef.current = null;
+        }
+      };
+    }
+  }, [roomId, dispatch]);
       return () => {
         if (socketRef.current) {
           socketRef.current.off("messageReceived", handleMessageReceived);
@@ -112,17 +143,19 @@ const ChatRoom = () => {
       };
       socketRef.current.emit("sendMessage", message); // 메시지 전송만, dispatch 제거
       setInput(""); // 입력창 초기화
+      socketRef.current.emit("sendMessage", message); // 메시지 전송만, dispatch 제거
+      setInput(""); // 입력창 초기화
     }
+  }, [input, roomId, idToSend, userType]);
   }, [input, roomId, idToSend, userType]);
 
   return (
     <div className="max-w-[390px] mx-auto bg-gray-100 min-h-screen flex flex-col relative">
       <div className="bg-gray-300 p-4 text-center text-black font-bold">
-        <span>
-          {otherPartyName} {isTrainer ? "회원" : "트레이너"}
-        </span>
+        <span>{otherPartyName} {isTrainer ? "회원" : "트레이너"}</span>
       </div>
 
+      <div className="flex-1 p-4 space-y-4 mb-20 overflow-y-auto chat-messages-container">
       <div className="flex-1 p-4 space-y-4 mb-20 overflow-y-auto chat-messages-container">
         {messages.map((msg, index) => (
           <div

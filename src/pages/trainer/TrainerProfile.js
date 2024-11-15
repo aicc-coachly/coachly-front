@@ -1,6 +1,6 @@
-import React, { useEffect, useState } from "react";
-import { useLocation, useNavigate } from "react-router-dom";
-import { useDispatch, useSelector } from "react-redux";
+import React, { useEffect, useState } from 'react';
+import { useLocation, useNavigate } from 'react-router-dom';
+import { useDispatch, useSelector } from 'react-redux';
 import {
   getTrainer,
   updateTrainerInfo,
@@ -8,7 +8,7 @@ import {
   updateTrainerAccount,
   updateTrainerPtCost,
   updateTrainerImage, // 새로 추가된 업데이트 함수
-} from "../../redux/slice/trainerSlice";
+} from '../../redux/slice/trainerSlice';
 
 const TrainerProfile = () => {
   const location = useLocation();
@@ -18,22 +18,22 @@ const TrainerProfile = () => {
   const profile = location.state?.profile || {};
   console.log(profile);
 
-  const [name, setName] = useState("");
-  const [phone, setPhone] = useState("");
-  const [resume, setResume] = useState("");
-  const [trainerImage, setTrainerImage] = useState("");
+  const [name, setName] = useState('');
+  const [phone, setPhone] = useState('');
+  const [resume, setResume] = useState('');
+  const [trainerImage, setTrainerImage] = useState('');
   const [newImage, setNewImage] = useState(null); // 새 이미지 파일
 
   const [addressSections, setAddressSections] = useState({
-    trainer_address: "",
-    trainer_detail_address: "",
-    trainer_zipcode: "",
+    trainer_address: '',
+    trainer_detail_address: '',
+    trainer_zipcode: '',
   });
 
   const [bankAccount, setBankAccount] = useState({
-    bank_name: "",
-    account: "",
-    account_name: "",
+    bank_name: '',
+    account: '',
+    account_name: '',
   });
 
   const [ptCostOptions, setPtCostOptions] = useState([]);
@@ -53,6 +53,7 @@ const TrainerProfile = () => {
       });
 
       if (profile.bank_account) {
+      if (profile.bank_account) {
         setBankAccount({
           bank_name: profile.bank_account.bank_name || "",
           account: profile.bank_account.account || "",
@@ -62,8 +63,11 @@ const TrainerProfile = () => {
 
       if (profile.pt_cost_options) {
         setPtCostOptions(profile.pt_cost_options);
+      if (profile.pt_cost_options) {
+        setPtCostOptions(profile.pt_cost_options);
       }
     }
+  }, [profile]); // trainerInfo가 업데이트될 때만 실행
   }, [profile]); // trainerInfo가 업데이트될 때만 실행
 
   const handleImageChange = (e) => {
@@ -85,6 +89,7 @@ const TrainerProfile = () => {
     await dispatch(
       updateTrainerInfo({
         trainer_number: profile.trainer_number,
+        trainer_number: profile.trainer_number,
         updateData: trainerData,
       })
     );
@@ -94,6 +99,7 @@ const TrainerProfile = () => {
     await dispatch(
       updateTrainerGymAddress({
         trainer_number: profile.trainer_number,
+        trainer_number: profile.trainer_number,
         updateData: addressData,
       })
     );
@@ -102,6 +108,7 @@ const TrainerProfile = () => {
     await dispatch(
       updateTrainerAccount({
         trainer_number: profile.trainer_number,
+        trainer_number: profile.trainer_number,
         updateData: bankData,
       })
     );
@@ -109,6 +116,7 @@ const TrainerProfile = () => {
     for (const option of ptCostOptions) {
       await dispatch(
         updateTrainerPtCost({
+          trainer_number: profile.trainer_number,
           trainer_number: profile.trainer_number,
           updateData: {
             amount: option.amount,
@@ -120,13 +128,14 @@ const TrainerProfile = () => {
     }
 
     const resumeAndImageData = new FormData();
-    resumeAndImageData.append("resume", resume);
+    resumeAndImageData.append('resume', resume);
     if (newImage) {
-      resumeAndImageData.append("trainer_image", newImage);
+      resumeAndImageData.append('trainer_image', newImage);
     }
 
     await dispatch(
       updateTrainerImage({
+        trainer_number: profile.trainer_number,
         trainer_number: profile.trainer_number,
         resume: resume,
         trainer_image: newImage,
@@ -137,7 +146,7 @@ const TrainerProfile = () => {
     await dispatch(getTrainer());
 
     // 페이지 이동
-    navigate("/TrainerMyPage");
+    navigate('/TrainerMyPage');
   };
 
   return (
@@ -150,6 +159,7 @@ const TrainerProfile = () => {
       <div className="w-40 h-40 bg-gray-200 mx-auto mb-6 rounded-full overflow-hidden shadow-md">
         {trainerImage ? (
           <img
+            src={`${path}/${profile.image}`}
             src={`${path}/${profile.image}`}
             alt="프로필 사진"
             className="object-cover w-full h-full"

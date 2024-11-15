@@ -1,4 +1,4 @@
-import { createSlice } from "@reduxjs/toolkit";
+import { createSlice } from '@reduxjs/toolkit';
 import {
   sendMessage,
   createChatRoom,
@@ -6,7 +6,7 @@ import {
   fetchChatRooms,
   fetchChatRoom, // 특정 채팅방 조회 액션 추가
   leaveChatRoom,
-} from "../thunks/chatThunks";
+} from '../thunks/chatThunks';
 
 const chatSlice = createSlice({
   name: "chat",
@@ -119,6 +119,5 @@ export const selectChatRooms = (state) => state.chat.chatRooms;
 export const selectMessages = (state) => state.chat.messages;
 export const selectLoading = (state) => state.chat.loading;
 
-export const { clearChatData, addMessage, setMessages, logout } =
-  chatSlice.actions;
+export const { clearChatData, addMessage, setMessages, logout } = chatSlice.actions;
 export default chatSlice.reducer;

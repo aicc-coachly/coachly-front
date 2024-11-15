@@ -1,11 +1,11 @@
-import React, { useEffect, useState } from "react";
-import axios from "axios";
-import { useNavigate } from "react-router-dom"; // useNavigate 추가
-import Buttons from "../common/Buttons";
-import { useModal } from "../common/ModalProvider";
-import { PTModal } from "./PTModal"; // PTModal을 import
-import { useDispatch, useSelector } from "react-redux";
-import { getTrainerPtCost } from "../../redux/slice/trainerSlice";
+import React, { useEffect, useState } from 'react';
+import axios from 'axios';
+import { useNavigate } from 'react-router-dom'; // useNavigate 추가
+import Buttons from '../common/Buttons';
+import { useModal } from '../common/ModalProvider';
+import { PTModal } from './PTModal'; // PTModal을 import
+import { useDispatch, useSelector } from 'react-redux';
+import { getTrainerPtCost } from '../../redux/slice/trainerSlice';
 
 export const TrainerInfoModal = ({ trainer }) => {
   const storedData = JSON.parse(sessionStorage.getItem("userData"));
@@ -19,7 +19,7 @@ export const TrainerInfoModal = ({ trainer }) => {
   const [image, setImage] = useState(null);
   const navigate = useNavigate();
 
-  const path = "http://localhost:8000";
+  const path = 'http://localhost:8000';
   // console.log(trainer);
 
   // Redux에서 PT 비용 데이터 선택
@@ -129,9 +129,9 @@ export const TrainerInfoModal = ({ trainer }) => {
             {trainer.pt_cost_options && trainer.pt_cost_options.length > 0 ? (
               trainer.pt_cost_options.map((option, index) => (
                 <p key={index} className="text-sm">
-                  {option.option === "원데이 클래스"
-                    ? "원데이 클래스"
-                    : "패키지"}{" "}
+                  {option.option === '원데이 클래스'
+                    ? '원데이 클래스'
+                    : '패키지'}{' '}
                   -{option.frequency}회 {option.amount}원
                 </p>
               ))
@@ -141,7 +141,7 @@ export const TrainerInfoModal = ({ trainer }) => {
           </div>
 
           <p className="text-sm mb-4">
-            안녕하세요. 회원님과 오래 건강하고 싶은 {trainer.name}{" "}
+            안녕하세요. 회원님과 오래 건강하고 싶은 {trainer.name}{' '}
             트레이너입니다.
           </p>
 

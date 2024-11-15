@@ -1,16 +1,16 @@
-import React, { useEffect, useState } from "react";
-import { useModal } from "../../components/common/ModalProvider";
-import { EditScheduleModal } from "../../components/trainer/EditScheduleModal";
-import { CreateScheduleModal } from "../../components/trainer/CreateScheduleModal";
-import { UserModal } from "../../components/user/UserModal";
-import { useNavigate } from "react-router-dom";
-import { useDispatch, useSelector } from "react-redux";
+import React, { useEffect, useState } from 'react';
+import { useModal } from '../../components/common/ModalProvider';
+import { EditScheduleModal } from '../../components/trainer/EditScheduleModal';
+import { CreateScheduleModal } from '../../components/trainer/CreateScheduleModal';
+import { UserModal } from '../../components/user/UserModal';
+import { useNavigate } from 'react-router-dom';
+import { useDispatch, useSelector } from 'react-redux';
 import {
   getTrainer,
   updateTrainerStatus,
-} from "../../redux/slice/trainerSlice";
-import { setTrainer } from "../../redux/slice/authSlice";
-import { getPtschedule } from "../../redux/slice/paymentSlice";
+} from '../../redux/slice/trainerSlice';
+import { setTrainer } from '../../redux/slice/authSlice';
+import { getPtschedule } from '../../redux/slice/paymentSlice';
 import {
   deletePtSchedule,
   getScheduleRecord,
@@ -61,7 +61,9 @@ const TrainerMypage = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
+
   const [scheduleRecords, setScheduleRecords] = useState([]);
+  const [isFetched, setIsFetched] = useState(false);
   const [isFetched, setIsFetched] = useState(false);
   const [isChecked, setIsChecked] = useState(false);
   const [trainerPage, setTrainerPage] = useState(1);
@@ -77,8 +79,9 @@ const TrainerMypage = () => {
   useEffect(() => {
     if (trainer_number) {
       dispatch(getTrainer(trainer_number));
+      dispatch(getTrainer(trainer_number));
     } else {
-      const storedTrainer = JSON.parse(localStorage.getItem("trainer"));
+      const storedTrainer = JSON.parse(localStorage.getItem('trainer'));
       if (storedTrainer) {
         dispatch(setTrainer(storedTrainer));
       }
@@ -87,12 +90,13 @@ const TrainerMypage = () => {
 
   useEffect(() => {
     if (profile) {
-      setIsChecked(profile.status === "inactive");
+      setIsChecked(profile.status === 'inactive');
     }
   }, [profile]);
 
   useEffect(() => {
     if (trainer_number) {
+      dispatch(getPtschedule({ trainer_number }));
       dispatch(getPtschedule({ trainer_number }));
     }
   }, [dispatch, trainer_number]);
@@ -111,11 +115,12 @@ const TrainerMypage = () => {
       setScheduleRecords(mergedRecords);
       setIsFetched(true);
     } catch (error) {
-      console.error("Error fetching schedule records:", error);
+      console.error('Error fetching schedule records:', error);
     }
   };
 
   useEffect(() => {
+    if (!isFetched && pt_schedule.length > 0) {
     if (!isFetched && pt_schedule.length > 0) {
       fetchScheduleRecords();
     }
@@ -125,14 +130,14 @@ const TrainerMypage = () => {
     pt_schedule.forEach((schedule) => {
       if (schedule.user_number) {
         dispatch(getUser(schedule.user_number)).catch((error) =>
-          console.error("Error fetching user info:", error)
+          console.error('Error fetching user info:', error)
         );
       }
     });
   }, [pt_schedule, dispatch]);
 
   const handleCheckboxChange = async (e) => {
-    const newStatus = e.target.checked ? "inactive" : "active";
+    const newStatus = e.target.checked ? 'inactive' : 'active';
     setIsChecked(e.target.checked);
     try {
       await dispatch(
@@ -140,7 +145,7 @@ const TrainerMypage = () => {
       );
       dispatch(getTrainer(trainer_number));
     } catch (error) {
-      console.error("Error updating trainer status:", error);
+      console.error('Error updating trainer status:', error);
     }
   };
 
@@ -163,6 +168,7 @@ const TrainerMypage = () => {
   const handleMyInfoUpdate = () =>
     navigate("/trainerprofile", { state: { profile } });
 
+  // 중복된 유저 제거
   const uniqueSchedules = pt_schedule
     .filter((schedule) => schedule.status !== "completed")
     .reduce((acc, schedule) => {
