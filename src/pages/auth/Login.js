@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
-import axios from 'axios';
 import Buttons from '../../components/common/Buttons';
 import { useDispatch, useSelector } from 'react-redux';
 import { trainerLogin, userLogin } from '../../redux/slice/authSlice';

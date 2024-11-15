@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import { useLocation, Link } from 'react-router-dom';
-import { useSelector } from 'react-redux';
 import { UserMenuButtons, TrainerMenuButtons } from './Buttons';
 import logo from '../../assets/images/newlogo.png';
 
@@ -17,7 +16,6 @@ function Header() {
 
   // 새로고침 후에도 isLoggedIn 상태를 유지하기 위해
   const isLoggedIn = userType === 'user' || userType === 'trainer';
-
   const toggleMenu = () => {
     setMenuOpen(!menuOpen);
   };
@@ -47,12 +45,13 @@ function Header() {
       {/* 가운데 로고 */}
       <Link
         to={{
-          pathname:
-            userType === 'user'
+          pathname: isLoggedIn
+            ? userType === 'user'
               ? '/usermypage'
               : userType === 'trainer'
               ? '/trainermypage'
-              : '/',
+              : '/'
+            : '/', // 로그인하지 않은 경우 로그인 페이지로 이동
           state: {
             user_number: user_number,
             trainer_number: trainer_number,
@@ -60,7 +59,7 @@ function Header() {
           },
         }}
         className="flex justify-center flex-grow"
-      >
+        >
         <img
           src={logo}
           alt="로고"
