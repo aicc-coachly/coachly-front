@@ -201,7 +201,7 @@ function UserMypage() {
   };
 
   const handleRefundPage = () => {
-    navigate('/userptschedule', { state: { user_number } });
+    navigate('/userptschedule', { state: { pt_schedule } });
   };
   const handleMyInfoUpdate = () => {
     navigate('/userprofile', { state: { userInfo } });
