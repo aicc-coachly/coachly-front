@@ -91,6 +91,7 @@ export function TrainerMenuButtons({ onClick }) {
     await dispatch(userLogout());
     await persistor.purge(); // persisted 상태 초기화
     localStorage.removeItem('persist:root'); // 추가적으로 localStorage에서 제거
+    sessionStorage.removeItem('userData'); // 세션 데이터 삭제
     navigate('/'); // 로그인 페이지로 리디렉션
   };
 
