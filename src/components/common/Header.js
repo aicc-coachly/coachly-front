@@ -7,7 +7,13 @@ import logo from '../../assets/images/newlogo.png';
 function Header() {
   const location = useLocation();
   const [menuOpen, setMenuOpen] = useState(false);
-  const { userType } = useSelector((state) => state.auth);
+
+  const storedData = JSON.parse(sessionStorage.getItem('userData'));
+  const data = storedData?.data;
+  const userType = storedData?.userType;
+  // userType에 따른 user_number 또는 trainer_number 할당
+  const user_number = userType === 'user' ? data?.user_number : null;
+  const trainer_number = userType === 'trainer' ? data?.trainer_number : null;
 
   // 새로고침 후에도 isLoggedIn 상태를 유지하기 위해
   const isLoggedIn = userType === 'user' || userType === 'trainer';
@@ -15,6 +21,11 @@ function Header() {
   const toggleMenu = () => {
     setMenuOpen(!menuOpen);
   };
+
+  useEffect(() => {
+    // 로그인 상태가 변경될 때마다 메뉴를 닫음
+    setMenuOpen(false);
+  }, [isLoggedIn]);
 
   useEffect(() => {
     // 로그인 상태가 변경될 때마다 메뉴를 닫음
@@ -32,17 +43,22 @@ function Header() {
   return (
     <header className="relative flex justify-between items-center p-4 bg-[#edf1f6] shadow-md max-w-[390px] mx-auto rounded-b-lg">
       {/* 왼쪽 빈 공간으로 로고 가운데 정렬 */}
-      <div className="w-8"></div>
 
       {/* 가운데 로고 */}
       <Link
-        to={
-          userType === 'user'
-            ? '/usermypage'
-            : userType === 'trainer'
-            ? '/trainermypage'
-            : '/'
-        }
+        to={{
+          pathname:
+            userType === 'user'
+              ? '/usermypage'
+              : userType === 'trainer'
+              ? '/trainermypage'
+              : '/',
+          state: {
+            user_number: user_number,
+            trainer_number: trainer_number,
+            userType: userType,
+          },
+        }}
         className="flex justify-center flex-grow"
       >
         <img

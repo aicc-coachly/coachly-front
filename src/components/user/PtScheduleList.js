@@ -5,9 +5,10 @@ import { getPtschedule } from '../../redux/slice/paymentSlice';
 import { createRefund } from '../../redux/slice/refundSlice';
 import { useModal } from '../common/ModalProvider';
 import { RefundPTModal } from './RefundPTModal';
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 
 const PtScheduleList = () => {
+  const location = useLocation();
   const dispatch = useDispatch();
   const { openModal } = useModal();
   const user_number = useSelector(
@@ -179,7 +180,7 @@ const PtScheduleList = () => {
           환불 내역을 확인하려면 아래 링크를 클릭하세요.
         </p>
         <Link
-          to="/userrefund"
+          to={{ pathname: '/userrefund', state: { user_number } }}
           className="text-blue-500 font-semibold hover:underline block mt-2"
         >
           환불 신청 내역

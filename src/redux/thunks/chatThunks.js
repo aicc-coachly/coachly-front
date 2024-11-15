@@ -30,12 +30,14 @@ export const createChatRoom = createAsyncThunk(
   }
 );
 
-// 채팅방 조회
+// 특정 채팅방 조회
 export const fetchChatRoom = createAsyncThunk(
   'chat/fetchChatRoom',
-  async ({ roomId, userNumber }, { rejectWithValue }) => {
+  async ({ roomId, userNumber = null, trainerNumber = null }, { rejectWithValue }) => {
     try {
-      const url = GET_CHAT_ROOM_URL(roomId, userNumber); // roomId와 userNumber를 쿼리 파라미터로 사용
+      // URL을 생성할 때 적절한 쿼리 파라미터가 포함되도록 GET_CHAT_ROOM_URL 함수 사용
+      const url = GET_CHAT_ROOM_URL(roomId, userNumber, trainerNumber);
+      
       console.log("Fetching specific chat room with URL:", url); // URL 확인용
       const response = await getRequest(url);
       
@@ -50,6 +52,8 @@ export const fetchChatRoom = createAsyncThunk(
     }
   }
 );
+
+
 
 // 채팅방 리스트 조회
 export const fetchChatRooms = createAsyncThunk(
@@ -77,16 +81,16 @@ export const fetchChatRooms = createAsyncThunk(
 // 채팅방 메시지 조회
 export const fetchChatMessages = createAsyncThunk(
   'chat/fetchChatMessages',
-  async (roomId, { dispatch, rejectWithValue }) => {
+  async (roomId, { rejectWithValue }) => {
     try {
       const response = await getRequest(GET_MESSAGES_URL(roomId));
-      dispatch(setMessages(response));
-      return response;
+      return response; // 리듀서에서 직접 상태를 업데이트
     } catch (error) {
-      return rejectWithValue(error.message || "채팅방 생성 실패");
+      return rejectWithValue(error.message || "채팅 메시지 조회 실패");
     }
   }
 );
+
 
 // 메시지 전송
 export const sendMessage = createAsyncThunk(

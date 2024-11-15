@@ -18,6 +18,7 @@ import {
 } from '../../redux/slice/scheduleSlice';
 import { getUser } from '../../redux/slice/userSlice';
 import { CheckScheduleModal } from '../../components/trainer/CheckScheduleModal';
+import { createChatRoom } from '../../redux/thunks/chatThunks';
 
 // 페이지네이션 컴포넌트 정의
 const Pagination = ({ currentPage, totalPages, onPageChange }) => {
@@ -60,7 +61,9 @@ const TrainerMypage = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
+
   const [scheduleRecords, setScheduleRecords] = useState([]);
+  const [isFetched, setIsFetched] = useState(false);
   const [isFetched, setIsFetched] = useState(false);
   const [isChecked, setIsChecked] = useState(false);
   const [trainerPage, setTrainerPage] = useState(1);
@@ -75,6 +78,7 @@ const TrainerMypage = () => {
 
   useEffect(() => {
     if (trainer_number) {
+      dispatch(getTrainer(trainer_number));
       dispatch(getTrainer(trainer_number));
     } else {
       const storedTrainer = JSON.parse(localStorage.getItem('trainer'));
@@ -92,6 +96,7 @@ const TrainerMypage = () => {
 
   useEffect(() => {
     if (trainer_number) {
+      dispatch(getPtschedule({ trainer_number }));
       dispatch(getPtschedule({ trainer_number }));
     }
   }, [dispatch, trainer_number]);
@@ -115,6 +120,7 @@ const TrainerMypage = () => {
   };
 
   useEffect(() => {
+    if (!isFetched && pt_schedule.length > 0) {
     if (!isFetched && pt_schedule.length > 0) {
       fetchScheduleRecords();
     }
@@ -143,8 +149,8 @@ const TrainerMypage = () => {
     }
   };
 
-  const handleOpenUserModal = (pt_number) =>
-    openModal(<UserModal pt_number={pt_number} />);
+  const handleOpenUserModal = (schedule) =>
+    openModal(<UserModal schedule={schedule} />);
   const handleOpenScheduleModal = (schedule) =>
     openModal(<CreateScheduleModal schedule={schedule} />);
   const handleOpenPtScheduleModal = (schedule) =>
@@ -163,7 +169,7 @@ const TrainerMypage = () => {
     navigate('/trainerprofile', { state: { profile } });
 
   const uniqueSchedules = pt_schedule
-    .filter((schedule) => schedule.status !== 'completed')
+    .filter((schedule) => schedule.status !== "completed")
     .reduce((acc, schedule) => {
       if (!acc.some((item) => item.user_number === schedule.user_number)) {
         acc.push(schedule);
@@ -180,6 +186,33 @@ const TrainerMypage = () => {
   const classItems = scheduleRecords
     .filter((schedule) => schedule.status !== 'deleted')
     .slice((classPage - 1) * itemsPerPage, classPage * itemsPerPage);
+
+  const handleChat = async (user_number) => {
+    if (!user_number || !trainer_number) {
+      console.error('user_number 또는 trainer_number가 정의되지 않았습니다.', {
+        user_number,
+        trainer_number,
+      });
+      return;
+    }
+
+    try {
+      const response = await dispatch(
+        createChatRoom({ user_number, trainer_number })
+      );
+
+      if (response?.payload?.room_id) {
+        navigate(`/chatRoom/${response.payload.room_id}`);
+      } else {
+        console.warn(
+          'API 응답에서 room_id가 반환되지 않았습니다.',
+          response.payload
+        );
+      }
+    } catch (error) {
+      console.error('채팅방 생성 중 오류 발생:', error);
+    }
+  };
 
   return (
     <div className="max-w-[390px] mx-auto bg-gray-50 p-6">
@@ -242,13 +275,13 @@ const TrainerMypage = () => {
               </p>
               <div className="flex gap-2">
                 <button
-                  onClick={() => handleOpenUserModal(schedule.pt_number)}
+                  onClick={() => handleOpenUserModal(schedule)}
                   className="px-3 py-1 bg-blue-100 text-sm text-blue-700 rounded-md hover:bg-blue-200"
                 >
                   인바디 확인
                 </button>
                 <button
-                  onClick={() => navigate('/trainerChat')}
+                  onClick={() => handleChat(schedule.user_number)}
                   className="px-3 py-1 bg-red-100 text-sm text-red-700 rounded-md hover:bg-pink-200"
                 >
                   1:1 채팅

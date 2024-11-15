@@ -1,9 +1,9 @@
-import React, { useEffect, useState } from 'react';
-import { useModal } from '../../components/common/ModalProvider';
-import { useNavigate } from 'react-router-dom';
-import { CheckScheduleModal } from '../../components/trainer/CheckScheduleModal';
-import { BodyCompositionModal } from '../../components/user/BodyCompositionModal';
-import { EditBodyCompositionModal } from '../../components/user/EditBodyCompositionModal';
+import React, { useEffect, useState } from "react";
+import { useModal } from "../../components/common/ModalProvider";
+import { useNavigate } from "react-router-dom";
+import { CheckScheduleModal } from "../../components/trainer/CheckScheduleModal";
+import { BodyCompositionModal } from "../../components/user/BodyCompositionModal";
+import { EditBodyCompositionModal } from "../../components/user/EditBodyCompositionModal";
 
 import { useDispatch, useSelector } from 'react-redux';
 import { getUser, getUserInbody } from '../../redux/slice/userSlice';
@@ -78,6 +78,18 @@ function UserMypage() {
   useEffect(() => {
     if (user_number) {
       dispatch(getPtschedule({ user_number }));
+    } else {
+      console.warn('user_number가 존재하지 않습니다.');
+    }
+  }, [dispatch, user_number]);
+
+  useEffect(() => {
+    console.log('pt_schedule 데이터:', pt_schedule);
+  }, [pt_schedule]);
+
+  useEffect(() => {
+    if (user_number) {
+      dispatch(getPtschedule({ user_number }));
     }
   }, [dispatch, user_number]);
 
@@ -116,6 +128,12 @@ function UserMypage() {
   const totalPages = Math.ceil(filteredItems.length / itemsPerPage);
 
   const getUniqueTrainers = (schedule) => {
+    // schedule이 배열인지 확인하여, 배열이 아닌 경우 빈 배열로 처리
+    if (!Array.isArray(schedule)) {
+      console.warn('Expected an array for schedule, but got:', schedule);
+      schedule = [];
+    }
+
     const uniqueTrainers = [];
     const trainerIds = new Set(); // trainer_number로 중복을 관리
 
@@ -134,10 +152,10 @@ function UserMypage() {
 
     return uniqueTrainers;
   };
-
   // 중복을 제거한 트레이너 목록 생성
   const uniqueTrainers = getUniqueTrainers(pt_schedule);
-
+  console.log(getUniqueTrainers);
+  console.log(uniqueTrainers);
   // 각 섹션의 페이지네이션 계산
   const trainerItems = uniqueTrainers.slice(
     (trainerPage - 1) * itemsPerPage,
@@ -244,7 +262,9 @@ function UserMypage() {
             </p>
             <p className="text-sm text-gray-500">{profile?.email}</p>
             <p className="text-sm text-gray-500">{profile?.phone}</p>
-            <p className="text-sm text-gray-500">{profile?.gender}</p>
+            <p className="text-sm text-gray-500">
+              {profile?.gender === 'male' ? '남' : '여'}
+            </p>
           </div>
         </div>
       </div>
@@ -328,7 +348,7 @@ function UserMypage() {
               </p>
               <span className="text-sm text-gray-500">
                 {new Date(schedule.class_date).toLocaleDateString()}
-                {schedule.status === 'completed' && (
+                {schedule.status === "completed" && (
                   <span className="text-green-500 ml-2">완료됨</span>
                 )}
               </span>

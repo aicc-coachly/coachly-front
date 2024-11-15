@@ -11,10 +11,10 @@ export const GET_PT_SCHEDULE_URL = ({ user_number, trainer_number }) => {
   const query = new URLSearchParams();
 
   if (user_number) {
-    query.append("user_number", user_number);
+    query.append('user_number', user_number);
   }
   if (trainer_number) {
-    query.append("trainer_number", trainer_number);
+    query.append('trainer_number', trainer_number);
   }
 
   return `${url}/pt-schedules?${query.toString()}`; // 쿼리 파라미터로 유저 또는 트레이너 넘버 추가

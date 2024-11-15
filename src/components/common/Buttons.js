@@ -103,13 +103,13 @@ export function TrainerMenuButtons({ onClick }) {
   );
 }
 
-export function MenuButton({ label, to, onClick }) {
+export function MenuButton({ trainer_number, label, to, onClick }) {
   return (
     <Link
       to={to}
       onClick={(event) => {
         event.stopPropagation();
-        if (onClick) onClick();
+        if ((trainer_number, onClick)) onClick();
       }}
       className="text-sm z-50 p-2 rounded bg-[#4831D4] text-white"
     >
