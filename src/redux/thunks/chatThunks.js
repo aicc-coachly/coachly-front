@@ -38,9 +38,9 @@ export const createChatRoom = createAsyncThunk(
 // 채팅방 조회
 export const fetchChatRoom = createAsyncThunk(
   "chat/fetchChatRoom",
-  async ({ roomId, userNumber }, { rejectWithValue }) => {
+  async ({ roomId, user_number }, { rejectWithValue }) => {
     try {
-      const url = GET_CHAT_ROOM_URL(roomId, userNumber); // roomId와 userNumber를 쿼리 파라미터로 사용
+      const url = GET_CHAT_ROOM_URL(roomId, user_number); // roomId와 userNumber를 쿼리 파라미터로 사용
       console.log("Fetching specific chat room with URL:", url); // URL 확인용
       const response = await getRequest(url);
 
@@ -59,11 +59,11 @@ export const fetchChatRoom = createAsyncThunk(
 // 채팅방 리스트 조회
 export const fetchChatRooms = createAsyncThunk(
   "chat/fetchChatRooms",
-  async ({ userNumber, trainerNumber }, { rejectWithValue }) => {
-    console.log("fetchChatRooms called with:", { userNumber, trainerNumber }); // 추가된 로그
+  async ({ user_number, trainer_number }, { rejectWithValue }) => {
+    console.log("fetchChatRooms called with:", { user_number, trainer_number }); // 추가된 로그
 
     try {
-      const url = GET_CHAT_ROOMS_URL(userNumber, trainerNumber);
+      const url = GET_CHAT_ROOMS_URL(user_number, trainer_number);
       console.log("Fetching chat rooms with URL:", url); // URL 확인용
       const response = await getRequest(url);
 

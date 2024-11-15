@@ -70,6 +70,7 @@ const TrainerMypage = () => {
   const trainer_number = useSelector(
     (state) => state.auth?.trainer?.trainer_number
   );
+  // console.log(trainer_number);
   const profile = useSelector((state) => state.trainer?.data);
   const pt_schedule = useSelector((state) => state.payment?.data) || [];
   const path = "http://localhost:8000";
@@ -182,7 +183,8 @@ const TrainerMypage = () => {
     .filter((schedule) => schedule.status !== "deleted")
     .slice((classPage - 1) * itemsPerPage, classPage * itemsPerPage);
 
-  const handleChat = async (user_number) => {
+  const handleChat = async (schedule) => {
+    const user_number = schedule?.user_number;
     if (!user_number || !trainer_number) {
       console.error("user_number 또는 trainer_number가 정의되지 않았습니다.", {
         user_number,
@@ -195,9 +197,16 @@ const TrainerMypage = () => {
       const response = await dispatch(
         createChatRoom({ user_number, trainer_number })
       );
-
+      console.log(
+        user_number,
+        trainer_number,
+        schedule,
+        response?.payload?.room_id
+      );
       if (response?.payload?.room_id) {
-        navigate(`/chatRoom/${response.payload.room_id}`);
+        navigate(`/chatroom/${response?.payload?.room_id}`, {
+          state: { user_number: user_number, trainer_number: trainer_number },
+        });
       } else {
         console.warn(
           "API 응답에서 room_id가 반환되지 않았습니다.",
@@ -276,7 +285,7 @@ const TrainerMypage = () => {
                   인바디 확인
                 </button>
                 <button
-                  onClick={() => handleChat(schedule.user_number)}
+                  onClick={() => handleChat(schedule)}
                   className="px-3 py-1 bg-red-100 text-sm text-red-700 rounded-md hover:bg-pink-200"
                 >
                   1:1 채팅

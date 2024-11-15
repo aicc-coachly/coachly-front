@@ -6,7 +6,7 @@ import {
   UserChatButtons,
   TrainerChatButtons,
 } from "../../components/common/Buttons";
-import { useParams } from "react-router-dom";
+import { useLocation, useParams } from "react-router-dom";
 import {
   leaveChatRoom,
   fetchChatRoom,
@@ -15,6 +15,7 @@ import {
 import { addMessage, setMessages } from "../../redux/slice/chatSlice";
 
 const ChatRoom = () => {
+  const location = useLocation();
   const { roomId } = useParams();
   const dispatch = useDispatch();
   const socketRef = useRef(null);
@@ -26,26 +27,25 @@ const ChatRoom = () => {
 
   const userType = useSelector((state) => state.auth.userType);
   // console.log(userType)
-  const userNumber = useSelector((state) => state.auth.user?.user_number);
-  const trainerNumber = useSelector(
-    (state) => state.auth.trainer?.trainer_number
-  );
+  const user_number = location.state?.user_number || {};
+  const trainer_number = location.state?.trainer_number || {};
+  // console.log(user_number);
   const messages = useSelector((state) => state.chat.messages);
 
-  const idToSend = userType === "user" ? userNumber : trainerNumber;
+  const idToSend = userType === "user" ? user_number : trainer_number;
 
   useEffect(() => {
     const fetchChatData = async () => {
       try {
         // 채팅방 정보 로드
         let response;
-        if (userType === "user" && userNumber) {
+        if (userType === "user" && user_number) {
           response = await dispatch(
-            fetchChatRoom({ roomId, userNumber })
+            fetchChatRoom({ roomId, user_number })
           ).unwrap();
-        } else if (userType === "trainer" && trainerNumber) {
+        } else if (userType === "trainer" && trainer_number) {
           response = await dispatch(
-            fetchChatRoom({ roomId, trainerNumber })
+            fetchChatRoom({ roomId, trainer_number })
           ).unwrap();
         } else {
           console.warn("유효한 userNumber 또는 trainerNumber가 없습니다.");
@@ -68,7 +68,7 @@ const ChatRoom = () => {
     return () => {
       dispatch(leaveChatRoom(roomId));
     };
-  }, [dispatch, roomId, userType, userNumber, trainerNumber]);
+  }, [dispatch, roomId, userType, user_number, trainer_number]);
 
   useEffect(() => {
     if (!socketRef.current) {
