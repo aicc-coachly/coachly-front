@@ -53,6 +53,7 @@ function Buttons({ size, color = '#4831D4', children, onClick }) {
 export function UserMenuButtons({ onClick }) {
   const dispatch = useDispatch();
   const navigate = useNavigate();
+
   const handleLogout = async () => {
     await dispatch(authLogout());
     await dispatch(chatLogout());

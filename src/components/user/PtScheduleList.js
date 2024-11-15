@@ -11,8 +11,9 @@ const PtScheduleList = () => {
   const location = useLocation();
   const dispatch = useDispatch();
   const { openModal } = useModal();
-
-  const user_number = location.state.user_number || {};
+  const user_number = useSelector(
+    (state) => state.auth?.user?.user_number || state.user?.user_number
+  );
 
   const [ptSchedules, setPtSchedules] = useState([]);
   const [showCompleted, setShowCompleted] = useState(false); // 완료된 스케줄 보기 토글

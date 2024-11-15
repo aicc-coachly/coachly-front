@@ -70,11 +70,10 @@ function Header() {
 
       {/* 오른쪽 메뉴 버튼 */}
       {!hideMenuBar && isLoggedIn && (
-      {!hideMenuBar && isLoggedIn && (
         <>
           <button
             onClick={toggleMenu}
-            className="absolute right-4 text-2xl text-gray-600 hover:text-gray-800 transition-colors"
+            className="text-2xl text-gray-600 hover:text-gray-800 transition-colors"
           >
             {menuOpen ? '✕' : '≡'}
           </button>
