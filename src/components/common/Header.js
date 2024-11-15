@@ -70,7 +70,6 @@ function Header() {
 
       {/* 오른쪽 메뉴 버튼 */}
       {!hideMenuBar && isLoggedIn && (
-      {!hideMenuBar && isLoggedIn && (
         <>
           <button
             onClick={toggleMenu}

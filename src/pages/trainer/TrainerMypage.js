@@ -64,7 +64,6 @@ const TrainerMypage = () => {
 
   const [scheduleRecords, setScheduleRecords] = useState([]);
   const [isFetched, setIsFetched] = useState(false);
-  const [isFetched, setIsFetched] = useState(false);
   const [isChecked, setIsChecked] = useState(false);
   const [trainerPage, setTrainerPage] = useState(1);
   const [classPage, setClassPage] = useState(1);
@@ -120,7 +119,6 @@ const TrainerMypage = () => {
   };
 
   useEffect(() => {
-    if (!isFetched && pt_schedule.length > 0) {
     if (!isFetched && pt_schedule.length > 0) {
       fetchScheduleRecords();
     }

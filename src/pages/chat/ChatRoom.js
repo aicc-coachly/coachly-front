@@ -36,7 +36,6 @@ const ChatRoom = () => {
 
   useEffect(() => {
     const fetchChatData = async () => {
-    const fetchChatData = async () => {
       try {
         // 채팅방 정보 로드
         let response;
@@ -64,7 +63,6 @@ const ChatRoom = () => {
       }
     };
 
-    fetchChatData();
     fetchChatData();
 
     return () => {
@@ -100,16 +98,6 @@ const ChatRoom = () => {
       };
     }
   }, [roomId, dispatch]);
-      return () => {
-        if (socketRef.current) {
-          socketRef.current.off('messageReceived', handleMessageReceived);
-          socketRef.current.emit('leaveRoom', roomId);
-          socketRef.current.disconnect();
-          socketRef.current = null;
-        }
-      };
-    }
-  }, [roomId, dispatch]);
 
   const sendMessage = useCallback(() => {
     if (input.trim()) {
@@ -130,7 +118,6 @@ const ChatRoom = () => {
       setInput(''); // 입력창 초기화
     }
   }, [input, roomId, idToSend, userType]);
-  }, [input, roomId, idToSend, userType]);
 
   return (
     <div className="max-w-[390px] mx-auto bg-gray-100 min-h-screen flex flex-col relative">
@@ -140,7 +127,6 @@ const ChatRoom = () => {
         </span>
       </div>
 
-      <div className="flex-1 p-4 space-y-4 mb-20 overflow-y-auto chat-messages-container">
       <div className="flex-1 p-4 space-y-4 mb-20 overflow-y-auto chat-messages-container">
         {messages.map((msg, index) => (
           <div
