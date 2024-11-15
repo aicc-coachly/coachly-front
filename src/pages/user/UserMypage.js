@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useModal } from "../../components/common/ModalProvider";
-import { Link, useNavigate } from "react-router-dom"; // useNavigate 추가
+import { useNavigate } from "react-router-dom";
 import { CheckScheduleModal } from "../../components/trainer/CheckScheduleModal";
 import { BodyCompositionModal } from "../../components/user/BodyCompositionModal";
 import { EditBodyCompositionModal } from "../../components/user/EditBodyCompositionModal";
@@ -10,60 +10,43 @@ import { getUser, getUserInbody } from "../../redux/slice/userSlice";
 import { setUser } from "../../redux/slice/authSlice";
 import { getPtschedule } from "../../redux/slice/paymentSlice";
 import { getScheduleRecord } from "../../redux/slice/scheduleSlice";
+import { createChatRoom } from "../../redux/thunks/chatThunks";
+import img from "../../assets/images/newlogo.png";
 
 function UserMypage() {
+  const [showCompleted, setShowCompleted] = useState(false);
   const dispatch = useDispatch();
   const { openModal } = useModal();
   const navigate = useNavigate();
-  const userId = useSelector((state) => state.auth?.user?.user_id);
   const user_number = useSelector((state) => state.auth?.user?.user_number);
   const inbodyData = useSelector((state) => {
-    // inbodyData가 배열이 아닌 경우 빈 배열로 초기화
     const userInbodyData = Array.isArray(state.user?.inbodyData)
       ? state.user.inbodyData
       : [];
-    return userInbodyData.filter((data) => data.user_number === user_number); // 현재 유저의 인바디 데이터만 반환
+    return userInbodyData.filter((data) => data.user_number === user_number);
   });
-  const schedule_record = useSelector(
-    (state) => state.schedule?.data?.schedule_records
-  );
-  const [scheduleRecords, setScheduleRecords] = useState([]); // 모든 예약 정보를 합쳐서 관리
-  const [isFetched, setIsFetched] = useState(false); // 데이터가 이미 fetch되었는지 확인
 
+  const [scheduleRecords, setScheduleRecords] = useState([]);
+  const [isFetched, setIsFetched] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 3;
   const maxPageButtons = 5;
-  // 인바디 데이터 가져오기
   const profile = useSelector((state) => state.user?.userInfo);
-  const [isLoading, setIsLoading] = useState(true);
   const pt_schedule = useSelector((state) => state.payment?.data) || [];
-  const pt_schedules = useSelector((state) => state);
-  // const pt_schedule = useSelector((state) =>
-  //   Array.isArray(state.payment?.data) ? state.payment.data : []
-  // );
-  // const pt_number = pt_schedule
-  //   ? pt_schedule.map((item) => item.pt_number)
-  //   : [];
   const userInfo = useSelector((state) => state.user?.userInfo);
 
-  const aaa = useSelector((state) => state);
+  // 페이지네이션 상태 추가
+  const [trainerPage, setTrainerPage] = useState(1);
+  const [classPage, setClassPage] = useState(1);
 
-  console.log(aaa);
-
-  // console.log(schedule_record);
-  // console.log(inbodyData);
-  // console.log(schedule_record);
-  // 측정 날짜가 유효한 경우만 포맷하고, 유효하지 않으면 빈 문자열을 반환
   const formatDate = (date) => {
     return date ? new Date(date).toISOString().split("T")[0] : "";
   };
 
-  // console.log(inbodyData);
-
   useEffect(() => {
     if (user_number) {
       dispatch(getUser(user_number));
-      dispatch(getUserInbody(user_number)); // 유저의 인바디 데이터 불러오기
+      dispatch(getUserInbody(user_number));
     } else {
       const storedUser = JSON.parse(localStorage.getItem("user"));
       if (storedUser) {
@@ -72,269 +55,401 @@ function UserMypage() {
     }
   }, [dispatch, user_number]);
 
-  useEffect(() => {
-    if (inbodyData) {
-    }
-  }, [inbodyData]);
-
-  useEffect(() => {
-    if (user_number) {
-      // user_number 또는 trainer_number 중 하나만 있으면 스케줄을 가져옵니다.
-      dispatch(
-        getPtschedule({
-          user_number: user_number,
-        })
-      );
-    }
-  }, [dispatch, user_number]); // user_number 또는 trainer_number가 변경될 때마다 호출
-
-  const ptNumbers = Array.isArray(pt_schedule)
-    ? pt_schedule.map((item) => item.pt_number)
-    : []; // pt_number 배열로 가져오기
-  // console.log(ptNumbers);
-  // fetchScheduleRecords 함수
   const fetchScheduleRecords = async () => {
     try {
-      // 여러 pt_number로부터 schedule record를 받아와 하나의 배열로 합침
       const allRecords = await Promise.all(
         ptNumbers.map(async (pt_number) => {
           const result = await dispatch(getScheduleRecord(pt_number));
-          return result.payload; // 각 요청의 결과를 반환
+          return result.payload;
         })
       );
 
-      // `allRecords`는 여러 객체들을 포함하며, 각 객체에는 `schedule_records`가 배열로 포함됨
-      // `schedule_records`만 추출하여 하나의 배열로 결합
       const mergedRecords = allRecords
-        .map((record) => record.schedule_records) // 각 객체에서 schedule_records 추출
-        .flat(); // 다차원 배열을 1차원 배열로 합침
+        .map((record) => record.schedule_records)
+        .flat();
 
-      // console.log("Merged Schedule Records:", mergedRecords); // 확인용 로그
-      setScheduleRecords(mergedRecords); // 하나의 배열로 상태 업데이트
-      setIsFetched(true); // 데이터 fetch 완료 상태 업데이트
+      setScheduleRecords(mergedRecords);
+      setIsFetched(true);
     } catch (error) {
       console.error("Error fetching schedule records:", error);
     }
   };
-  // console.log(inbodyData);
 
   useEffect(() => {
-    if (!isFetched) {
+    if (user_number) {
+      dispatch(getPtschedule({ user_number }));
+    } else {
+      console.warn("user_number가 존재하지 않습니다.");
+    }
+  }, [dispatch, user_number]);
+
+  useEffect(() => {
+    console.log("pt_schedule 데이터:", pt_schedule);
+  }, [pt_schedule]);
+
+  useEffect(() => {
+    if (user_number) {
+      dispatch(getPtschedule({ user_number }));
+    }
+  }, [dispatch, user_number]);
+
+  const ptNumbers = Array.isArray(pt_schedule)
+    ? pt_schedule.map((item) => item.pt_number)
+    : [];
+
+  useEffect(() => {
+    if (ptNumbers.length > 0 && !isFetched) {
       fetchScheduleRecords();
     }
-  }, [isFetched, ptNumbers]);
+  }, [ptNumbers, isFetched]);
 
-  // 예약된 수업 필터링 (deleted 제외)
-  const filteredScheduleRecord = schedule_record?.filter(
+  const handleCheckboxChange = (e) => {
+    setShowCompleted(e.target.checked);
+  };
+
+  const filteredScheduleRecord = scheduleRecords.filter(
     (schedule) => schedule.status !== "deleted"
   );
 
-  // status가 true인 항목 필터링
-  const filteredItems = inbodyData.filter((inbody) => inbody.status);
+  const displayedClassItems = filteredScheduleRecord.filter((schedule) =>
+    showCompleted
+      ? schedule.status === "completed"
+      : schedule.status !== "completed"
+  );
+  const filteredClassTotalPages = Math.ceil(
+    displayedClassItems.length / itemsPerPage
+  );
+  const paginatedClassItems = displayedClassItems.slice(
+    (classPage - 1) * itemsPerPage,
+    classPage * itemsPerPage
+  );
 
-  // 페이지 수 계산
+  const filteredItems = inbodyData.filter((inbody) => inbody.status);
   const totalPages = Math.ceil(filteredItems.length / itemsPerPage);
 
-  // 현재 페이지의 항목 가져오기
-  const indexOfLastItem = currentPage * itemsPerPage;
-  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-  const currentItems = filteredItems.slice(indexOfFirstItem, indexOfLastItem);
+  const getUniqueTrainers = (schedule) => {
+    // schedule이 배열인지 확인하여, 배열이 아닌 경우 빈 배열로 처리
+    if (!Array.isArray(schedule)) {
+      console.warn("Expected an array for schedule, but got:", schedule);
+      schedule = [];
+    }
 
-  const handlePageChange = (pageNumber) => {
-    setCurrentPage(pageNumber);
+    const uniqueTrainers = [];
+    const trainerIds = new Set(); // trainer_number로 중복을 관리
+
+    for (const item of schedule) {
+      if (
+        item.trainer_number !== null &&
+        !trainerIds.has(item.trainer_number)
+      ) {
+        uniqueTrainers.push({
+          trainer_name: item.trainer_name,
+          trainer_number: item.trainer_number,
+        });
+        trainerIds.add(item.trainer_number);
+      }
+    }
+
+    return uniqueTrainers;
   };
+  // 중복을 제거한 트레이너 목록 생성
+  const uniqueTrainers = getUniqueTrainers(pt_schedule);
+  console.log(getUniqueTrainers);
+  console.log(uniqueTrainers);
+  // 각 섹션의 페이지네이션 계산
+  const trainerItems = uniqueTrainers.slice(
+    (trainerPage - 1) * itemsPerPage,
+    trainerPage * itemsPerPage
+  );
+  const trainerTotalPages = Math.ceil(uniqueTrainers.length / itemsPerPage);
+  const classItems = filteredScheduleRecord.slice(
+    (classPage - 1) * itemsPerPage,
+    classPage * itemsPerPage
+  );
+  const classTotalPages = Math.ceil(
+    filteredScheduleRecord.length / itemsPerPage
+  );
 
-  const handleNext = () => {
+  // 페이지 변경 핸들러
+  const handlePageChange = (pageNumber) => setCurrentPage(pageNumber);
+  const handleTrainerPageChange = (pageNumber) => setTrainerPage(pageNumber);
+  const handleClassPageChange = (pageNumber) => setClassPage(pageNumber);
+
+  const handleNext = () =>
     setCurrentPage((prev) => Math.min(prev + 1, totalPages));
-  };
+  const handleTrainerNext = () =>
+    setTrainerPage((prev) => Math.min(prev + 1, trainerTotalPages));
+  const handleClassNext = () =>
+    setClassPage((prev) => Math.min(prev + 1, classTotalPages));
 
-  const handlePrev = () => {
-    setCurrentPage((prev) => Math.max(prev - 1, 1));
-  };
+  const handlePrev = () => setCurrentPage((prev) => Math.max(prev - 1, 1));
+  const handleTrainerPrev = () =>
+    setTrainerPage((prev) => Math.max(prev - 1, 1));
+  const handleClassPrev = () => setClassPage((prev) => Math.max(prev - 1, 1));
 
-  const getPageNumbers = () => {
+  const getPageNumbers = (total) => {
     const pageNumbers = [];
     let startPage = Math.max(1, currentPage - Math.floor(maxPageButtons / 2));
-    let endPage = Math.min(totalPages, startPage + maxPageButtons - 1);
-
+    let endPage = Math.min(total, startPage + maxPageButtons - 1);
     if (endPage - startPage + 1 < maxPageButtons) {
       startPage = Math.max(1, endPage - maxPageButtons + 1);
     }
-
     for (let i = startPage; i <= endPage; i++) {
       pageNumbers.push(i);
     }
     return pageNumbers;
   };
 
-  // console.log(userId);
-  // console.log(profile);
-  // navigate("/userptschedule");
   const handleRefundPage = () => {
-    navigate("/userptschedule", { state: { pt_schedule } });
+    navigate("/userptschedule", { state: { user_number } });
   };
-
   const handleMyInfoUpdate = () => {
     navigate("/userprofile", { state: { userInfo } });
   };
 
+  const handleChat = async (trainer_number) => {
+    if (!user_number || !trainer_number) {
+      console.error("user_number 또는 trainer_number가 정의되지 않았습니다.", {
+        user_number,
+        trainer_number,
+      });
+      return;
+    }
+
+    try {
+      const response = await dispatch(
+        createChatRoom({ user_number, trainer_number })
+      );
+
+      if (response?.payload?.room_id) {
+        navigate(`/chatRoom/${response.payload.room_id}`);
+      } else {
+        console.warn(
+          "API 응답에서 room_id가 반환되지 않았습니다.",
+          response.payload
+        );
+      }
+    } catch (error) {
+      console.error("채팅방 생성 중 오류 발생:", error);
+    }
+  };
   return (
     <div className="max-w-[390px] mx-auto bg-gray-100 p-4">
       {/* 내 정보 섹션 */}
       <div className="bg-white rounded-lg shadow-md p-4 mb-4 relative">
-        <h2 className="text-lg font-semibold mb-2">내 정보</h2>
+        <h2 className="text-lg font-semibold mb-2 text-gray-700">내 정보</h2>
         <button
-          onClick={() => handleRefundPage(pt_schedule)}
+          onClick={handleRefundPage}
           className="absolute top-4 right-[100px] px-3 py-1 bg-gray-300 text-sm rounded-full"
         >
           환불신청
         </button>
         <button
-          onClick={() => handleMyInfoUpdate(userInfo)} // 페이지 이동 설정
+          onClick={handleMyInfoUpdate}
           className="absolute top-4 right-4 px-3 py-1 bg-gray-300 text-sm rounded-full"
         >
           수정하기
         </button>
         <div className="flex items-start mt-4 space-x-4">
-          {/* 프로필 사진 */}
-          <div className="w-[8rem] h-[8rem] bg-gray-200 overflow-hidden">
-            {/* <img 
-                    // src="https://via.placeholder.com/64" // 프로필 사진 URL 또는 경로로 대체
-                    alt="프로필 사진" 
-                    className="object-cover w-full h-full"
-                  /> */}
-          </div>
-
-          {/* 텍스트 정보와 체크박스 */}
           <div className="flex-1">
-            {/* 체크박스 */}
             <div className="flex justify-end">
-              <p className="px-3 py-1 bg-gray-300 text-sm rounded-md">
+              <p className="px-3 py-1 bg-gray-300 text-sm rounded-md text-gray-500">
                 {profile?.user_detail_address}
               </p>
             </div>
-
-            {/* 텍스트 정보 */}
-            <p className="mt-2 text-base font-medium">{profile?.name}</p>
+            <p className="mt-2 text-base font-medium text-gray-700">
+              {profile?.name}
+            </p>
             <p className="text-sm text-gray-500">{profile?.email}</p>
             <p className="text-sm text-gray-500">{profile?.phone}</p>
-            <p className="text-sm text-gray-500">{profile?.gender}</p>
+            <p className="text-sm text-gray-500">
+              {profile?.gender === "male" ? "남" : "여"}
+            </p>
           </div>
         </div>
       </div>
 
-      {/* 담당 트레이너 */}
-      {pt_schedule && pt_schedule.length > 0 ? (
-        <div className="bg-white rounded-lg shadow-md p-2 mb-4">
-          <h2 className="text-lg font-semibold p-2">담당 트레이너</h2>
-
-          {/* 중복된 트레이너 이름을 제거한 후 출력 */}
-          {pt_schedule
-            .filter(
-              (value, index, self) =>
-                index ===
-                self.findIndex((t) => t.trainer_name === value.trainer_name)
-            )
-            .map((trainer, index) => (
-              <div
-                key={index}
-                className="flex items-center justify-between bg-gray-300 p-1 mb-2"
-              >
-                <p className="text-base text-sm">{trainer.trainer_name}</p>
-                <button
-                  onClick={() => navigate("/chatroom")}
-                  className="px-3 py-1 bg-pink-300 text-sm rounded-md"
-                >
-                  1:1 채팅하기
-                </button>
-              </div>
-            ))}
+      {/* 담당 트레이너 섹션 */}
+      <div className="bg-white rounded-lg shadow-md p-4 mb-4">
+        <h2 className="text-lg font-semibold mb-2 text-gray-700">
+          담당 트레이너
+        </h2>
+        {trainerItems.map((trainer, index) => (
+          <div
+            key={index}
+            className="flex items-center justify-between bg-gray-100 p-2 rounded-lg mb-2 shadow-sm"
+          >
+            <p className="text-sm font-medium text-gray-600">
+              {trainer.trainer_name}
+            </p>
+            <button
+              onClick={() => handleChat(trainer.trainer_number)}
+              className="px-3 py-1 bg-blue-500 text-sm rounded-md text-white font-semibold"
+            >
+              1:1 채팅하기
+            </button>
+          </div>
+        ))}
+        <div className="flex justify-center mt-4 space-x-2">
+          <button
+            onClick={handleTrainerPrev}
+            disabled={trainerPage === 1}
+            className="px-3 py-1 bg-gray-300 rounded-md text-sm"
+          >
+            이전
+          </button>
+          {getPageNumbers(trainerTotalPages).map((pageNumber) => (
+            <button
+              key={pageNumber}
+              onClick={() => handleTrainerPageChange(pageNumber)}
+              className={`px-3 py-1 ${
+                trainerPage === pageNumber
+                  ? "bg-blue-500 text-white"
+                  : "bg-gray-300"
+              } rounded-md text-sm`}
+            >
+              {pageNumber}
+            </button>
+          ))}
+          <button
+            onClick={handleTrainerNext}
+            disabled={trainerPage === trainerTotalPages}
+            className="px-3 py-1 bg-gray-300 rounded-md text-sm"
+          >
+            다음
+          </button>
         </div>
-      ) : null}
+      </div>
 
       {/* 예약된 수업 섹션 */}
-      <div className="bg-white rounded-lg shadow-md p-2 mb-4">
-        <h2 className="text-lg font-semibold p-2">예약된 수업</h2>
-        {filteredScheduleRecord && filteredScheduleRecord.length > 0 ? (
-          filteredScheduleRecord.map((schedule) => (
+      <div className="bg-white rounded-lg shadow-md p-4 mb-4">
+        <h2 className="text-lg font-semibold mb-2 text-gray-700">
+          예약된 수업
+        </h2>
+        <div className="flex items-center mb-4">
+          <label className="text-sm mr-2 text-gray-600">
+            완료된 수업만 보기
+          </label>
+          <input
+            type="checkbox"
+            checked={showCompleted}
+            onChange={handleCheckboxChange}
+            className="form-checkbox"
+          />
+        </div>
+        {paginatedClassItems.length > 0 ? (
+          paginatedClassItems.map((schedule) => (
             <div
               key={schedule.schedule_number}
-              className="flex items-center justify-between bg-gray-300 p-1 mb-2"
+              className="flex items-center justify-between bg-gray-100 p-2 rounded-lg mb-2 shadow-sm"
             >
-              <p className="text-base text-sm">{schedule.trainer_name}</p>
+              <p className="text-sm font-medium text-gray-600">
+                {schedule.trainer_name}
+              </p>
               <span className="text-sm text-gray-500">
-                {new Date(schedule.class_date).toLocaleDateString()}{" "}
-                {/* 날짜 포맷팅 */}
+                {new Date(schedule.class_date).toLocaleDateString()}
                 {schedule.status === "completed" && (
-                  <span className="text-green-500 ml-2">완료됨</span> // 완료 상태일 경우 "완료됨" 표시
+                  <span className="text-green-500 ml-2">완료됨</span>
                 )}
               </span>
               <button
                 onClick={() =>
                   openModal(<CheckScheduleModal schedule={schedule} />)
-                } // 모달에 schedule 데이터 넘기기
-                className="text-center px-3 py-1 bg-pink-300 text-sm rounded-md"
+                }
+                className="px-3 py-1 bg-blue-500 text-sm rounded-md text-white font-semibold"
               >
                 자세히 보기
               </button>
             </div>
           ))
         ) : (
-          <p>예약된 수업이 없습니다.</p>
+          <p className="text-center text-gray-500">
+            해당 조건의 수업이 없습니다.
+          </p>
         )}
+        <div className="flex justify-center mt-4 space-x-2">
+          <button
+            onClick={handleClassPrev}
+            disabled={classPage === 1}
+            className="px-3 py-1 bg-gray-300 rounded-md text-sm"
+          >
+            이전
+          </button>
+          {getPageNumbers(filteredClassTotalPages).map((pageNumber) => (
+            <button
+              key={pageNumber}
+              onClick={() => handleClassPageChange(pageNumber)}
+              className={`px-3 py-1 ${
+                classPage === pageNumber
+                  ? "bg-blue-500 text-white"
+                  : "bg-gray-300"
+              } rounded-md text-sm`}
+            >
+              {pageNumber}
+            </button>
+          ))}
+          <button
+            onClick={handleClassNext}
+            disabled={classPage === filteredClassTotalPages}
+            className="px-3 py-1 bg-gray-300 rounded-md text-sm"
+          >
+            다음
+          </button>
+        </div>
       </div>
 
-      {/* 인바디 세션 */}
-
-      <div className="bg-white rounded-lg shadow-md p-2 mb-4">
-        <div className="flex justify-between p-2">
-          <h2 className="text-lg font-semibold">나의 체성분 기록</h2>
+      {/* 체성분 기록 섹션 */}
+      <div className="bg-white rounded-lg shadow-md p-4 mb-4">
+        <div className="flex justify-between items-center mb-4">
+          <h2 className="text-lg font-semibold text-gray-700">
+            나의 체성분 기록
+          </h2>
           <button
             onClick={() => openModal(<BodyCompositionModal />)}
-            className="text-center px-3 py-1 bg-pink-300 text-sm rounded-md"
+            className="px-3 py-1 bg-blue-500 text-sm rounded-md text-white font-semibold"
           >
             추가하기
           </button>
         </div>
 
-        {currentItems
-          .filter((inbody) => inbody.status === true) // status가 true인 항목만 필터링
+        {filteredItems
+          .slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage)
           .map((inbody, index) => (
             <div
               key={index}
-              className="flex items-center justify-between bg-gray-300 p-1 mb-2"
+              className="flex items-center justify-between bg-gray-100 p-2 rounded-lg mb-2 shadow-sm"
             >
-              <p className="text-base text-sm">
+              <p className="text-sm font-medium text-gray-600">
                 측정날짜: {formatDate(inbody.user_measurement_date)}
               </p>
               <button
                 onClick={() =>
                   openModal(<EditBodyCompositionModal inbodyData={inbody} />)
                 }
-                className="text-center px-3 py-1 bg-pink-300 text-sm rounded-md"
+                className="px-3 py-1 bg-blue-500 text-sm rounded-md text-white font-semibold"
               >
                 더보기
               </button>
             </div>
           ))}
 
-        <div className="flex justify-center mt-4">
+        <div className="flex justify-center mt-4 space-x-2">
           <button
             onClick={handlePrev}
             disabled={currentPage === 1}
-            className="mx-1 px-2 py-1 bg-gray-300 rounded-md"
+            className="px-3 py-1 bg-gray-300 rounded-md text-sm"
           >
             이전
           </button>
-          {getPageNumbers().map((pageNumber) => (
+          {getPageNumbers(totalPages).map((pageNumber) => (
             <button
               key={pageNumber}
               onClick={() => handlePageChange(pageNumber)}
-              className={`mx-1 px-2 py-1 ${
+              className={`px-3 py-1 ${
                 currentPage === pageNumber
                   ? "bg-blue-500 text-white"
                   : "bg-gray-300"
-              } rounded-md`}
+              } rounded-md text-sm`}
             >
               {pageNumber}
             </button>
@@ -342,7 +457,7 @@ function UserMypage() {
           <button
             onClick={handleNext}
             disabled={currentPage === totalPages}
-            className="mx-1 px-2 py-1 bg-gray-300 rounded-md"
+            className="px-3 py-1 bg-gray-300 rounded-md text-sm"
           >
             다음
           </button>
