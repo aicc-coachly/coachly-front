@@ -1,13 +1,21 @@
 import React, { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { useLocation, Link } from "react-router-dom";
 import { useSelector } from "react-redux";
+import { useSelector } from "react-redux";
 import { UserMenuButtons, TrainerMenuButtons } from "./Buttons";
-import logo from "../../assets/images/logo.png";
+import logo from "../../assets/images/newlogo.png";
 
 function Header() {
   const location = useLocation();
   const [menuOpen, setMenuOpen] = useState(false);
-  const { userType } = useSelector((state) => state.auth);
+
+  const storedData = JSON.parse(sessionStorage.getItem("userData"));
+  const data = storedData?.data;
+  const userType = storedData?.userType;
+  // userType에 따른 user_number 또는 trainer_number 할당
+  const user_number = userType === "user" ? data?.user_number : null;
+  const trainer_number = userType === "trainer" ? data?.trainer_number : null;
 
   // 새로고침 후에도 isLoggedIn 상태를 유지하기 위해
   const isLoggedIn = userType === "user" || userType === "trainer";
@@ -15,6 +23,11 @@ function Header() {
   const toggleMenu = () => {
     setMenuOpen(!menuOpen);
   };
+
+  useEffect(() => {
+    // 로그인 상태가 변경될 때마다 메뉴를 닫음
+    setMenuOpen(false);
+  }, [isLoggedIn]);
 
   useEffect(() => {
     // 로그인 상태가 변경될 때마다 메뉴를 닫음
@@ -30,35 +43,51 @@ function Header() {
   ].includes(location.pathname);
 
   return (
-    <header className="relative flex justify-between items-center p-4 bg-[#edf1f6] shadow-md max-w-[390px] mx-auto">
+    <header className="relative flex justify-between items-center p-4 bg-[#4831D4] shadow-md max-w-[390px] mx-auto">
       {/* 왼쪽 빈 공간으로 로고 가운데 정렬 */}
-      <div className="w-8"></div>
 
       {/* 가운데 로고 */}
       <Link
-        to={
-          userType === 'user'
-            ? '/usermypage'
-            : userType === 'trainer'
-            ? '/trainermypage'
-            : '/'
-        }
+        to={{
+          pathname:
+            userType === "user"
+              ? "/usermypage"
+              : userType === "trainer"
+              ? "/trainermypage"
+              : "/",
+          state: {
+            user_number: user_number,
+            trainer_number: trainer_number,
+            userType: userType,
+          },
+        }}
         className="flex justify-center flex-grow"
       >
-        <img src={logo} alt="로고" className="w-12 sm:w-16 h-auto" />
+        <img
+          src={logo}
+          alt="로고"
+          className="w-12 sm:w-16 h-auto transition-transform duration-200 hover:scale-105"
+        />
       </Link>
 
       {/* 오른쪽 메뉴 버튼 */}
       {!hideMenuBar && isLoggedIn && (
+      {!hideMenuBar && isLoggedIn && (
         <>
-          <button onClick={toggleMenu} className="text-2xl">
-            {menuOpen ? '✕' : '≡'}
+          <button
+            onClick={toggleMenu}
+            className="absolute right-4 text-2xl text-[#ffffff] hover:text-[#ffffff] transition-colors"
+          >
+            {menuOpen ? "✕" : "≡"}
           </button>
+
+          {/* 메뉴 드롭다운 */}
           {menuOpen && (
-            <div className="absolute right-4 z-50 top-16 bg-white shadow-md rounded-lg p-4 flex flex-col space-y-2">
+            <div className="text-center absolute right-4 top-16 bg-white shadow-lg rounded-lg p-4 z-50 flex flex-col space-y-2 animate-fadeIn">
               {userType === "trainer" && (
                 <TrainerMenuButtons onClick={() => setMenuOpen(false)} />
               )}
+              {userType === "user" && (
               {userType === "user" && (
                 <UserMenuButtons onClick={() => setMenuOpen(false)} />
               )}

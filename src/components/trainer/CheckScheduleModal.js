@@ -85,60 +85,62 @@ export const CheckScheduleModal = ({ schedule, onUpdate, onDelete }) => {
   };
 
   return (
-    <div className="max-w-sm p-6 rounded-lg relative">
-      <h2 className="text-lg font-bold text-center mb-6">
+    <div className="max-w-sm p-6 bg-white rounded-lg shadow-lg relative">
+      <h2 className="text-xl font-semibold text-center mb-6 text-gray-800">
         {schedule.user_name}님의 예약
       </h2>
 
       {/* 장소 수정 */}
-      <div className="flex items-center justify-between mb-4">
-        <span className="text-sm font-semibold">장소</span>
+      <div className="mb-5">
+        <label className="text-sm font-semibold text-gray-600 block mb-2">
+          장소
+        </label>
         <input
           type="text"
           value={newAddress}
           onChange={(e) => setNewAddress(e.target.value)}
-          className="bg-gray-200 text-sm p-1 rounded text-center w-full"
+          className="bg-gray-100 text-sm text-gray-700 p-2 rounded w-full border border-gray-200 focus:border-blue-300 focus:outline-none"
         />
       </div>
 
       {/* 일시 수정 */}
-      <div className="flex items-center justify-between mb-4">
-        <span className="text-sm font-semibold">일시</span>
-        <div className="flex gap-2">
+      <div className="mb-5">
+        <label className="text-sm font-semibold text-gray-600 block mb-2">
+          일시
+        </label>
+        <div className="flex gap-3">
           {/* 날짜 선택 */}
-          <div className="flex items-center justify-between">
-            <span className="text-sm font-semibold">날짜</span>
-            <DatePicker
-              selected={newClassDate}
-              onChange={(date) => setNewClassDate(date)} // 날짜 선택 시 상태 업데이트
-              dateFormat="yyyy-MM-dd"
-              className="bg-gray-200 text-sm p-1 rounded text-center w-full"
-            />
-          </div>
+          <DatePicker
+            selected={newClassDate}
+            onChange={(date) => setNewClassDate(date)} // 날짜 선택 시 상태 업데이트
+            dateFormat="yyyy-MM-dd"
+            className="bg-gray-100 text-sm text-gray-700 p-2 rounded w-full border border-gray-200 focus:border-blue-300 focus:outline-none"
+            placeholderText="날짜 선택"
+          />
 
           {/* 시간 선택 */}
           <input
             type="time"
             value={newClassTime}
             onChange={(e) => setNewClassTime(e.target.value)} // 시간 선택 시 상태 업데이트
-            className="bg-gray-200 text-sm p-1 rounded text-center w-24"
+            className="bg-gray-100 text-sm text-gray-700 p-2 rounded w-24 border border-gray-200 focus:border-blue-300 focus:outline-none"
           />
         </div>
       </div>
 
-      {/* 수정, 완료 및 삭제 버튼 (트레이너 또는 유저에 따라 조건부 렌더링) */}
-      <div className="flex justify-between mt-4">
+      {/* 수정, 완료 및 삭제 버튼 */}
+      <div className="flex justify-between mt-6 space-x-3">
         {trainerId ? (
           // 트레이너일 경우
           <>
             <button
-              className="bg-blue-500 text-white p-2 rounded"
+              className="bg-blue-500 text-white py-2 px-4 rounded font-medium hover:bg-blue-600 transition"
               onClick={handleUpdate} // 일정 수정
             >
               수정
             </button>
             <button
-              className="bg-red-500 text-white p-2 rounded"
+              className="bg-red-500 text-white py-2 px-4 rounded font-medium hover:bg-red-600 transition"
               onClick={handleDelete} // 일정 삭제
             >
               삭제
@@ -147,7 +149,7 @@ export const CheckScheduleModal = ({ schedule, onUpdate, onDelete }) => {
         ) : userId ? (
           // 유저일 경우
           <button
-            className="bg-green-500 text-white p-2 rounded"
+            className="bg-green-500 text-white py-2 px-4 rounded font-medium hover:bg-green-600 transition"
             onClick={handleComplete} // PT 일정 완료
           >
             완료
@@ -156,7 +158,7 @@ export const CheckScheduleModal = ({ schedule, onUpdate, onDelete }) => {
 
         {/* 공통 확인 버튼 */}
         <button
-          className="bg-gray-500 text-white p-2 rounded"
+          className="bg-gray-500 text-white py-2 px-4 rounded font-medium hover:bg-gray-600 transition"
           onClick={handleConfirm} // 확인 (모달 닫기)
         >
           확인

@@ -21,11 +21,13 @@ function Login() {
   useEffect(() => {
     // 로그인 상태가 설정되었고, 'data'와 'loggedInUserType'이 모두 유효할 때만 리디렉션을 실행
     if (data && loggedInUserType) {
-      if (loggedInUserType === "trainer") {
-        navigate("/trainermypage");
-      } else if (loggedInUserType === "user") {
-        navigate("/usermypage");
-      }
+      const destination =
+        loggedInUserType === "trainer" ? "/trainermypage" : "/usermypage";
+      sessionStorage.setItem(
+        "userData",
+        JSON.stringify({ data, userType: loggedInUserType })
+      );
+      navigate(destination);
     }
 
     // 로그인 실패 메시지 처리
@@ -51,7 +53,7 @@ function Login() {
 
   return (
     <div className="w-full min-h-screen bg-[#edf1f6] flex flex-col items-center">
-      <div className="w-full max-w-[390px] mt-8 flex flex-col items-center p-6 bg-[#edf1f6]">
+      <div className="w-full h-[100vh] max-w-[390px] mt-2 flex flex-col items-center p-6 bg-[#dbdff9]">
         <h2 className="text-2xl font-semibold text-[#081f5c] mb-6 text-center">
           AI 챗봇과 전문 트레이너가 함께하는
           <br /> 나만의 피트니스 여정을 시작해보세요
@@ -104,7 +106,9 @@ function Login() {
           아직 계정이 없으신가요?
         </p>
         <Link to="/sortsignup">
-          <Buttons size="middle">회원가입</Buttons>
+          <Buttons size="middle" className="text-white">
+            회원가입
+          </Buttons>
         </Link>
       </div>
     </div>
